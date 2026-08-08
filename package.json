@@ -8,6 +8,7 @@
     "config": "node scripts/config.mjs",
     "pull-queue": "node scripts/pull-queue.mjs",
     "triage": "node scripts/triage.mjs",
+    "taxonomy": "node scripts/model-taxonomy.mjs",
     "generate": "node scripts/generate.mjs",
     "publish": "node scripts/publish.mjs"
   }
