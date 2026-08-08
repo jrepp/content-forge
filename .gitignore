@@ -1,0 +1,14 @@
+# Node
+node_modules/
+
+# Pulled queue snapshots are consumer runtime state, not source
+work/*.csv
+work/*.json
+
+# Scratch produced bytes. Flip this off (and commit out/) if you want the
+# produced assets reviewed/historied here — see README "out/ ownership".
+out/**/*.png
+out/provenance.json
+!out/.gitkeep
+
+.DS_Store

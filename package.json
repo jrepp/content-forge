@@ -1,0 +1,12 @@
+{
+  "name": "content-forge",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Content-production seam between Blockbench+automation (producer) and Minosoft (consumer).",
+  "scripts": {
+    "pull-queue": "node scripts/pull-queue.mjs",
+    "generate": "node scripts/generate.mjs",
+    "publish": "node scripts/publish.mjs"
+  }
+}
