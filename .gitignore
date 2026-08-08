@@ -4,6 +4,12 @@ node_modules/
 # Machine-local config (producer/consumer paths). The *.example.json is tracked.
 forge.config.json
 
+# The SQLite asset index is derived/regenerable; the durable review + conversion
+# records (db/*.json) are committed text.
+db/*.db
+db/*.db-wal
+db/*.db-shm
+
 # Pulled queue snapshots are consumer runtime state, not source
 work/*.csv
 work/*.json

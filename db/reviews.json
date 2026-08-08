@@ -1,0 +1,20 @@
+{
+  "assets/minecraft/models/block/barrel.json": {
+    "status": "approved",
+    "by": "jrepp",
+    "at": "2026-08-08T14:29:57.538Z",
+    "note": "hand-authored geometry, verified"
+  },
+  "assets/minecraft/models/block/andesite.json": {
+    "status": "reviewed",
+    "by": "jrepp",
+    "at": "2026-08-08T14:29:57.567Z",
+    "note": "flat cube ok"
+  },
+  "assets/minecraft/textures/block/basalt.png": {
+    "status": "rejected",
+    "by": "jrepp",
+    "at": "2026-08-08T14:29:57.595Z",
+    "note": "placeholder noise, needs real texture"
+  }
+}

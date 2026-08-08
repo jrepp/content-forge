@@ -1,0 +1,11 @@
+[
+  {
+    "target": "assets/minecraft/models/block/barrel.json",
+    "source": "producers/blockbench/sources/barrel.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "de9caca6f8764ebd4eb40829bb5fa20752811c915d74da6eaa7200555e0c52ba",
+    "target_sha256": "d7184517f3e6cf4be72948b0759aeba5d4f8a03b6981f16c32ad0ac40f7ec35e",
+    "converted_at": "2026-08-08T14:29:30.135Z"
+  }
+]

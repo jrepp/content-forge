@@ -11,6 +11,7 @@
     "taxonomy": "node scripts/model-taxonomy.mjs",
     "synth-models": "node producers/model/synth.mjs",
     "synth-textures": "node producers/raster/synth-textures.mjs",
+    "db": "node scripts/db.mjs",
     "generate": "node scripts/generate.mjs",
     "publish": "node scripts/publish.mjs"
   }
