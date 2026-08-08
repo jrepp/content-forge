@@ -2,8 +2,8 @@
   "assets/minecraft/models/block/barrel.json": {
     "status": "approved",
     "by": "jrepp",
-    "at": "2026-08-08T14:29:57.538Z",
-    "note": "hand-authored geometry, verified"
+    "at": "2026-08-08T17:38:19.072Z",
+    "note": "authored geometry reviewed"
   },
   "assets/minecraft/models/block/andesite.json": {
     "status": "reviewed",
@@ -12,9 +12,105 @@
     "note": "flat cube ok"
   },
   "assets/minecraft/textures/block/basalt.png": {
-    "status": "rejected",
+    "status": "approved",
     "by": "jrepp",
-    "at": "2026-08-08T14:29:57.595Z",
-    "note": "placeholder noise, needs real texture"
+    "at": "2026-08-08T17:38:46.429Z",
+    "note": "tone table makes basalt accurate; re-approved"
+  },
+  "assets/minecraft/models/block/bell.json": {
+    "status": "approved",
+    "by": "jrepp",
+    "at": "2026-08-08T17:38:19.106Z",
+    "note": "authored geometry reviewed"
+  },
+  "assets/minecraft/models/block/cake.json": {
+    "status": "approved",
+    "by": "jrepp",
+    "at": "2026-08-08T17:38:19.138Z",
+    "note": "authored geometry reviewed"
+  },
+  "assets/minecraft/models/block/calibrated_sculk_sensor.json": {
+    "status": "approved",
+    "by": "jrepp",
+    "at": "2026-08-08T17:38:19.169Z",
+    "note": "authored geometry reviewed"
+  },
+  "assets/minecraft/models/block/chain.json": {
+    "status": "approved",
+    "by": "jrepp",
+    "at": "2026-08-08T17:38:19.199Z",
+    "note": "authored geometry reviewed"
+  },
+  "assets/minecraft/models/block/composter.json": {
+    "status": "approved",
+    "by": "jrepp",
+    "at": "2026-08-08T17:38:19.227Z",
+    "note": "authored geometry reviewed"
+  },
+  "assets/minecraft/models/block/enchanting_table.json": {
+    "status": "approved",
+    "by": "jrepp",
+    "at": "2026-08-08T17:38:19.258Z",
+    "note": "authored geometry reviewed"
+  },
+  "assets/minecraft/models/block/end_portal_frame.json": {
+    "status": "approved",
+    "by": "jrepp",
+    "at": "2026-08-08T17:38:19.288Z",
+    "note": "authored geometry reviewed"
+  },
+  "assets/minecraft/models/block/grindstone.json": {
+    "status": "approved",
+    "by": "jrepp",
+    "at": "2026-08-08T17:38:19.319Z",
+    "note": "authored geometry reviewed"
+  },
+  "assets/minecraft/models/block/hopper.json": {
+    "status": "approved",
+    "by": "jrepp",
+    "at": "2026-08-08T17:38:19.349Z",
+    "note": "authored geometry reviewed"
+  },
+  "assets/minecraft/models/block/jigsaw.json": {
+    "status": "approved",
+    "by": "jrepp",
+    "at": "2026-08-08T17:38:19.380Z",
+    "note": "authored geometry reviewed"
+  },
+  "assets/minecraft/models/block/lectern.json": {
+    "status": "approved",
+    "by": "jrepp",
+    "at": "2026-08-08T17:38:19.411Z",
+    "note": "authored geometry reviewed"
+  },
+  "assets/minecraft/models/block/lightning_rod.json": {
+    "status": "approved",
+    "by": "jrepp",
+    "at": "2026-08-08T17:38:19.441Z",
+    "note": "authored geometry reviewed"
+  },
+  "assets/minecraft/models/block/respawn_anchor.json": {
+    "status": "approved",
+    "by": "jrepp",
+    "at": "2026-08-08T17:38:19.471Z",
+    "note": "authored geometry reviewed"
+  },
+  "assets/minecraft/models/block/scaffolding.json": {
+    "status": "approved",
+    "by": "jrepp",
+    "at": "2026-08-08T17:38:19.501Z",
+    "note": "authored geometry reviewed"
+  },
+  "assets/minecraft/models/block/sculk_sensor.json": {
+    "status": "approved",
+    "by": "jrepp",
+    "at": "2026-08-08T17:38:19.532Z",
+    "note": "authored geometry reviewed"
+  },
+  "assets/minecraft/models/block/sculk_shrieker.json": {
+    "status": "approved",
+    "by": "jrepp",
+    "at": "2026-08-08T17:38:19.561Z",
+    "note": "authored geometry reviewed"
   }
 }

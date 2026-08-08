@@ -16,6 +16,8 @@
     "publish": "node scripts/publish.mjs",
     "reference-closure": "node producers/raster/reference-closure.mjs",
     "synth-textures-all": "node producers/raster/synth-textures.mjs --all",
-    "resolve-candidates": "node producers/model/resolve-candidates.mjs"
+    "resolve-candidates": "node producers/model/resolve-candidates.mjs",
+    "gate": "node scripts/db.mjs gate",
+    "release": "node scripts/release.mjs"
   }
 }

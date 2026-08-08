@@ -1,0 +1,7 @@
+{
+  "_note": "Governance policy. Deterministic generated producers are auto-approved (they emit marked, replaceable placeholders and are reproducible from the queue). Authored producers (blockbench) are NOT listed here, so they require an explicit human review. A human reject/review in reviews.json always wins over policy.",
+  "autoApprove": {
+    "producers": ["model-synth", "texture-gen", "borrow-resolver"],
+    "recipes": []
+  }
+}

@@ -23,6 +23,7 @@ import { repoRoot } from './config.mjs';
 
 const DB_PATH = join(repoRoot, 'db', 'asset-index.db');
 const REVIEWS = join(repoRoot, 'db', 'reviews.json');
+const POLICIES = join(repoRoot, 'db', 'policies.json');
 const CONVERSIONS = join(repoRoot, 'db', 'conversions.json');
 const now = () => new Date().toISOString();
 const readJson = (p, d) => { try { return JSON.parse(readFileSync(p, 'utf8')); } catch { return d; } };
@@ -101,9 +102,51 @@ function cmdIndex() {
 		const res = db.prepare('UPDATE assets SET status=?, reviewer=?, reviewed_at=?, note=?, updated_at=? WHERE target=?').run(r.status, r.by || null, r.at || null, r.note || null, now(), target);
 		if (res.changes) histIns.run(target, r.status, r.by || null, r.note || null, r.at || now());
 	}
+	// 6. governance policy (committed): auto-approve trusted deterministic producers/
+	//    recipes, but never override an explicit human review/rejection.
+	const policies = readJson(POLICIES, {});
+	const auto = policies.autoApprove || {};
+	const recipeSet = new Set(auto.recipes || []);
+	const producerSet = new Set(auto.producers || []);
+	if (recipeSet.size || producerSet.size) {
+		const reviewed = new Set(Object.keys(reviews));
+		const upd = db.prepare("UPDATE assets SET status='approved', reviewer='policy', reviewed_at=?, note='auto-approved by policy', updated_at=? WHERE target=?");
+		let approved = 0;
+		for (const row of db.prepare("SELECT target, producer, recipe FROM assets WHERE status='published'").all()) {
+			if (reviewed.has(row.target)) continue;
+			const recipeBase = String(row.recipe || '').split(':')[0];
+			if (producerSet.has(row.producer) || recipeSet.has(row.recipe) || recipeSet.has(recipeBase)) {
+				upd.run(now(), now(), row.target);
+				histIns.run(row.target, 'approved', 'policy', 'auto-approved by policy', now());
+				approved++;
+			}
+		}
+		if (approved) console.log(`policy auto-approved ${approved} asset(s)`);
+	}
 	const total = db.prepare('SELECT COUNT(*) c FROM assets').get().c;
 	console.log(`indexed ${total} assets (fingerprint ${String(fp).slice(0, 12)}…), ${convRows.length} conversion(s), ${Object.keys(reviews).length} review(s)`);
 	db.close();
+}
+
+/** Release gate: is every produced asset reviewed (human or policy) and none rejected? */
+function cmdGate() {
+	const db = open();
+	const shippable = db.prepare("SELECT COUNT(*) c FROM assets WHERE status IN ('published','approved','reviewed','rejected')").get().c;
+	const approved = db.prepare("SELECT COUNT(*) c FROM assets WHERE status='approved'").get().c;
+	const reviewedAny = db.prepare("SELECT COUNT(*) c FROM assets WHERE status IN ('reviewed','approved','rejected')").get().c;
+	const rejected = db.prepare("SELECT COUNT(*) c FROM assets WHERE status='rejected'").get().c;
+	const pending = db.prepare("SELECT COUNT(*) c FROM assets WHERE status='published'").get().c;
+	const pct = (n) => (shippable ? (100 * n / shippable).toFixed(1) + '%' : '—');
+	console.log('Release gate:');
+	console.log(`  shippable (produced) : ${shippable}`);
+	console.log(`  approved             : ${approved} (${pct(approved)})`);
+	console.log(`  reviewed (any)       : ${reviewedAny} (${pct(reviewedAny)})`);
+	console.log(`  rejected             : ${rejected}`);
+	console.log(`  pending review       : ${pending}`);
+	const gateOpen = pending === 0 && rejected === 0;
+	console.log(`  GATE: ${gateOpen ? 'OPEN — 100% reviewed, none rejected' : `HELD — ${pending} pending, ${rejected} rejected`}`);
+	db.close();
+	process.exit(gateOpen ? 0 : 1);
 }
 
 function cmdReport() {
@@ -163,6 +206,7 @@ const [cmd, ...rest] = process.argv.slice(2);
 switch (cmd) {
 	case 'index': cmdIndex(); break;
 	case 'report': cmdReport(); break;
+	case 'gate': cmdGate(); break;
 	case 'list': cmdList(rest); break;
 	case 'approve': setStatus(rest[0], 'approved', rest); break;
 	case 'review': setStatus(rest[0], 'reviewed', rest); break;
