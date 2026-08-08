@@ -4,8 +4,152 @@
     "source": "producers/blockbench/sources/barrel.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "de9caca6f8764ebd4eb40829bb5fa20752811c915d74da6eaa7200555e0c52ba",
-    "target_sha256": "d7184517f3e6cf4be72948b0759aeba5d4f8a03b6981f16c32ad0ac40f7ec35e",
-    "converted_at": "2026-08-08T14:29:30.135Z"
+    "source_sha256": "ff2499d80944f1d6c91ebe9055d5bb17d3734fa0ae5b23527155be3b1e55d4f4",
+    "target_sha256": "46b4df0d36b2ff833ab43e4395537aa97e71b8ea531747b528ea02dd86c2f759",
+    "converted_at": "2026-08-08T14:43:10.976Z"
+  },
+  {
+    "target": "assets/minecraft/models/block/bell.json",
+    "source": "producers/blockbench/sources/bell.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "5c6d6baa9ed53cd4ae49b65a51fbe6b7dbef4196137f105b0ccf7a513e177301",
+    "target_sha256": "dc6bbb5288e1c2f0047c3a7dd6158a8ecec2fbf9a45ae57195d003d300b91f20",
+    "converted_at": "2026-08-08T14:43:10.976Z"
+  },
+  {
+    "target": "assets/minecraft/models/block/cake.json",
+    "source": "producers/blockbench/sources/cake.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "beee61a26743fb5a8582f19327cc1317ab4246042bb07414d355224f39993c2d",
+    "target_sha256": "12d641a64f93b0223eed9cd5c7dfb386fd4aae8ef4a5ebd2b83ec2907b21f78c",
+    "converted_at": "2026-08-08T14:43:10.977Z"
+  },
+  {
+    "target": "assets/minecraft/models/block/calibrated_sculk_sensor.json",
+    "source": "producers/blockbench/sources/calibrated_sculk_sensor.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "c0e2c03d638aecc63e60b6f225e3937d8fefea155ac1a78646101a6af4b77b31",
+    "target_sha256": "982ee895ee2476837cf0077600785527809e938ea554f7cd3743a3b98e1a8ade",
+    "converted_at": "2026-08-08T14:43:10.977Z"
+  },
+  {
+    "target": "assets/minecraft/models/block/chain.json",
+    "source": "producers/blockbench/sources/chain.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "6317e0112ae87bab33b4e319ddc72907df1b3da08df91986257a1becb57e9177",
+    "target_sha256": "7fb05ff453b3ba90283349fc8a331664a2aa96564ad1805b2c70c732085dde2c",
+    "converted_at": "2026-08-08T14:43:10.977Z"
+  },
+  {
+    "target": "assets/minecraft/models/block/composter.json",
+    "source": "producers/blockbench/sources/composter.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "90fd9e3f53b39a52e74599cfcb345701bd98f64b251d2157b6a3153bb38725d7",
+    "target_sha256": "11ed8df6c3212671dfc13b595749356751f41e87d730c3d18bf218120c17998c",
+    "converted_at": "2026-08-08T14:43:10.978Z"
+  },
+  {
+    "target": "assets/minecraft/models/block/enchanting_table.json",
+    "source": "producers/blockbench/sources/enchanting_table.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "1b27a8ac03fa843853d65327e66bbc7a7b681f022742b9d3d30a1b3c9ce10833",
+    "target_sha256": "3fd6ffd8e41187feb18aaa6a61697cb5d31d523d293bea3096f3906f8824175e",
+    "converted_at": "2026-08-08T14:43:10.978Z"
+  },
+  {
+    "target": "assets/minecraft/models/block/end_portal_frame.json",
+    "source": "producers/blockbench/sources/end_portal_frame.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "71fe3378b59eaea7eb00c5acd1f52d530d89bbaaad22d0c03a48d432f8a7f243",
+    "target_sha256": "43d1921c01f5f8a454f6fbc39e5ed147c0e9bbcdade09b0cda966b0cf40e95a7",
+    "converted_at": "2026-08-08T14:43:10.978Z"
+  },
+  {
+    "target": "assets/minecraft/models/block/grindstone.json",
+    "source": "producers/blockbench/sources/grindstone.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "abb370f8c1ccf401123cb52e4673dfa9ba6a25e14193b4b709b26f08b9e4a103",
+    "target_sha256": "0546db02049e93b34e1606e835d34f24322453c9e2926ece66225bc137c8c79d",
+    "converted_at": "2026-08-08T14:43:10.979Z"
+  },
+  {
+    "target": "assets/minecraft/models/block/hopper.json",
+    "source": "producers/blockbench/sources/hopper.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "96dd38372907dae2bc60ece78d3dcfcf8ddb00cfbc4ab5a1b31cd88245e28d0d",
+    "target_sha256": "c30c51d3b6ab29f25d4e2e8ab1a81fc28146fdd72e5844ecf8a88781574f8e4c",
+    "converted_at": "2026-08-08T14:43:10.979Z"
+  },
+  {
+    "target": "assets/minecraft/models/block/jigsaw.json",
+    "source": "producers/blockbench/sources/jigsaw.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "5ac4c8385c78172b1b26c3a43db7272ebca11f168e134d7cd94ce3a502029e0a",
+    "target_sha256": "46c6ef70750c120891ff252ceb7d0cec910b6f4ab6174e3ee147f0fec02bfb25",
+    "converted_at": "2026-08-08T14:43:10.979Z"
+  },
+  {
+    "target": "assets/minecraft/models/block/lectern.json",
+    "source": "producers/blockbench/sources/lectern.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "854ce4472fa58191c1aadad4b59951f83b9a292bd68cd5885b3e82f9bc703bb5",
+    "target_sha256": "1470cda81ec14f9134ed82d82095fdc69a3d332189f7058309066455273e77ba",
+    "converted_at": "2026-08-08T14:43:10.979Z"
+  },
+  {
+    "target": "assets/minecraft/models/block/lightning_rod.json",
+    "source": "producers/blockbench/sources/lightning_rod.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "098b3979ae3394247eae0db28956a10c4a2630eddfb0d550ec9c04a0d6961c06",
+    "target_sha256": "3c7d5e5abba98b9da68326739a063690f6740aef07780221fa791022a4554b4b",
+    "converted_at": "2026-08-08T14:43:10.980Z"
+  },
+  {
+    "target": "assets/minecraft/models/block/respawn_anchor.json",
+    "source": "producers/blockbench/sources/respawn_anchor.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "de62c49c7ac30eb6f4c47b8d1c3872932ed8fb389a4aa86bfaaa1313aa93b797",
+    "target_sha256": "3b726b5445b63a3249a568b0cd782b8563d26e7c5389d64efb9680b1c4d93874",
+    "converted_at": "2026-08-08T14:43:10.980Z"
+  },
+  {
+    "target": "assets/minecraft/models/block/scaffolding.json",
+    "source": "producers/blockbench/sources/scaffolding.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "9343536bb36272673e98f34311d37fd89c42a12968f3e4f5f947b79f38ee74bb",
+    "target_sha256": "d7716e18c0f560bf7801677ebbf7fd177442f6dcfe611b54c35b090904321cc1",
+    "converted_at": "2026-08-08T14:43:10.980Z"
+  },
+  {
+    "target": "assets/minecraft/models/block/sculk_sensor.json",
+    "source": "producers/blockbench/sources/sculk_sensor.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "b709a05c45139b715a23796fedaaf43be4b0815effbcd26f7352a5369dd945d9",
+    "target_sha256": "fa572a87034e6026a4a3a7a960dd90b4648ec4953c1f3a0ad2933cbe3aa2b7b1",
+    "converted_at": "2026-08-08T14:43:10.980Z"
+  },
+  {
+    "target": "assets/minecraft/models/block/sculk_shrieker.json",
+    "source": "producers/blockbench/sources/sculk_shrieker.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "f89c3d0f35a4d40519a6e1a05c5c941b61dd9278d5af23494f329f25a8e98ca3",
+    "target_sha256": "89ee33e2a8a6628e175f4723837ac8fee0f53d8c73fe61748089dedb60039a23",
+    "converted_at": "2026-08-08T14:43:10.981Z"
   }
 ]
