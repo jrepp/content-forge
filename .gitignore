@@ -20,3 +20,4 @@ out/**
 !out/.gitkeep
 
 .DS_Store
+producers/blockbench/base-shapes/

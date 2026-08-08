@@ -9,7 +9,7 @@
 // configured port (producer.cdpPort). One CDP round-trip builds+exports all
 // bespoke models. Geometry is a small per-name recipe (a real, editable starting
 // point in Blockbench) — refine the .bbmodel sources later; the target drains now.
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { join, dirname } from 'node:path';
 import { loadConfig, repoRoot } from '../../scripts/config.mjs';
@@ -21,12 +21,21 @@ const now = () => new Date().toISOString();
 const sha = (buf) => createHash('sha256').update(buf).digest('hex');
 
 // bespoke names come from the taxonomy (shape=bespoke)
+// Bespoke worklist: the committed .bbmodel sources are the reproducible source of
+// truth (they exist regardless of whether the queue is drained), plus any new
+// bespoke the taxonomy surfaces this run.
+const sourcesDirIn = join(repoRoot, 'producers', 'blockbench', 'sources');
+const bespokeNames = new Set();
+if (existsSync(sourcesDirIn)) {
+	for (const f of readdirSync(sourcesDirIn)) if (f.endsWith('.bbmodel') && f !== 'base-shapes.bbmodel') bespokeNames.add(f.replace('.bbmodel', ''));
+}
 const csvPath = join(repoRoot, 'work', 'custom-models.csv');
-if (!existsSync(csvPath)) { console.error('work/custom-models.csv missing — run: npm run taxonomy'); process.exit(1); }
-const [header, ...lines] = readFileSync(csvPath, 'utf8').trim().split('\n');
-const cols = header.split(',');
-const rows = lines.map((l) => { const f = l.split(','); const r = {}; cols.forEach((c, i) => (r[c] = f[i] ?? '')); return r; });
-const bespoke = rows.filter((r) => r.shape === 'bespoke').slice(0, limit);
+if (existsSync(csvPath)) {
+	const [header, ...lines] = readFileSync(csvPath, 'utf8').trim().split('\n');
+	const cols = header.split(',');
+	for (const l of lines) { const f = l.split(','); const r = {}; cols.forEach((c, i) => (r[c] = f[i] ?? '')); if (r.shape === 'bespoke') bespokeNames.add(r.name); }
+}
+const bespoke = [...bespokeNames].sort().slice(0, limit).map((name) => ({ name, target: `assets/minecraft/models/block/${name}.json` }));
 
 // per-name geometry (boxes = [x1,y1,z1,x2,y2,z2]); default = full cube
 const GEOMETRY = {
@@ -74,19 +83,24 @@ async function cdpEval(expr) {
 	const ws = new WebSocket(page.webSocketDebuggerUrl);
 	let id = 0; const pending = new Map();
 	const send = (method, params) => { const mid = ++id; ws.send(JSON.stringify({ id: mid, method, params })); return new Promise((res) => pending.set(mid, res)); };
-	const value = await new Promise((resolve, reject) => {
-		ws.addEventListener('message', (ev) => { const m = JSON.parse(ev.data); if (m.id && pending.has(m.id)) pending.get(m.id)(m); });
-		ws.addEventListener('error', (e) => reject(new Error('WS ' + (e.message || e))));
-		ws.addEventListener('open', async () => {
-			try {
-				await send('Runtime.enable');
-				const r = await send('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true, userGesture: true });
-				if (r.result && r.result.exceptionDetails) throw new Error('PAGE ' + (r.result.exceptionDetails.exception?.description || r.result.exceptionDetails.text));
-				resolve(r.result.result.value);
-			} catch (e) { reject(e); }
-		});
-	});
-	ws.close();
+	const timeoutMs = Number(process.env.FORGE_CDP_TIMEOUT_MS || 60000);
+	let timer;
+	const value = await Promise.race([
+		new Promise((resolve, reject) => {
+			ws.addEventListener('message', (ev) => { const m = JSON.parse(ev.data); if (m.id && pending.has(m.id)) pending.get(m.id)(m); });
+			ws.addEventListener('error', (e) => reject(new Error('WS ' + (e.message || e))));
+			ws.addEventListener('close', () => reject(new Error('CDP socket closed before the eval returned')));
+			ws.addEventListener('open', async () => {
+				try {
+					await send('Runtime.enable');
+					const r = await send('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true, userGesture: true });
+					if (r.result && r.result.exceptionDetails) throw new Error('PAGE ' + (r.result.exceptionDetails.exception?.description || r.result.exceptionDetails.text));
+					resolve(r.result.result.value);
+				} catch (e) { reject(e); }
+			});
+		}),
+		new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(`CDP eval timed out after ${timeoutMs}ms`)), timeoutMs); }),
+	]).finally(() => { clearTimeout(timer); try { ws.close(); } catch { /* already closing */ } });
 	return value;
 }
 

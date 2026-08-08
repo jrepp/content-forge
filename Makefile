@@ -18,9 +18,16 @@ produce:
 	node producers/model/resolve-candidates.mjs
 	node producers/raster/reference-closure.mjs
 
-# Optional: re-author the bespoke tail through Blockbench (needs a running
-# BLOCKBENCH_AUTOMATION instance). Deterministic reproducer = the committed
-# .bbmodel sources under producers/blockbench/sources/.
+# Author the Blockbench asset set (needs a running BLOCKBENCH_AUTOMATION instance).
+# Reproducible from the committed .bbmodel sources + the base-shape table. Order:
+# convert (bespoke authored) -> author-tree (base shapes) -> instantiate (block
+# models from authored geometry, keeping bespoke) -> re-close texture refs.
+author:
+	node producers/blockbench/convert.mjs
+	node producers/blockbench/author-tree.mjs
+	node producers/model/instantiate.mjs
+	node producers/raster/reference-closure.mjs
+
 convert:
 	node producers/blockbench/convert.mjs
 

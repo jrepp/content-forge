@@ -1,155 +1,317 @@
 [
   {
+    "target": "producers/blockbench/base-shapes/cube_all.json",
+    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
+    "target_sha256": "78e225a9f3f0c35655af88b28f619bde6c3a4962d5694df286f560e9210756c6",
+    "converted_at": "2026-08-08T19:40:16.356Z"
+  },
+  {
+    "target": "producers/blockbench/base-shapes/cube_column.json",
+    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
+    "target_sha256": "f7da6880795c8e60c8bc3b26f9b325f982c5065f0189c36245b0bf731a20c8b2",
+    "converted_at": "2026-08-08T19:40:16.357Z"
+  },
+  {
+    "target": "producers/blockbench/base-shapes/slab_bottom.json",
+    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
+    "target_sha256": "cca4c5268ae4865d3df208ca508cc9f98d30cf8ba08e10af62b15bc99e01b072",
+    "converted_at": "2026-08-08T19:40:16.357Z"
+  },
+  {
+    "target": "producers/blockbench/base-shapes/slab_top.json",
+    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
+    "target_sha256": "4aa62d625964a06aa3a67f0749055fb5fdd863d2daeb9863e8eda8118f7a38a8",
+    "converted_at": "2026-08-08T19:40:16.357Z"
+  },
+  {
+    "target": "producers/blockbench/base-shapes/stairs.json",
+    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
+    "target_sha256": "a0cb8a702793bbc53a994dfd9d647fde5708f12191255efefe2d5d284d257b5f",
+    "converted_at": "2026-08-08T19:40:16.357Z"
+  },
+  {
+    "target": "producers/blockbench/base-shapes/fence_post.json",
+    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
+    "target_sha256": "6c6d309b7bb8695bf1649a11550392f5773cd12da218a1fe44339aa2b7a57c81",
+    "converted_at": "2026-08-08T19:40:16.357Z"
+  },
+  {
+    "target": "producers/blockbench/base-shapes/fence_side.json",
+    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
+    "target_sha256": "3e5a5c8990dfed9133018573e49f45a1e17fb4410b2bcaf7de966ae96e345582",
+    "converted_at": "2026-08-08T19:40:16.357Z"
+  },
+  {
+    "target": "producers/blockbench/base-shapes/wall_post.json",
+    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
+    "target_sha256": "314c909eef332898033fa940698a9be4feb37166bfe502a11bb678fa2a3fef8b",
+    "converted_at": "2026-08-08T19:40:16.358Z"
+  },
+  {
+    "target": "producers/blockbench/base-shapes/button.json",
+    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
+    "target_sha256": "ba7b59f8bd67500fc5e866d685578f95a8475c2ccff740e14c5b00be1c7f30ba",
+    "converted_at": "2026-08-08T19:40:16.358Z"
+  },
+  {
+    "target": "producers/blockbench/base-shapes/pressure_plate.json",
+    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
+    "target_sha256": "ec81dfdbc5bea9b4d059310542e1e730b15acd5c8d4629b3711e3ab323225a09",
+    "converted_at": "2026-08-08T19:40:16.358Z"
+  },
+  {
+    "target": "producers/blockbench/base-shapes/carpet.json",
+    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
+    "target_sha256": "d1509d823c3159059fb383bdc741e70d5025973416ed6b0bcf17cc0393a03d64",
+    "converted_at": "2026-08-08T19:40:16.358Z"
+  },
+  {
+    "target": "producers/blockbench/base-shapes/pane_post.json",
+    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
+    "target_sha256": "b7c1819de73eb29e2864b54ba89922df50474ad35f5fa4a95a589670faba3548",
+    "converted_at": "2026-08-08T19:40:16.358Z"
+  },
+  {
+    "target": "producers/blockbench/base-shapes/door.json",
+    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
+    "target_sha256": "c341c22beb198d86ea7c8df35e4cbcc6903d50cf88fd65963e1f98f53f884c59",
+    "converted_at": "2026-08-08T19:40:16.358Z"
+  },
+  {
+    "target": "producers/blockbench/base-shapes/trapdoor.json",
+    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
+    "target_sha256": "776078638bef051e0371745ba645f61a0330a6ee7c526b85eb096b5b91deac22",
+    "converted_at": "2026-08-08T19:40:16.358Z"
+  },
+  {
+    "target": "producers/blockbench/base-shapes/torch.json",
+    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
+    "target_sha256": "d240dfff24a615e0fcc1a561ec45f5e3df1ecaaf8efb108e0d898000613ee8de",
+    "converted_at": "2026-08-08T19:40:16.358Z"
+  },
+  {
+    "target": "producers/blockbench/base-shapes/ladder.json",
+    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
+    "target_sha256": "927332896591cfacdfb49cf68836a76a03e7f6ebaceea74d98e172aa921d42ab",
+    "converted_at": "2026-08-08T19:40:16.358Z"
+  },
+  {
+    "target": "producers/blockbench/base-shapes/cross.json",
+    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
+    "target_sha256": "7b745153510c798634aa177081ae699642e474b0f6fab6d9489bcc0f72b72790",
+    "converted_at": "2026-08-08T19:40:16.358Z"
+  },
+  {
+    "target": "producers/blockbench/base-shapes/end_rod.json",
+    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "codec": "java_block",
+    "source_format": "java_block",
+    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
+    "target_sha256": "20888acdb9d327c1cd2df8bf54a19c1ace0ed72ca095fb045c81e99c3917cd3c",
+    "converted_at": "2026-08-08T19:40:16.358Z"
+  },
+  {
     "target": "assets/minecraft/models/block/barrel.json",
     "source": "producers/blockbench/sources/barrel.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "3e3bf53b9a1cff410c999a478c5618e12eac0fa1ebfdcf0d8cf9a9f86eafe62b",
+    "source_sha256": "dd584449cc7bbf2f831cf49ab2f65837e3cffb9987e6cfcfba067597f86fed8d",
     "target_sha256": "46b4df0d36b2ff833ab43e4395537aa97e71b8ea531747b528ea02dd86c2f759",
-    "converted_at": "2026-08-08T17:29:28.927Z"
+    "converted_at": "2026-08-08T19:44:16.910Z"
   },
   {
     "target": "assets/minecraft/models/block/bell.json",
     "source": "producers/blockbench/sources/bell.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "bc5b3919f22c6ce43ecd59ae56e22ee097b11ce9812fae8cbfc4c6527fc0b1f5",
+    "source_sha256": "42fa3b64dc77acf1f38e0fcbfdc7008cbbbc30b997519c3c19cd52460da0affe",
     "target_sha256": "dc6bbb5288e1c2f0047c3a7dd6158a8ecec2fbf9a45ae57195d003d300b91f20",
-    "converted_at": "2026-08-08T17:29:28.928Z"
+    "converted_at": "2026-08-08T19:44:16.913Z"
   },
   {
     "target": "assets/minecraft/models/block/cake.json",
     "source": "producers/blockbench/sources/cake.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "7e8e9a1c35f486fad92c7c1703da17d67854b65c832c7f64a3289cecb0a8770f",
+    "source_sha256": "6a4089cd4c01800827d3bec4399a1bf40d162e8035ccb0ea74d43832178304ac",
     "target_sha256": "12d641a64f93b0223eed9cd5c7dfb386fd4aae8ef4a5ebd2b83ec2907b21f78c",
-    "converted_at": "2026-08-08T17:29:28.928Z"
+    "converted_at": "2026-08-08T19:44:16.913Z"
   },
   {
     "target": "assets/minecraft/models/block/calibrated_sculk_sensor.json",
     "source": "producers/blockbench/sources/calibrated_sculk_sensor.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "6c2ceb7b8a1a0d73efea91a3546b7a3572a18161058b89419b2699f5640b3309",
+    "source_sha256": "42e65d5edaa6f68df5ce4f6887ff9f697a32fb23b7333da33199e355cdebcb63",
     "target_sha256": "982ee895ee2476837cf0077600785527809e938ea554f7cd3743a3b98e1a8ade",
-    "converted_at": "2026-08-08T17:29:28.928Z"
+    "converted_at": "2026-08-08T19:44:16.914Z"
   },
   {
     "target": "assets/minecraft/models/block/chain.json",
     "source": "producers/blockbench/sources/chain.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "31be467b4cbf780722b42e18f8ee967e1459a8c2e952d2de6cacaf7860bfb8b7",
+    "source_sha256": "73d122e1e98d31629df1aca177c4668f543fda30511abfd9475989d54c3d1cfc",
     "target_sha256": "7fb05ff453b3ba90283349fc8a331664a2aa96564ad1805b2c70c732085dde2c",
-    "converted_at": "2026-08-08T17:29:28.929Z"
+    "converted_at": "2026-08-08T19:44:16.915Z"
   },
   {
     "target": "assets/minecraft/models/block/composter.json",
     "source": "producers/blockbench/sources/composter.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "54baf5e2738290d64a884092975e90087cea2ebd201404b110f72e5128fa43e9",
+    "source_sha256": "e01eeecfff05a806c31229991cbaa803c8729c2aae63ec57c34a4343bde211ad",
     "target_sha256": "11ed8df6c3212671dfc13b595749356751f41e87d730c3d18bf218120c17998c",
-    "converted_at": "2026-08-08T17:29:28.930Z"
+    "converted_at": "2026-08-08T19:44:16.916Z"
   },
   {
     "target": "assets/minecraft/models/block/enchanting_table.json",
     "source": "producers/blockbench/sources/enchanting_table.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "bb52808a17bb126d1a2b2882ecdb0059f7f132efbe182f656311c61e4445624e",
+    "source_sha256": "64097ba4eb94e75eb52d3cf69c1d6d652d6995becea6183f217f80c0dfc4f0ea",
     "target_sha256": "3fd6ffd8e41187feb18aaa6a61697cb5d31d523d293bea3096f3906f8824175e",
-    "converted_at": "2026-08-08T17:29:28.930Z"
+    "converted_at": "2026-08-08T19:44:16.917Z"
   },
   {
     "target": "assets/minecraft/models/block/end_portal_frame.json",
     "source": "producers/blockbench/sources/end_portal_frame.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "a1f2ff8036b4b5d1183c69cb2097e3c261a4531d21da2b602d8a10067ae858c0",
+    "source_sha256": "bc9446e63f51cd73574b5b696838f4cc92430aac137b4e13954c9823dc44c01c",
     "target_sha256": "43d1921c01f5f8a454f6fbc39e5ed147c0e9bbcdade09b0cda966b0cf40e95a7",
-    "converted_at": "2026-08-08T17:29:28.930Z"
+    "converted_at": "2026-08-08T19:44:16.917Z"
   },
   {
     "target": "assets/minecraft/models/block/grindstone.json",
     "source": "producers/blockbench/sources/grindstone.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "fd28bdb5ea1903ee6bd1387be6e9175a7302aba5a6068b795632ab65f228d4ce",
+    "source_sha256": "38aeabd666235bf81c0b7074104ac98a5f93142f108b9026448ba875e386c50e",
     "target_sha256": "0546db02049e93b34e1606e835d34f24322453c9e2926ece66225bc137c8c79d",
-    "converted_at": "2026-08-08T17:29:28.930Z"
+    "converted_at": "2026-08-08T19:44:16.918Z"
   },
   {
     "target": "assets/minecraft/models/block/hopper.json",
     "source": "producers/blockbench/sources/hopper.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "d1e4846bf5b7341d9722cedfa5b64f43d25e01980e07374301cf912ea6b39403",
+    "source_sha256": "b631b78be363e670668bf0e227f9e2d2da14877eeb7b1ca99ac9d104d4ff74a8",
     "target_sha256": "c30c51d3b6ab29f25d4e2e8ab1a81fc28146fdd72e5844ecf8a88781574f8e4c",
-    "converted_at": "2026-08-08T17:29:28.931Z"
+    "converted_at": "2026-08-08T19:44:16.919Z"
   },
   {
     "target": "assets/minecraft/models/block/jigsaw.json",
     "source": "producers/blockbench/sources/jigsaw.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "61e688d3fcd499d225d5558ff5701b346f4c97169f58470c1e92ea4c42063610",
+    "source_sha256": "a959449660baf5c7cc6d9a1394635ea23cd547b780af3b38072ca571339204f2",
     "target_sha256": "46c6ef70750c120891ff252ceb7d0cec910b6f4ab6174e3ee147f0fec02bfb25",
-    "converted_at": "2026-08-08T17:29:28.931Z"
+    "converted_at": "2026-08-08T19:44:16.921Z"
   },
   {
     "target": "assets/minecraft/models/block/lectern.json",
     "source": "producers/blockbench/sources/lectern.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "d41f6e8f7710c5610605b3f229d71a4d9b3a82596905207566eca1dd49fdc903",
+    "source_sha256": "c84396d1c98955de901f2589cd9f1aa66ebd8f9c9f6513866874dc66d8f6a2c4",
     "target_sha256": "1470cda81ec14f9134ed82d82095fdc69a3d332189f7058309066455273e77ba",
-    "converted_at": "2026-08-08T17:29:28.931Z"
+    "converted_at": "2026-08-08T19:44:16.922Z"
   },
   {
     "target": "assets/minecraft/models/block/lightning_rod.json",
     "source": "producers/blockbench/sources/lightning_rod.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "bb4b91b1a057fb5b8e2cab1bf12a111cbdd1bafb932912f9018f995986b52838",
+    "source_sha256": "9fd73bf5593bb6764b9bf74eb29341d4c0625808c3c2c2d079e80c80c615fb52",
     "target_sha256": "3c7d5e5abba98b9da68326739a063690f6740aef07780221fa791022a4554b4b",
-    "converted_at": "2026-08-08T17:29:28.931Z"
+    "converted_at": "2026-08-08T19:44:16.923Z"
   },
   {
     "target": "assets/minecraft/models/block/respawn_anchor.json",
     "source": "producers/blockbench/sources/respawn_anchor.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "bbc854ed65e1064e297470ee3a78c894bcaf4badb1221691e2b4a72b3721721f",
+    "source_sha256": "a7b8becc1dbc46c3993cf0880fea02a18be56c05e798999b7f866926cbe7eb57",
     "target_sha256": "3b726b5445b63a3249a568b0cd782b8563d26e7c5389d64efb9680b1c4d93874",
-    "converted_at": "2026-08-08T17:29:28.931Z"
+    "converted_at": "2026-08-08T19:44:16.924Z"
   },
   {
     "target": "assets/minecraft/models/block/scaffolding.json",
     "source": "producers/blockbench/sources/scaffolding.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "f1f501be3174ad58ce8ab6e9961f5b33e2fb994540e7c5f400503af82e2dafb3",
+    "source_sha256": "f33b2aa371b029feae43ffc91d8d10d6a9663e996fdc367573f62a1d7a047236",
     "target_sha256": "d7716e18c0f560bf7801677ebbf7fd177442f6dcfe611b54c35b090904321cc1",
-    "converted_at": "2026-08-08T17:29:28.932Z"
+    "converted_at": "2026-08-08T19:44:16.924Z"
   },
   {
     "target": "assets/minecraft/models/block/sculk_sensor.json",
     "source": "producers/blockbench/sources/sculk_sensor.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "171bbdd2452e7073b2fc5806302820d9680c6674e4b25f12c1de3291ec520804",
+    "source_sha256": "6dae099ebedca5f5610ebb4c17e988f4516c60104e760d35d48843be0a2372d1",
     "target_sha256": "fa572a87034e6026a4a3a7a960dd90b4648ec4953c1f3a0ad2933cbe3aa2b7b1",
-    "converted_at": "2026-08-08T17:29:28.932Z"
+    "converted_at": "2026-08-08T19:44:16.925Z"
   },
   {
     "target": "assets/minecraft/models/block/sculk_shrieker.json",
     "source": "producers/blockbench/sources/sculk_shrieker.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "5132e36ebf3b0b9162770f811f628e9005060e73fbdd34fa079731648bb6f243",
+    "source_sha256": "08a7de8f8ac0452dbc927bd676e114f41ba11e5e32958477551e40265374633d",
     "target_sha256": "89ee33e2a8a6628e175f4723837ac8fee0f53d8c73fe61748089dedb60039a23",
-    "converted_at": "2026-08-08T17:29:28.932Z"
+    "converted_at": "2026-08-08T19:44:16.926Z"
   }
 ]
