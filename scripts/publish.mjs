@@ -20,7 +20,7 @@ function walk(dir, acc = []) {
   for (const name of readdirSync(dir)) {
     const p = join(dir, name);
     if (statSync(p).isDirectory()) walk(p, acc);
-    else if (name.endsWith('.png')) acc.push(p);
+    else if (name.endsWith('.png') || name.endsWith('.json')) acc.push(p); // textures + model/blockstate JSON
   }
   return acc;
 }

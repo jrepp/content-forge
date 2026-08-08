@@ -8,10 +8,9 @@ forge.config.json
 work/*.csv
 work/*.json
 
-# Scratch produced bytes. Flip this off (and commit out/) if you want the
-# produced assets reviewed/historied here — see README "out/ ownership".
-out/**/*.png
-out/provenance.json
+# The handoff output is regenerated deterministically from the queue; not source.
+# (Flip this off if you want produced assets reviewed/historied here.)
+out/**
 !out/.gitkeep
 
 .DS_Store
