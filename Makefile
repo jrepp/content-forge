@@ -44,4 +44,4 @@ all: queue produce publish index
 loop: all gate release
 
 clean:
-	rm -rf $(shell node -e "console.log(require('./scripts/config.mjs').loadConfig().outDir)")/assets
+	rm -rf "$(shell node --input-type=module -e "import('./scripts/config.mjs').then(m => console.log(m.loadConfig().outDir))")/assets"

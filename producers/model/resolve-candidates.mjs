@@ -28,14 +28,16 @@ for (const e of selects) {
 	else if (e.candidates && e.candidates.length) {
 		// prefer a candidate whose model we actually provide (a block/* model)
 		const cand = e.candidates.find((c) => /\/models\/block\//.test(c.target)) || e.candidates[0];
-		const parentRef = toRef(cand.target);
-		const parentTarget = cand.target;
-		model = existsSync(join(config.outDir, parentTarget))
-			? { parent: `minecraft:${parentRef.split(':')[1]}` }
-			: { parent: 'minecraft:item/generated', textures: { layer0: `minecraft:item/${name}` } };
-		(existsSync(join(config.outDir, parentTarget)) ? (borrowed++) : (fell++));
+		if (existsSync(join(config.outDir, cand.target))) {
+			model = { parent: `minecraft:${toRef(cand.target).split(':')[1]}` }; // inherit the block model
+			borrowed++;
+		} else {
+			model = { parent: 'minecraft:item/generated', textures: { layer0: `minecraft:item/${name}` } };
+			fell++;
+		}
 	} else {
-		model = { parent: 'minecraft:item/generated', textures: { layer0: `minecraft:item/${name}` } }; fell++;
+		model = { parent: 'minecraft:item/generated', textures: { layer0: `minecraft:item/${name}` } };
+		fell++;
 	}
 	const dest = join(config.outDir, e.target);
 	mkdirSync(dirname(dest), { recursive: true });

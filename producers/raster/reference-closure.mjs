@@ -30,17 +30,32 @@ function walk(dir, filter, acc = []) {
 }
 
 // A texture reference looks like `minecraft:block/x`, `block/x`, `minecraft:item/x`.
-const REF = /^(?:([a-z0-9_.-]+):)?((?:block|item|entity|environment|misc|models|gui)\/[a-z0-9/._-]+)$/;
-function collectRefs(node, out) {
-	if (typeof node === 'string') { const m = node.match(REF); if (m) out.add(`${m[1] || 'minecraft'}:${m[2]}`); return; }
-	if (Array.isArray(node)) { for (const v of node) collectRefs(v, out); return; }
-	if (node && typeof node === 'object') { for (const v of Object.values(node)) collectRefs(v, out); }
+const REF = /^(?:([a-z0-9_.-]+):)?((?:block|item|entity|environment|misc|particle|gui|painting|effect)\/[a-z0-9/._-]+)$/;
+// Collect only TEXTURE references — the model's `textures` map values and face
+// `texture` values — never `parent` (that is a MODEL ref) and never `#var` aliases.
+function collectTextureRefs(model, out) {
+	const consider = (v) => {
+		if (typeof v !== 'string' || v.startsWith('#')) return;
+		const m = v.match(REF);
+		if (m) out.add(`${m[1] || 'minecraft'}:${m[2]}`);
+	};
+	if (model && model.textures && typeof model.textures === 'object') {
+		for (const v of Object.values(model.textures)) consider(v);
+	}
+	if (model && Array.isArray(model.elements)) {
+		for (const el of model.elements) {
+			if (el && el.faces && typeof el.faces === 'object') {
+				for (const face of Object.values(el.faces)) if (face && typeof face === 'object') consider(face.texture);
+			}
+		}
+	}
 }
 
-const modelFiles = walk(join(assetsDir), (p) => p.includes(`${'/models/'}`) && p.endsWith('.json'));
+const sep = join('a', 'b').slice(1, 2); // path separator, cross-platform
+const modelFiles = walk(assetsDir, (p) => p.includes(`${sep}models${sep}`) && p.endsWith('.json'));
 const refs = new Set();
 for (const f of modelFiles) {
-	try { collectRefs(JSON.parse(readFileSync(f, 'utf8')), refs); } catch { /* skip unparseable */ }
+	try { collectTextureRefs(JSON.parse(readFileSync(f, 'utf8')), refs); } catch { /* skip unparseable */ }
 }
 
 // resolve a ref to its texture target path under out/

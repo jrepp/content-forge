@@ -67,6 +67,7 @@ function parseTarget(target) {
 
 function cmdIndex() {
 	const db = open();
+	db.exec('BEGIN'); // batch the full rebuild into one transaction (perf + atomicity)
 	db.exec('DELETE FROM assets; DELETE FROM conversions;');
 	const fp = readJson(join(repoRoot, 'work', 'queue.json'), {}).fingerprint || null;
 	const upsert = db.prepare(`INSERT INTO assets (target,namespace,kind,category,name,family,strategy,disposition,status,producer,recipe,format,source,source_sha256,target_sha256,queue_fingerprint,updated_at)
@@ -122,6 +123,7 @@ function cmdIndex() {
 		}
 		if (approved) console.log(`policy auto-approved ${approved} generated asset(s); authored assets await human review`);
 	}
+	db.exec('COMMIT');
 	const total = db.prepare('SELECT COUNT(*) c FROM assets').get().c;
 	console.log(`indexed ${total} assets (fingerprint ${String(fp).slice(0, 12)}…), ${convRows.length} conversion(s), ${Object.keys(reviews).length} review(s)`);
 	db.close();
