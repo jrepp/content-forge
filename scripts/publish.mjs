@@ -31,12 +31,23 @@ if (existsSync(queueJson)) {
   try { queueFingerprint = JSON.parse(readFileSync(queueJson, 'utf8')).fingerprint ?? null; } catch { /* ignore */ }
 }
 
-const targets = walk(assetsDir).sort().map((abs) => ({
-  target: relative(outDir, abs).split('\\').join('/'),
-  producer: 'unknown',     // generate.mjs will stamp this once producers write a sidecar
-  recipe: null,
-  sha256: createHash('sha256').update(readFileSync(abs)).digest('hex'),
-}));
+// Producers stamp what they made in out/.producers.json ({ target: {producer, recipe} }).
+let producers = {};
+const producersPath = join(outDir, '.producers.json');
+if (existsSync(producersPath)) {
+  try { producers = JSON.parse(readFileSync(producersPath, 'utf8')); } catch { /* ignore */ }
+}
+
+const targets = walk(assetsDir).sort().map((abs) => {
+  const target = relative(outDir, abs).split('\\').join('/');
+  const meta = producers[target] || {};
+  return {
+    target,
+    producer: meta.producer || 'unknown',
+    recipe: meta.recipe || null,
+    sha256: createHash('sha256').update(readFileSync(abs)).digest('hex'),
+  };
+});
 
 const provenance = {
   schema: 1,
