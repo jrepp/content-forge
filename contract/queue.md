@@ -58,6 +58,26 @@ and `selectionSources`. Pin the `fingerprint` to detect when demand changed.
 4. Re-audit in Minosoft; produced targets drain as `resolved` and drop out of the
    next queue.
 
+## The `select` lane (selection queue)
+
+`disposition: select` means the consumer wants a *real* asset chosen from a
+package, not a synthesized one — with `candidateSources`/`candidateTargets`
+pointing at near matches when they exist. It is **~90% models** (item + block
+`.json`), not textures. `npm run triage` classifies every select entry into the
+tool that would satisfy it and projects coverage, writing `work/selection-plan.json`:
+
+- `candidate` — pick a near candidate from a source pack (source priority
+  faithful > vanilla-evolved > voxelibre), materialize it (borrow resolver).
+- `item_generated` — standard `item/generated` model (the model engine).
+- `block:<type>` — a block-type / `cube_all` model template (the model engine).
+- `placeholder` — a marked, replaceable texture from the procedural generator.
+- `unresolved` — genuinely custom geometry (barrels, furnaces, beds, plants…):
+  a candidate/borrow or a **Blockbench-authored** model. This is where the
+  Blockbench producer earns its place.
+
+Standard models are deterministic JSON templates (`producers/model/`), not
+Blockbench work; Blockbench is reserved for the custom `unresolved` tail.
+
 ## Consumer-side note
 
 Minosoft already emits the pattern (`detail`) and ranking in this export, so no

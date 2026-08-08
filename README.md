@@ -55,7 +55,7 @@ Relative paths resolve against the repo root. Every value has an env override:
 | `recipes/` | Per-target / per-family generation specs. |
 | `producers/raster/` | 2D deterministic generator for flat 16×16 block/item textures. |
 | `producers/blockbench/` | CDP drivers for 3D models / entities (the wizard-style path). |
-| `scripts/` | `pull-queue` · `generate` · `publish`. |
+| `scripts/` | `pull-queue` · `triage` · `generate` · `publish`. |
 | `out/` | The handoff resource pack the consumer ingests. |
 
 ## Status
