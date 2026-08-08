@@ -13,6 +13,8 @@
     "synth-textures": "node producers/raster/synth-textures.mjs",
     "db": "node scripts/db.mjs",
     "generate": "node scripts/generate.mjs",
-    "publish": "node scripts/publish.mjs"
+    "publish": "node scripts/publish.mjs",
+    "reference-closure": "node producers/raster/reference-closure.mjs",
+    "synth-textures-all": "node producers/raster/synth-textures.mjs --all"
   }
 }
