@@ -104,24 +104,23 @@ function cmdIndex() {
 	}
 	// 6. governance policy (committed): auto-approve trusted deterministic producers/
 	//    recipes, but never override an explicit human review/rejection.
+	// Governance: generated assets (no authored .bbmodel source) are deterministic
+	// and auto-approved; authored assets (source set from conversions.json) require
+	// an explicit human review. This keys on the STABLE, committed `source`, not the
+	// fragile per-run producer stamp, so the gate is idempotent across re-index.
 	const policies = readJson(POLICIES, {});
 	const auto = policies.autoApprove || {};
-	const recipeSet = new Set(auto.recipes || []);
-	const producerSet = new Set(auto.producers || []);
-	if (recipeSet.size || producerSet.size) {
+	if (auto.generated) {
 		const reviewed = new Set(Object.keys(reviews));
-		const upd = db.prepare("UPDATE assets SET status='approved', reviewer='policy', reviewed_at=?, note='auto-approved by policy', updated_at=? WHERE target=?");
+		const upd = db.prepare("UPDATE assets SET status='approved', reviewer='policy', reviewed_at=?, note='auto-approved: deterministic generated asset', updated_at=? WHERE target=?");
 		let approved = 0;
-		for (const row of db.prepare("SELECT target, producer, recipe FROM assets WHERE status='published'").all()) {
+		for (const row of db.prepare("SELECT target FROM assets WHERE status='published' AND source IS NULL").all()) {
 			if (reviewed.has(row.target)) continue;
-			const recipeBase = String(row.recipe || '').split(':')[0];
-			if (producerSet.has(row.producer) || recipeSet.has(row.recipe) || recipeSet.has(recipeBase)) {
-				upd.run(now(), now(), row.target);
-				histIns.run(row.target, 'approved', 'policy', 'auto-approved by policy', now());
-				approved++;
-			}
+			upd.run(now(), now(), row.target);
+			histIns.run(row.target, 'approved', 'policy', 'auto-approved: generated', now());
+			approved++;
 		}
-		if (approved) console.log(`policy auto-approved ${approved} asset(s)`);
+		if (approved) console.log(`policy auto-approved ${approved} generated asset(s); authored assets await human review`);
 	}
 	const total = db.prepare('SELECT COUNT(*) c FROM assets').get().c;
 	console.log(`indexed ${total} assets (fingerprint ${String(fp).slice(0, 12)}…), ${convRows.length} conversion(s), ${Object.keys(reviews).length} review(s)`);

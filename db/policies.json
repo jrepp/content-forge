@@ -1,7 +1,4 @@
 {
-  "_note": "Governance policy. Deterministic generated producers are auto-approved (they emit marked, replaceable placeholders and are reproducible from the queue). Authored producers (blockbench) are NOT listed here, so they require an explicit human review. A human reject/review in reviews.json always wins over policy.",
-  "autoApprove": {
-    "producers": ["model-synth", "texture-gen", "borrow-resolver"],
-    "recipes": []
-  }
+  "_note": "Governance policy. Generated assets (no authored .bbmodel source) are deterministic and reproducible from the queue, so they are auto-approved. Authored assets (those with a source in conversions.json, e.g. Blockbench java_block exports) require an explicit human review. A human reject/review in reviews.json always wins over policy. This keys on the committed 'source', so re-indexing is idempotent.",
+  "autoApprove": { "generated": true }
 }

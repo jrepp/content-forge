@@ -141,7 +141,7 @@ function loadWorklist() {
 }
 
 const items = loadWorklist();
-if (!items.length) { console.error('empty worklist — run: npm run triage -- --json && npm run taxonomy'); process.exit(1); }
+if (!items.length) { console.log('model worklist empty — nothing to produce (queue already drained).'); process.exit(0); }
 
 const tree = {};
 for (const it of items) ((tree[it.branch] ??= {})[it.shape] ??= []).push(it);
