@@ -10,6 +10,7 @@
     "triage": "node scripts/triage.mjs",
     "taxonomy": "node scripts/model-taxonomy.mjs",
     "synth-models": "node producers/model/synth.mjs",
+    "synth-textures": "node producers/raster/synth-textures.mjs",
     "generate": "node scripts/generate.mjs",
     "publish": "node scripts/publish.mjs"
   }

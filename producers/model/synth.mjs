@@ -66,7 +66,9 @@ const SYNTH = {
 	campfire: (r) => ({ parent: 'minecraft:block/template_campfire', textures: { fire: bt(r.name + '_fire'), lit_log: bt('campfire_log_lit') } }),
 	dripstone: () => ({ parent: 'minecraft:block/pointed_dripstone' }),
 	builtin_none: () => ({}),
-	bespoke: null, // custom -> Blockbench; skipped
+	// bespoke: placeholder cube_all geometry so the target drains now; real custom
+	// geometry is a later Blockbench-authored pass (generate_model).
+	bespoke: (r) => ({ parent: 'minecraft:block/cube_all', textures: { all: bt(r.name) } }),
 };
 
 // ---- worklist: merge triage plan (trunks) + taxonomy csv (custom branches) ----
