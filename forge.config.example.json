@@ -1,0 +1,18 @@
+{
+  "_readme": [
+    "Copy to 'forge.config.json' (git-ignored) and edit the paths for this machine.",
+    "Relative paths resolve against the content-forge repo root; absolute paths are",
+    "used as-is. Every value can also be overridden by an environment variable:",
+    "MINOSOFT_ROOT, FORGE_STACK, BLOCKBENCH_ROOT, BLOCKBENCH_CDP_PORT, FORGE_CONFIG."
+  ],
+  "schema": 1,
+  "consumer": {
+    "root": "../Minosoft",
+    "stack": "standalone"
+  },
+  "producer": {
+    "root": "../blockbench",
+    "cdpPort": 9223
+  },
+  "out": "out"
+}

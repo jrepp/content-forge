@@ -24,6 +24,28 @@ with their **general pattern** (family). See [`contract/queue.md`](contract/queu
 overlay at it (`loose-content.default = <abs>/content-forge/out`). See
 [`contract/handoff.md`](contract/handoff.md).
 
+## Configuration
+
+Producer/consumer paths are machine-local. Copy the template and edit it:
+
+```sh
+cp forge.config.example.json forge.config.json   # git-ignored
+npm run config                                    # print the resolved paths
+```
+
+```jsonc
+{
+  "schema": 1,
+  "consumer": { "root": "../Minosoft", "stack": "standalone" },  // where demand comes from
+  "producer": { "root": "../blockbench", "cdpPort": 9223 },        // the Blockbench engine
+  "out": "out"                                                     // the loose-content handoff root
+}
+```
+
+Relative paths resolve against the repo root. Every value has an env override:
+`MINOSOFT_ROOT`, `FORGE_STACK`, `BLOCKBENCH_ROOT`, `BLOCKBENCH_CDP_PORT`,
+`FORGE_CONFIG`. Precedence: **env > forge.config.json > sibling default**.
+
 ## Layout
 
 | Path | Role |

@@ -5,6 +5,7 @@
   "type": "module",
   "description": "Content-production seam between Blockbench+automation (producer) and Minosoft (consumer).",
   "scripts": {
+    "config": "node scripts/config.mjs",
     "pull-queue": "node scripts/pull-queue.mjs",
     "generate": "node scripts/generate.mjs",
     "publish": "node scripts/publish.mjs"

@@ -11,17 +11,17 @@
 // so with --plan it reports; without it, it exits non-zero on the first unimplemented
 // family so the loop can't silently no-op.
 import { readFileSync, existsSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
+import { loadConfig, repoRoot } from './config.mjs';
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const config = loadConfig();
 const args = process.argv.slice(2);
 const opt = (n, d) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : d; };
 const plan = args.includes('--plan');
 const only = opt('--only', null);
 const limit = Number(opt('--limit', '0')) || Infinity;
 
-const csvPath = join(root, 'work', 'queue.csv');
+const csvPath = join(repoRoot, 'work', 'queue.csv');
 if (!existsSync(csvPath)) { console.error('work/queue.csv missing — run: npm run pull-queue'); process.exit(1); }
 
 // Which producer owns which family/pattern. Extend as producers come online.
@@ -61,8 +61,9 @@ for (const p of plans) console.log(`  ${p.producer.padEnd(10)} ${p.family.padEnd
 if (plan) process.exit(0);
 
 const unimplemented = plans.filter((p) => p.producer !== 'raster' && p.producer !== 'blockbench');
-console.error('\nProducers are not wired yet. Re-run with --plan to inspect, or implement:');
+console.error(`\nProducers are not wired yet (output would land in ${config.outDir}).`);
+console.error('Re-run with --plan to inspect, or implement:');
 console.error('  producers/raster/index.mjs   render(target, recipe) -> RGBA PNG buffer');
-console.error('  producers/blockbench/index.mjs  drive CDP export -> PNG/model');
+console.error(`  producers/blockbench/index.mjs  drive CDP export (port ${config.cdpPort}) -> PNG/model`);
 if (unimplemented.length) console.error(`Unrouted families: ${unimplemented.map((p) => p.family).join(', ')}`);
 process.exit(2);

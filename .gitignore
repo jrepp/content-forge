@@ -1,6 +1,9 @@
 # Node
 node_modules/
 
+# Machine-local config (producer/consumer paths). The *.example.json is tracked.
+forge.config.json
+
 # Pulled queue snapshots are consumer runtime state, not source
 work/*.csv
 work/*.json

@@ -7,11 +7,11 @@
 // responsible for putting the PNGs there; this only seals + describes them.
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, mkdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { dirname, join, resolve, relative } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join, relative } from 'node:path';
+import { loadConfig, repoRoot } from './config.mjs';
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const outDir = join(root, 'out');
+const config = loadConfig();
+const outDir = config.outDir;
 const assetsDir = join(outDir, 'assets');
 mkdirSync(outDir, { recursive: true });
 
@@ -26,7 +26,7 @@ function walk(dir, acc = []) {
 }
 
 let queueFingerprint = null;
-const queueJson = join(root, 'work', 'queue.json');
+const queueJson = join(repoRoot, 'work', 'queue.json');
 if (existsSync(queueJson)) {
   try { queueFingerprint = JSON.parse(readFileSync(queueJson, 'utf8')).fingerprint ?? null; } catch { /* ignore */ }
 }
