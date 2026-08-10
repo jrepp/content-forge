@@ -24,3 +24,6 @@ producers/blockbench/base-shapes/
 
 # Generated review contact sheet (regenerable from out/ via scripts/texture-sheet.mjs).
 texture-review.html
+
+# Blockbench-rendered preview thumbnails (regenerable via producers/blockbench/render-tree.mjs).
+renders/
