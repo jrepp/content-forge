@@ -21,3 +21,6 @@ out/**
 
 .DS_Store
 producers/blockbench/base-shapes/
+
+# Generated review contact sheet (regenerable from out/ via scripts/texture-sheet.mjs).
+texture-review.html
