@@ -22,14 +22,23 @@ const SUFFIX_SHAPE = [
 	['_fence_gate', 'fence_post'], ['_fence', 'fence_post'],
 	['_wall', 'wall_post'],
 	['_carpet', 'carpet'],
+	['_pane_side', 'pane_side'],
 	['_stained_glass_pane', 'pane_post'], ['_glass_pane', 'pane_post'],
 	['_trapdoor', 'trapdoor'], ['_door', 'door'],
 	['_wall_torch', 'torch'], ['_torch', 'torch'],
 	['_ladder', 'ladder'], ['_end_rod', 'end_rod'],
 	['_sapling', 'cross'], ['_fern', 'cross'],
 	['_log', 'cube_column'], ['_wood', 'cube_column'], ['_stem', 'cross'], ['_hyphae', 'cube_column'],
+	// families with dedicated authored shapes
+	['_wall_banner', 'banner'], ['_banner', 'banner'],
+	['_hanging_sign', 'hanging_sign'],
+	['_bed', 'bed'],
+	['_wall_skull', 'head'], ['_skull', 'head'], ['_wall_head', 'head'], ['_head', 'head'],
+	['_coral_wall_fan', 'coral_fan'], ['_wall_fan', 'coral_fan'], ['_coral_fan', 'coral_fan'],
+	['candle_cake', 'candle_cake'],
 ];
-const shapeFor = (name) => (SUFFIX_SHAPE.find(([suf]) => name.endsWith(suf)) || [null, 'cube_all'])[1];
+// potted_* is a prefix family (potted_fern, potted_cactus, …) -> pot + plant.
+const shapeFor = (name) => name.startsWith('potted_') ? 'potted_plant' : (SUFFIX_SHAPE.find(([suf]) => name.endsWith(suf)) || [null, 'cube_all'])[1];
 
 const lib = {};
 for (const f of readdirSync(libDir).filter((n) => n.endsWith('.json'))) {
@@ -52,6 +61,7 @@ function instantiate(shape, name) {
 	model.textures = {};
 	for (const s of slots) model.textures[s] = tex;
 	delete model.format_version;
+	delete model.groups; // Blockbench outliner metadata; Minecraft/Minosoft ignore it
 	return model;
 }
 

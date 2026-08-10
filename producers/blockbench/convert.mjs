@@ -56,7 +56,7 @@ const specs = bespoke.map((r) => ({ name: r.name, target: r.target, boxes: GEOME
 if (!specs.length) { console.error('no bespoke models to convert'); process.exit(1); }
 
 // ---- build the in-page expression ----
-const PX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+const PX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAEklEQVR42mNgGAWjYBSMAggAAAQQAAGvRYgsAAAAAElFTkSuQmCC';
 const expression = `(() => {
   const PX = ${JSON.stringify(PX)};
   const SPECS = ${JSON.stringify(specs)};
@@ -65,7 +65,9 @@ const expression = `(() => {
     try { Project.name = spec.name; } catch(e){}
     spec.boxes.forEach((b,i)=> new Cube({name: i? spec.name+'_'+i : spec.name, from:[b[0],b[1],b[2]], to:[b[3],b[4],b[5]]}).init());
     const t = new Texture({name: spec.name, folder:'block', namespace:'minecraft'}).fromDataURL(PX).add(false);
-    Cube.all.forEach(cu=>cu.applyTexture(t,true));
+    // autouv=1 + mapAutoUV projects each face to 0-16 texel space; without it the
+    // faces keep the default [0,0,1,1] corner-pixel UV.
+    Cube.all.forEach(cu=>{ cu.applyTexture(t,true); cu.autouv=1; if(!cu.box_uv && typeof cu.mapAutoUV==='function') cu.mapAutoUV(); });
     if (typeof Canvas!=='undefined' && Canvas.updateAll) Canvas.updateAll();
     const jb = Codecs.java_block.compile();
     const proj = Codecs.project.compile();
@@ -113,7 +115,9 @@ const convPath = join(repoRoot, 'db', 'conversions.json');
 let conversions = existsSync(convPath) ? JSON.parse(readFileSync(convPath, 'utf8')) : [];
 
 for (const r of results) {
-	const jb = r.jb.endsWith('\n') ? r.jb : r.jb + '\n';
+	// strip Blockbench outliner 'groups' metadata (Minecraft/Minosoft ignore it)
+	const jbObj = JSON.parse(r.jb); delete jbObj.groups;
+	const jb = JSON.stringify(jbObj, null, 2) + '\n';
 	const bb = r.bbmodel.endsWith('\n') ? r.bbmodel : r.bbmodel + '\n';
 	const targetDest = join(config.outDir, r.target);
 	const sourceRel = `producers/blockbench/sources/${r.name}.bbmodel`;

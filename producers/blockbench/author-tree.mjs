@@ -36,9 +36,26 @@ const SHAPES = {
 	ladder: [[0, 0, 15.2, 16, 16, 15.2]],
 	cross: [[0.8, 0, 8, 15.2, 16, 8, 45], [8, 0, 0.8, 8, 16, 15.2, 45]],
 	end_rod: [[7, 0, 7, 9, 16, 9]],
+	// pane arm: extends from the pane_post center to the -Z (north) edge, so the
+	// blockstate maps north=0 / east=90 / south=180 / west=270 (rotates 4x).
+	pane_side: [[7, 0, 0, 9, 16, 7]],
+	// standing banner cloth panel (thin, tall)
+	banner: [[1, 1, 7.5, 15, 16, 8.5]],
+	// hanging sign: board + two hanging bars
+	hanging_sign: [[1, 0, 7, 15, 10, 9], [3, 10, 7.5, 4, 16, 8.5], [12, 10, 7.5, 13, 16, 8.5]],
+	// bed: mattress body + four corner legs
+	bed: [[0, 3, 0, 16, 9, 16], [0, 0, 0, 3, 3, 3], [13, 0, 0, 16, 3, 3], [0, 0, 13, 3, 3, 16], [13, 0, 13, 16, 3, 16]],
+	// skull/head: 8x8x8 on the ground
+	head: [[4, 0, 4, 12, 8, 12]],
+	// coral fan: three thin blades radiating at 0/60/120 deg
+	coral_fan: [[1, 0, 8, 15, 8, 8, 0], [1, 0, 8, 15, 8, 8, 60], [1, 0, 8, 15, 8, 8, 120]],
+	// cake body + candle on top
+	candle_cake: [[1, 0, 1, 15, 8, 15], [7, 8, 7, 9, 14, 9]],
+	// flower pot + small cross plant above it
+	potted_plant: [[5, 0, 5, 11, 6, 11], [5.5, 6, 8, 10.5, 13, 8, 45], [8, 6, 5.5, 8, 13, 10.5, 45]],
 };
 
-const PX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+const PX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAEklEQVR42mNgGAWjYBSMAggAAAQQAAGvRYgsAAAAAElFTkSuQmCC';
 const expression = `(async () => {
   const rt = window.AutomationRuntime; let _id = 0;
   const send = (m, p) => rt.send({ protocol_version: 1, id: ++_id, method: m, params: p });
@@ -54,6 +71,11 @@ const expression = `(async () => {
       if (b.length > 6) { cube.origin = [8, 8, 8]; cube.rotation = [0, b[6], 0]; }
       cube.addTo(grp).init();
       cube.applyTexture(tex, true);
+      // Map face UVs to the 16x16 texture (0-16 texel space). New cubes default to
+      // autouv=0 (manual), which leaves the [0,0,1,1] corner-pixel UV; autouv=1 makes
+      // mapAutoUV project each face to its real size.
+      cube.autouv = 1;
+      if (!cube.box_uv && typeof cube.mapAutoUV === 'function') cube.mapAutoUV();
     });
   }
   if (typeof Canvas !== 'undefined' && Canvas.updateAll) Canvas.updateAll();
