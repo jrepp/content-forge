@@ -1,317 +1,317 @@
 [
   {
     "target": "producers/blockbench/base-shapes/cube_all.json",
-    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
-    "target_sha256": "78e225a9f3f0c35655af88b28f619bde6c3a4962d5694df286f560e9210756c6",
-    "converted_at": "2026-08-08T19:40:16.356Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "ff31068ed814a07f5ae053c6278600518c09997d5faa573e9cae1a2f21ac79b2",
+    "converted_at": "2026-08-09T16:01:57.679Z"
   },
   {
     "target": "producers/blockbench/base-shapes/cube_column.json",
-    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
-    "target_sha256": "f7da6880795c8e60c8bc3b26f9b325f982c5065f0189c36245b0bf731a20c8b2",
-    "converted_at": "2026-08-08T19:40:16.357Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "b954c2f0cd283f3dad060901140d0d962abf4ae11d65c98a37a7f9cec4b952d2",
+    "converted_at": "2026-08-09T16:01:57.679Z"
   },
   {
     "target": "producers/blockbench/base-shapes/slab_bottom.json",
-    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
-    "target_sha256": "cca4c5268ae4865d3df208ca508cc9f98d30cf8ba08e10af62b15bc99e01b072",
-    "converted_at": "2026-08-08T19:40:16.357Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "cd945cdb0df16a5818d4fa39447205b5a0feaf8b5da28a1f81014eb6738ecd17",
+    "converted_at": "2026-08-09T16:01:57.681Z"
   },
   {
     "target": "producers/blockbench/base-shapes/slab_top.json",
-    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
-    "target_sha256": "4aa62d625964a06aa3a67f0749055fb5fdd863d2daeb9863e8eda8118f7a38a8",
-    "converted_at": "2026-08-08T19:40:16.357Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "042b9101e10adbb72916b2c749d6fcb2bed8265951b4f2c9db41b8542b3e161b",
+    "converted_at": "2026-08-09T16:01:57.681Z"
   },
   {
     "target": "producers/blockbench/base-shapes/stairs.json",
-    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
-    "target_sha256": "a0cb8a702793bbc53a994dfd9d647fde5708f12191255efefe2d5d284d257b5f",
-    "converted_at": "2026-08-08T19:40:16.357Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "b763b9205e080f3ffe2073449da4425703ac62122e160378f291d80bbf182258",
+    "converted_at": "2026-08-09T16:01:57.682Z"
   },
   {
     "target": "producers/blockbench/base-shapes/fence_post.json",
-    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
-    "target_sha256": "6c6d309b7bb8695bf1649a11550392f5773cd12da218a1fe44339aa2b7a57c81",
-    "converted_at": "2026-08-08T19:40:16.357Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "ecbfd5116dea33807a52728e4d530082a9b7cd5bb139296121c073057d90b064",
+    "converted_at": "2026-08-09T16:01:57.682Z"
   },
   {
     "target": "producers/blockbench/base-shapes/fence_side.json",
-    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
-    "target_sha256": "3e5a5c8990dfed9133018573e49f45a1e17fb4410b2bcaf7de966ae96e345582",
-    "converted_at": "2026-08-08T19:40:16.357Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "4e84808d300645fb9585c1b63ccfed96f72d63e87d77f0303bdd633274b4f9dc",
+    "converted_at": "2026-08-09T16:01:57.682Z"
   },
   {
     "target": "producers/blockbench/base-shapes/wall_post.json",
-    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
-    "target_sha256": "314c909eef332898033fa940698a9be4feb37166bfe502a11bb678fa2a3fef8b",
-    "converted_at": "2026-08-08T19:40:16.358Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "6b3c439c1de538c8ce3b95df5bffb51a68c9bf3c8352f98053c8b8ed434c59a2",
+    "converted_at": "2026-08-09T16:01:57.682Z"
   },
   {
     "target": "producers/blockbench/base-shapes/button.json",
-    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
-    "target_sha256": "ba7b59f8bd67500fc5e866d685578f95a8475c2ccff740e14c5b00be1c7f30ba",
-    "converted_at": "2026-08-08T19:40:16.358Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "130baeb66371878d1583c4a7808ab0f926cb56482458a8bee195eb5da50030cb",
+    "converted_at": "2026-08-09T16:01:57.682Z"
   },
   {
     "target": "producers/blockbench/base-shapes/pressure_plate.json",
-    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
-    "target_sha256": "ec81dfdbc5bea9b4d059310542e1e730b15acd5c8d4629b3711e3ab323225a09",
-    "converted_at": "2026-08-08T19:40:16.358Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "39887a71c6a19c0b58db00ac2216c503581c1bc8b0b8eeb0157b0386a6c64954",
+    "converted_at": "2026-08-09T16:01:57.682Z"
   },
   {
     "target": "producers/blockbench/base-shapes/carpet.json",
-    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
-    "target_sha256": "d1509d823c3159059fb383bdc741e70d5025973416ed6b0bcf17cc0393a03d64",
-    "converted_at": "2026-08-08T19:40:16.358Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "fd293f0e9990b6625de86d8959675e3f2a752e741c5e04157d3f0817ee68d3d1",
+    "converted_at": "2026-08-09T16:01:57.682Z"
   },
   {
     "target": "producers/blockbench/base-shapes/pane_post.json",
-    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
-    "target_sha256": "b7c1819de73eb29e2864b54ba89922df50474ad35f5fa4a95a589670faba3548",
-    "converted_at": "2026-08-08T19:40:16.358Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "b0a7bc19454711110543003afab36eedbff656e3261351e23a1a4bc301b9fedc",
+    "converted_at": "2026-08-09T16:01:57.682Z"
   },
   {
     "target": "producers/blockbench/base-shapes/door.json",
-    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
-    "target_sha256": "c341c22beb198d86ea7c8df35e4cbcc6903d50cf88fd65963e1f98f53f884c59",
-    "converted_at": "2026-08-08T19:40:16.358Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "a7877f9c0aedd89a67e9bec561fec926e98b5741c03ff4c27d778665c815580c",
+    "converted_at": "2026-08-09T16:01:57.682Z"
   },
   {
     "target": "producers/blockbench/base-shapes/trapdoor.json",
-    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
-    "target_sha256": "776078638bef051e0371745ba645f61a0330a6ee7c526b85eb096b5b91deac22",
-    "converted_at": "2026-08-08T19:40:16.358Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "9dbb12db43eb65997d8c78ffa73b60147379f0a1199b17df063ac8886fd1accd",
+    "converted_at": "2026-08-09T16:01:57.682Z"
   },
   {
     "target": "producers/blockbench/base-shapes/torch.json",
-    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
-    "target_sha256": "d240dfff24a615e0fcc1a561ec45f5e3df1ecaaf8efb108e0d898000613ee8de",
-    "converted_at": "2026-08-08T19:40:16.358Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "0dc7659a92ea8a5af9eb1dcfee814d61f52ef32966982bc5b9fb01587c4c51fd",
+    "converted_at": "2026-08-09T16:01:57.682Z"
   },
   {
     "target": "producers/blockbench/base-shapes/ladder.json",
-    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
-    "target_sha256": "927332896591cfacdfb49cf68836a76a03e7f6ebaceea74d98e172aa921d42ab",
-    "converted_at": "2026-08-08T19:40:16.358Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "72f27eeb1810ac1371b495d37aa524e3e5f1dfe46e14f33ff3bd110f834fce0a",
+    "converted_at": "2026-08-09T16:01:57.682Z"
   },
   {
     "target": "producers/blockbench/base-shapes/cross.json",
-    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
-    "target_sha256": "7b745153510c798634aa177081ae699642e474b0f6fab6d9489bcc0f72b72790",
-    "converted_at": "2026-08-08T19:40:16.358Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "0c9ea73168d9f732a393754569a7598775c84875be444242ab63dd705d41ca97",
+    "converted_at": "2026-08-09T16:01:57.683Z"
   },
   {
     "target": "producers/blockbench/base-shapes/end_rod.json",
-    "source": "producers/blockbench/sources/base-shapes.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "988e839523835a72a085be3932df2388c4decd14a6f2c1b2ba4dc2c32b4a4bb6",
-    "target_sha256": "20888acdb9d327c1cd2df8bf54a19c1ace0ed72ca095fb045c81e99c3917cd3c",
-    "converted_at": "2026-08-08T19:40:16.358Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "5995b88c566aba47f16549c96aa773dea7f3f2ace7ba7f469fd46c8d3f5978c6",
+    "converted_at": "2026-08-09T16:01:57.683Z"
   },
   {
     "target": "assets/minecraft/models/block/barrel.json",
-    "source": "producers/blockbench/sources/barrel.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "dd584449cc7bbf2f831cf49ab2f65837e3cffb9987e6cfcfba067597f86fed8d",
-    "target_sha256": "46b4df0d36b2ff833ab43e4395537aa97e71b8ea531747b528ea02dd86c2f759",
-    "converted_at": "2026-08-08T19:44:16.910Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "e259966f24b0926fd706f5c660a6742679428f9e4508e4b2219904ed2828cb58",
+    "converted_at": "2026-08-09T16:01:57.686Z"
   },
   {
     "target": "assets/minecraft/models/block/bell.json",
-    "source": "producers/blockbench/sources/bell.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "42fa3b64dc77acf1f38e0fcbfdc7008cbbbc30b997519c3c19cd52460da0affe",
-    "target_sha256": "dc6bbb5288e1c2f0047c3a7dd6158a8ecec2fbf9a45ae57195d003d300b91f20",
-    "converted_at": "2026-08-08T19:44:16.913Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "1b1b819f77bc348bf86db6a2b939b2bbbca423882046453322b3c8133d6537be",
+    "converted_at": "2026-08-09T16:01:57.688Z"
   },
   {
     "target": "assets/minecraft/models/block/cake.json",
-    "source": "producers/blockbench/sources/cake.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "6a4089cd4c01800827d3bec4399a1bf40d162e8035ccb0ea74d43832178304ac",
-    "target_sha256": "12d641a64f93b0223eed9cd5c7dfb386fd4aae8ef4a5ebd2b83ec2907b21f78c",
-    "converted_at": "2026-08-08T19:44:16.913Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "ca57676a884bc79d8342379f5ad4410b7a7fadab04ec43cc7cd40632f137bb29",
+    "converted_at": "2026-08-09T16:01:57.689Z"
   },
   {
     "target": "assets/minecraft/models/block/calibrated_sculk_sensor.json",
-    "source": "producers/blockbench/sources/calibrated_sculk_sensor.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "42e65d5edaa6f68df5ce4f6887ff9f697a32fb23b7333da33199e355cdebcb63",
-    "target_sha256": "982ee895ee2476837cf0077600785527809e938ea554f7cd3743a3b98e1a8ade",
-    "converted_at": "2026-08-08T19:44:16.914Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "608415f8c74499f79df046f2a825fcb601525debff9044361d1644816614db47",
+    "converted_at": "2026-08-09T16:01:57.690Z"
   },
   {
     "target": "assets/minecraft/models/block/chain.json",
-    "source": "producers/blockbench/sources/chain.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "73d122e1e98d31629df1aca177c4668f543fda30511abfd9475989d54c3d1cfc",
-    "target_sha256": "7fb05ff453b3ba90283349fc8a331664a2aa96564ad1805b2c70c732085dde2c",
-    "converted_at": "2026-08-08T19:44:16.915Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "807b6611ce1ab171e4c7a1a4d3f4e3f9556a1db1dab67ae1eff717d04089f6dc",
+    "converted_at": "2026-08-09T16:01:57.691Z"
   },
   {
     "target": "assets/minecraft/models/block/composter.json",
-    "source": "producers/blockbench/sources/composter.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "e01eeecfff05a806c31229991cbaa803c8729c2aae63ec57c34a4343bde211ad",
-    "target_sha256": "11ed8df6c3212671dfc13b595749356751f41e87d730c3d18bf218120c17998c",
-    "converted_at": "2026-08-08T19:44:16.916Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "dc7c17ec71a57ce40fe3f1d74814c5fcfdab1a985eab2cdce180bcfa00ce374e",
+    "converted_at": "2026-08-09T16:01:57.693Z"
   },
   {
     "target": "assets/minecraft/models/block/enchanting_table.json",
-    "source": "producers/blockbench/sources/enchanting_table.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "64097ba4eb94e75eb52d3cf69c1d6d652d6995becea6183f217f80c0dfc4f0ea",
-    "target_sha256": "3fd6ffd8e41187feb18aaa6a61697cb5d31d523d293bea3096f3906f8824175e",
-    "converted_at": "2026-08-08T19:44:16.917Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "63e329d861ac537318b5967bd6460ae42ecb749986b18c14e2bee1114b1963a3",
+    "converted_at": "2026-08-09T16:01:57.693Z"
   },
   {
     "target": "assets/minecraft/models/block/end_portal_frame.json",
-    "source": "producers/blockbench/sources/end_portal_frame.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "bc9446e63f51cd73574b5b696838f4cc92430aac137b4e13954c9823dc44c01c",
-    "target_sha256": "43d1921c01f5f8a454f6fbc39e5ed147c0e9bbcdade09b0cda966b0cf40e95a7",
-    "converted_at": "2026-08-08T19:44:16.917Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "08ff6b1b0739982fc6eb0c52bf93c1c3fe1ba9aebb4891809fc274cb95c28d8d",
+    "converted_at": "2026-08-09T16:01:57.695Z"
   },
   {
     "target": "assets/minecraft/models/block/grindstone.json",
-    "source": "producers/blockbench/sources/grindstone.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "38aeabd666235bf81c0b7074104ac98a5f93142f108b9026448ba875e386c50e",
-    "target_sha256": "0546db02049e93b34e1606e835d34f24322453c9e2926ece66225bc137c8c79d",
-    "converted_at": "2026-08-08T19:44:16.918Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "8de7617fc6e6f3984053316fe1ae785c2b978d8fffa1e005603261bf7703e5f2",
+    "converted_at": "2026-08-09T16:01:57.696Z"
   },
   {
     "target": "assets/minecraft/models/block/hopper.json",
-    "source": "producers/blockbench/sources/hopper.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "b631b78be363e670668bf0e227f9e2d2da14877eeb7b1ca99ac9d104d4ff74a8",
-    "target_sha256": "c30c51d3b6ab29f25d4e2e8ab1a81fc28146fdd72e5844ecf8a88781574f8e4c",
-    "converted_at": "2026-08-08T19:44:16.919Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "8928364643fda9ba5231241bc2084963c141ea41ac8fd8c5c9fa3b5792649b57",
+    "converted_at": "2026-08-09T16:01:57.697Z"
   },
   {
     "target": "assets/minecraft/models/block/jigsaw.json",
-    "source": "producers/blockbench/sources/jigsaw.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "a959449660baf5c7cc6d9a1394635ea23cd547b780af3b38072ca571339204f2",
-    "target_sha256": "46c6ef70750c120891ff252ceb7d0cec910b6f4ab6174e3ee147f0fec02bfb25",
-    "converted_at": "2026-08-08T19:44:16.921Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "a39d54128256c6c5d4f84dc76739ee754eabeb9afd39a30e8308d59f63890388",
+    "converted_at": "2026-08-09T16:01:57.698Z"
   },
   {
     "target": "assets/minecraft/models/block/lectern.json",
-    "source": "producers/blockbench/sources/lectern.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "c84396d1c98955de901f2589cd9f1aa66ebd8f9c9f6513866874dc66d8f6a2c4",
-    "target_sha256": "1470cda81ec14f9134ed82d82095fdc69a3d332189f7058309066455273e77ba",
-    "converted_at": "2026-08-08T19:44:16.922Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "231feb15e1d0924ff5ea853cc94479e8fe953d6514d27a1f50261b67eb5bb225",
+    "converted_at": "2026-08-09T16:01:57.699Z"
   },
   {
     "target": "assets/minecraft/models/block/lightning_rod.json",
-    "source": "producers/blockbench/sources/lightning_rod.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "9fd73bf5593bb6764b9bf74eb29341d4c0625808c3c2c2d079e80c80c615fb52",
-    "target_sha256": "3c7d5e5abba98b9da68326739a063690f6740aef07780221fa791022a4554b4b",
-    "converted_at": "2026-08-08T19:44:16.923Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "cd68af4043a7f6e56f072fde3b0b27d0fcd604af188c8f378f65b8db05e09ecd",
+    "converted_at": "2026-08-09T16:01:57.700Z"
   },
   {
     "target": "assets/minecraft/models/block/respawn_anchor.json",
-    "source": "producers/blockbench/sources/respawn_anchor.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "a7b8becc1dbc46c3993cf0880fea02a18be56c05e798999b7f866926cbe7eb57",
-    "target_sha256": "3b726b5445b63a3249a568b0cd782b8563d26e7c5389d64efb9680b1c4d93874",
-    "converted_at": "2026-08-08T19:44:16.924Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "7233ec571552565a761435df851c40a3bda64300472466ddc281aae71861d368",
+    "converted_at": "2026-08-09T16:01:57.700Z"
   },
   {
     "target": "assets/minecraft/models/block/scaffolding.json",
-    "source": "producers/blockbench/sources/scaffolding.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "f33b2aa371b029feae43ffc91d8d10d6a9663e996fdc367573f62a1d7a047236",
-    "target_sha256": "d7716e18c0f560bf7801677ebbf7fd177442f6dcfe611b54c35b090904321cc1",
-    "converted_at": "2026-08-08T19:44:16.924Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "0630569ef5e39e13c97dc7538fa4c380dfe6fbb2f9805421d6f7e4298d51396b",
+    "converted_at": "2026-08-09T16:01:57.701Z"
   },
   {
     "target": "assets/minecraft/models/block/sculk_sensor.json",
-    "source": "producers/blockbench/sources/sculk_sensor.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "6dae099ebedca5f5610ebb4c17e988f4516c60104e760d35d48843be0a2372d1",
-    "target_sha256": "fa572a87034e6026a4a3a7a960dd90b4648ec4953c1f3a0ad2933cbe3aa2b7b1",
-    "converted_at": "2026-08-08T19:44:16.925Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "d96e667ef97b98b0a13cbda01a95f012e89bde50de6abf74d89032472066b42d",
+    "converted_at": "2026-08-09T16:01:57.702Z"
   },
   {
     "target": "assets/minecraft/models/block/sculk_shrieker.json",
-    "source": "producers/blockbench/sources/sculk_shrieker.bbmodel",
+    "source": "producers/blockbench/sources/tree.bbmodel",
     "codec": "java_block",
     "source_format": "java_block",
-    "source_sha256": "08a7de8f8ac0452dbc927bd676e114f41ba11e5e32958477551e40265374633d",
-    "target_sha256": "89ee33e2a8a6628e175f4723837ac8fee0f53d8c73fe61748089dedb60039a23",
-    "converted_at": "2026-08-08T19:44:16.926Z"
+    "source_sha256": "5b0f73f75df77b8451b2c8dcb8824529e34caae0fa72d35b832ca04418430e81",
+    "target_sha256": "28a8a2c8ea3bbe4c907358fd4d699d7125816bbbbc94810030934d5c40c6022e",
+    "converted_at": "2026-08-09T16:01:57.703Z"
   }
 ]
