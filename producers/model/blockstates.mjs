@@ -5,13 +5,27 @@
 //   node producers/model/blockstates.mjs [--dry]
 //
 // A blockstate maps block states -> models. We own one primary model per block
-// (block/<name>, an authored base-shape approximation), so every blockstate here
-// routes its states to that single model, adding orientation where a single model
-// is geometrically valid (pillar axis, horizontal facing, stairs half). We emit
-// MULTIPART, not `variants`: a multipart `apply` with no `when` renders in EVERY
-// block state, and `when` conditions are subset-matched (AND of listed props,
-// extra props ignored) — so we never have to enumerate a block's full property
-// set (which lives in the consumer, not here) to stay valid.
+// (block/<name>, an authored base-shape approximation) and route its states to that
+// model plus a small library of helper models, choosing a pattern by name suffix:
+//
+//   pillar (axis)           _log / _wood / _hyphae
+//   stairs                  facing × half × shape (straight + inner/outer corners)
+//   slab                    bottom / top / double
+//   connections (post+arm)  _fence, _wall, _glass_pane  (rotate a <name>_side arm)
+//   door                    facing × open   (both halves share the placeholder panel)
+//   trapdoor                closed slab (half) + open-against-wall (facing)
+//   button / lever          face (floor/wall/ceiling) × facing
+//   horizontal facing       _fence_gate, _glazed_terracotta, _wall_torch/_wall_sign/_wall_fan
+//   single model            plain/planks/wool/ore/carpet/sapling/candle and, deliberately,
+//                           standing banner/sign/head (their fine yaw is block-entity work)
+//
+// We emit MULTIPART, not `variants`: a multipart `apply` with no `when` renders in
+// EVERY block state, and `when` conditions are subset-matched (AND of listed props,
+// extra props ignored) — so we never have to enumerate a block's full property set
+// (which lives in the consumer, not here) to stay valid. Where a property must be
+// mutually exclusive (stairs `shape`, button `face`), EVERY part pins the full
+// tuple so subset-matching never lets two parts double-draw. Helper geometry that
+// isn't in the authored base-shape set lives in producers/model/shapes/.
 //
 // Self-completeness: a blockstate is useless if its model is missing. 668/966
 // targets already have block/<name>; for the rest we instantiate the matching
@@ -40,19 +54,33 @@ if (!targets.length) { console.log('blockstate lane empty — nothing to produce
 const libDir = join(repoRoot, 'producers', 'blockbench', 'base-shapes');
 const lib = {};
 if (existsSync(libDir)) for (const f of readdirSync(libDir).filter((n) => n.endsWith('.json'))) lib[f.replace('.json', '')] = JSON.parse(readFileSync(join(libDir, f), 'utf8'));
+// Durable blockstate-lane helper geometry (fence/wall arms, stair corners, sign,
+// candle, lever). Kept OUT of base-shapes/ — that dir is regenerated from
+// sources/base-shapes.bbmodel by author-tree/fold-tree and would clobber hand shapes.
+const extraDir = join(repoRoot, 'producers', 'model', 'shapes');
+if (existsSync(extraDir)) for (const f of readdirSync(extraDir).filter((n) => n.endsWith('.json'))) lib[f.replace('.json', '')] = JSON.parse(readFileSync(join(extraDir, f), 'utf8'));
 
 // Longest-suffix-first shape routing (mirrors producers/model/instantiate.mjs).
 const SUFFIX_SHAPE = [
 	['_slab', 'slab_bottom'], ['_stairs', 'stairs'],
-	['_button', 'button'], ['_pressure_plate', 'pressure_plate'],
+	['_button', 'button'], ['_lever', 'lever'], ['_pressure_plate', 'pressure_plate'],
 	['_fence_gate', 'fence_post'], ['_fence', 'fence_post'], ['_wall', 'wall_post'],
 	['_carpet', 'carpet'], ['_stained_glass_pane', 'pane_post'], ['_glass_pane', 'pane_post'],
 	['_trapdoor', 'trapdoor'], ['_door', 'door'],
 	['_wall_torch', 'torch'], ['_torch', 'torch'], ['_end_rod', 'end_rod'], ['_ladder', 'ladder'],
 	['_sapling', 'cross'], ['_fern', 'cross'], ['_stem', 'cross'],
 	['_log', 'cube_column'], ['_wood', 'cube_column'], ['_hyphae', 'cube_column'],
+	// families with dedicated authored shapes
+	['_wall_banner', 'banner'], ['_banner', 'banner'],
+	['_hanging_sign', 'hanging_sign'], ['_wall_sign', 'sign'], ['_sign', 'sign'],
+	['_candle', 'candle'],
+	['_bed', 'bed'],
+	['_wall_skull', 'head'], ['_skull', 'head'], ['_wall_head', 'head'], ['_head', 'head'],
+	['_coral_wall_fan', 'coral_fan'], ['_wall_fan', 'coral_fan'], ['_coral_fan', 'coral_fan'],
+	['candle_cake', 'candle_cake'],
 ];
-const shapeFor = (name) => (SUFFIX_SHAPE.find(([suf]) => name.endsWith(suf)) || [null, 'cube_all'])[1];
+// potted_* is a prefix family (potted_fern, potted_cactus, …) -> pot + plant.
+const shapeFor = (name) => name.startsWith('potted_') ? 'potted_plant' : (SUFFIX_SHAPE.find(([suf]) => name.endsWith(suf)) || [null, 'cube_all'])[1];
 
 // Instantiate a base shape for `name`, binding every face texture slot it uses
 // (and particle) to the block's own texture so nothing renders as a dangling #ref.
@@ -67,6 +95,7 @@ function instantiateModel(shape, name) {
 	model.textures = {};
 	for (const s of slots) model.textures[s] = tex;
 	delete model.format_version;
+	delete model.groups; // Blockbench outliner metadata; Minecraft/Minosoft ignore it
 	return model;
 }
 
@@ -80,9 +109,53 @@ const axisParts = (model) => [
 	{ when: { axis: 'x' }, apply: { model, x: 90, y: 90 } },
 	{ when: { axis: 'z' }, apply: { model, x: 90 } },
 ];
+const rot = (v) => (((v % 360) + 360) % 360);
+// Stairs: facing × half × shape. EVERY part pins all three props so subset-matching
+// stays mutually exclusive (a straight part can't also fire in an inner/outer state,
+// and vice-versa) — otherwise corners would double-draw over the straight model.
+// straight -> block/<name>; corners -> <name>_inner / <name>_outer helper models.
+const STAIR_VARIANTS = [['straight', '', 0], ['outer_right', '_outer', 0], ['outer_left', '_outer', -90], ['inner_right', '_inner', 0], ['inner_left', '_inner', -90]];
 const stairsParts = (model) => {
 	const parts = [];
-	for (const [f, y] of FACING) for (const [half, x] of [['bottom', 0], ['top', 180]]) parts.push({ when: { facing: f, half }, apply: { model, ...(x ? { x } : {}), ...(y ? { y } : {}), uvlock: true } });
+	for (const [f, fy] of FACING) for (const [half, x] of [['bottom', 0], ['top', 180]]) for (const [shape, suffix, dy] of STAIR_VARIANTS) {
+		const y = rot(fy + dy);
+		parts.push({ when: { facing: f, half, shape }, apply: { model: model + suffix, ...(x ? { x } : {}), ...(y ? { y } : {}), uvlock: true } });
+	}
+	return parts;
+};
+// Connection blocks (fence, wall): a center post that renders in every state, plus
+// one <name>_side arm helper (pointing north) rotated to each connected neighbour.
+// Subset-matched on the neighbour props — exactly the glass_pane pattern.
+const connectionParts = (model, side) => [
+	{ apply: { model } },
+	{ when: { north: 'true' }, apply: { model: side } },
+	{ when: { east: 'true' }, apply: { model: side, y: 90 } },
+	{ when: { south: 'true' }, apply: { model: side, y: 180 } },
+	{ when: { west: 'true' }, apply: { model: side, y: 270 } },
+];
+// Button / lever: mounted on a face (floor/wall/ceiling) and turned to a facing.
+// Each part pins face+facing (both core props) so exactly one part fires per state.
+const FACE_ROT = { floor: {}, ceiling: { x: 180 }, wall: { x: 90 } };
+const faceParts = (model) => {
+	const parts = [];
+	for (const [face, base] of Object.entries(FACE_ROT)) for (const [f, y] of FACING) parts.push({ when: { face, facing: f }, apply: { model, ...base, ...(y ? { y } : {}), uvlock: true } });
+	return parts;
+};
+// Door: both halves render the same placeholder panel; the swing is approximated by
+// a +90° yaw when open. Pins facing+open (core props); half is intentionally free.
+const doorParts = (model) => {
+	const parts = [];
+	for (const [f, y] of FACING) for (const [open, dy] of [['false', 0], ['true', 90]]) { const yy = rot(y + dy); parts.push({ when: { facing: f, open }, apply: { model, ...(yy ? { y: yy } : {}), uvlock: true } }); }
+	return parts;
+};
+// Trapdoor: a slab that lies at the bottom/top when closed and tips up against the
+// facing wall when open. Pins half+open (closed) or facing+open (open) for exclusivity.
+const trapdoorParts = (model) => {
+	const parts = [
+		{ when: { half: 'bottom', open: 'false' }, apply: { model } },
+		{ when: { half: 'top', open: 'false' }, apply: { model, x: 180 } },
+	];
+	for (const [f, y] of FACING) parts.push({ when: { facing: f, open: 'true' }, apply: { model, x: 90, ...(y ? { y } : {}), uvlock: true } });
 	return parts;
 };
 
@@ -90,26 +163,46 @@ const stairsParts = (model) => {
 // Returns { parts, helpers: [{target, model}] }.
 function buildBlockstate(name) {
 	const model = M(name);
-	if (/(?:_log|_wood|_hyphae)$/.test(name)) return { parts: axisParts(model), helpers: [] };
-	if (name.endsWith('_stairs')) return { parts: stairsParts(model), helpers: [] };
+	// Emit a helper model (<name><suffix>) from a base shape bound to this block's
+	// texture, and return its ref for a part to point at.
+	const helpers = [];
+	const helper = (suffix, shape) => {
+		helpers.push({ target: `assets/minecraft/models/block/${name}${suffix}.json`, model: instantiateModel(shape, name), recipe: `base-shape:${shape}` });
+		return `${model}${suffix}`;
+	};
+	if (/(?:_log|_wood|_hyphae)$/.test(name)) return { parts: axisParts(model), helpers };
+	if (name.endsWith('_stairs')) { helper('_inner', 'stairs_inner'); helper('_outer', 'stairs_outer'); return { parts: stairsParts(model), helpers }; }
 	if (name.endsWith('_slab')) {
-		const base = name.replace(/_slab$/, '');
-		const hasFull = existsSync(join(outDir, 'assets', 'minecraft', 'models', 'block', `${base}.json`));
-		const topTarget = `assets/minecraft/models/block/${name}_top.json`;
-		const helpers = [{ target: topTarget, model: instantiateModel('slab_top', name) }];
+		// double slab = a full cube of the slab material. Emit a self-contained
+		// <name>_double helper (cube_all bound to the block's texture) rather than
+		// guessing the irregular vanilla full-block name (spruce_slab -> spruce_planks,
+		// stone_slab -> stone, …), which the old base-name derivation got wrong.
+		const top = helper('_top', 'slab_top');
+		const double = helper('_double', 'cube_all');
 		return {
 			parts: [
 				{ when: { type: 'bottom' }, apply: { model } },
-				{ when: { type: 'top' }, apply: { model: `${model}_top` } },
-				{ when: { type: 'double' }, apply: { model: hasFull ? M(base) : model } },
+				{ when: { type: 'top' }, apply: { model: top } },
+				{ when: { type: 'double' }, apply: { model: double } },
 			],
 			helpers,
 		};
 	}
-	if (/(?:_door|_trapdoor|_fence_gate|_glazed_terracotta|_wall_torch)$/.test(name)) return { parts: facingParts(model), helpers: [] };
-	// plain, planks, wool, ore, carpet, sapling, fence, wall, pane, button, torch,
-	// candle, banner, coral, … — one model in every state (subset-safe).
-	return { parts: singlePart(model), helpers: [] };
+	// fence / wall: post + rotated side arm, subset-matched on the neighbour props.
+	if (/_fence$/.test(name)) return { parts: connectionParts(model, helper('_side', 'fence_arm')), helpers };
+	if (/_wall$/.test(name)) return { parts: connectionParts(model, helper('_side', 'wall_side')), helpers };
+	// glass pane: identical connection pattern, its own arm shape.
+	if (/_glass_pane$/.test(name)) return { parts: connectionParts(model, helper('_side', 'pane_side')), helpers };
+	if (/_door$/.test(name)) return { parts: doorParts(model), helpers };
+	if (/_trapdoor$/.test(name)) return { parts: trapdoorParts(model), helpers };
+	if (/(?:_button|_lever)$/.test(name)) return { parts: faceParts(model), helpers };
+	// horizontal-facing families: fence gate, glazed terracotta, and the wall-mounted
+	// variants (wall torch, wall sign, wall fan). Standing banners/signs/heads stay
+	// single-part — their fine yaw is a block-entity concern, not a blockstate one.
+	if (/(?:_fence_gate|_glazed_terracotta|_wall_torch|_wall_sign|_wall_fan|_coral_wall_fan)$/.test(name)) return { parts: facingParts(model), helpers };
+	// plain, planks, wool, ore, carpet, sapling, pressure_plate, torch, candle, banner,
+	// standing sign, head, coral, … — one model in every state (subset-safe).
+	return { parts: singlePart(model), helpers };
 }
 
 // ---- produce ----
@@ -139,7 +232,7 @@ for (const { target, name } of targets) {
 	for (const h of helpers) {
 		if (existsSync(join(outDir, h.target))) continue;
 		write(h.target, h.model);
-		producers[h.target] = { producer: 'blockstates', recipe: 'base-shape:slab_top' };
+		producers[h.target] = { producer: 'blockstates', recipe: h.recipe || 'base-shape:slab_top' };
 		helpersWritten++;
 	}
 	write(target, { multipart: parts });

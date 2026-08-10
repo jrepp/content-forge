@@ -1,0 +1,7 @@
+{
+	"credit": "content-forge blockstate-lane shape: outer stair corner (bottom slab + single 8x8 upper step quadrant). Base orientation matches base-shapes/stairs; the blockstate rotates per facing.",
+	"elements": [
+		{ "name": "slab", "from": [0, 0, 0], "to": [16, 8, 16], "faces": { "north": { "texture": "#0" }, "south": { "texture": "#0" }, "east": { "texture": "#0" }, "west": { "texture": "#0" }, "up": { "texture": "#0" }, "down": { "texture": "#0" } } },
+		{ "name": "step_corner", "from": [8, 8, 0], "to": [16, 16, 8], "faces": { "north": { "texture": "#0" }, "south": { "texture": "#0" }, "east": { "texture": "#0" }, "west": { "texture": "#0" }, "up": { "texture": "#0" }, "down": { "texture": "#0" } } }
+	]
+}

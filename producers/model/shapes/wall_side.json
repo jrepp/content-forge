@@ -1,0 +1,6 @@
+{
+	"credit": "content-forge blockstate-lane shape: wall connection arm (points north/-z; the blockstate rotates it to the other three sides)",
+	"elements": [
+		{ "name": "arm", "from": [5, 0, 0], "to": [11, 14, 8], "faces": { "north": { "texture": "#0" }, "south": { "texture": "#0" }, "east": { "texture": "#0" }, "west": { "texture": "#0" }, "up": { "texture": "#0" }, "down": { "texture": "#0" } } }
+	]
+}

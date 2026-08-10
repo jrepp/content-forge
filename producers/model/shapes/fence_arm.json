@@ -1,0 +1,7 @@
+{
+	"credit": "content-forge blockstate-lane shape: fence connection arm (points north/-z; the blockstate rotates it to the other three sides)",
+	"elements": [
+		{ "name": "arm_top", "from": [7, 12, 0], "to": [9, 15, 7], "faces": { "north": { "texture": "#0" }, "south": { "texture": "#0" }, "east": { "texture": "#0" }, "west": { "texture": "#0" }, "up": { "texture": "#0" }, "down": { "texture": "#0" } } },
+		{ "name": "arm_bottom", "from": [7, 6, 0], "to": [9, 9, 7], "faces": { "north": { "texture": "#0" }, "south": { "texture": "#0" }, "east": { "texture": "#0" }, "west": { "texture": "#0" }, "up": { "texture": "#0" }, "down": { "texture": "#0" } } }
+	]
+}

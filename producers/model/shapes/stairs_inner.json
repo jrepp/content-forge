@@ -1,0 +1,8 @@
+{
+	"credit": "content-forge blockstate-lane shape: inner stair corner (bottom slab + L-shaped upper step). Base orientation matches base-shapes/stairs (step on north/-z half); the blockstate rotates per facing.",
+	"elements": [
+		{ "name": "slab", "from": [0, 0, 0], "to": [16, 8, 16], "faces": { "north": { "texture": "#0" }, "south": { "texture": "#0" }, "east": { "texture": "#0" }, "west": { "texture": "#0" }, "up": { "texture": "#0" }, "down": { "texture": "#0" } } },
+		{ "name": "step_north", "from": [0, 8, 0], "to": [16, 16, 8], "faces": { "north": { "texture": "#0" }, "south": { "texture": "#0" }, "east": { "texture": "#0" }, "west": { "texture": "#0" }, "up": { "texture": "#0" }, "down": { "texture": "#0" } } },
+		{ "name": "step_side", "from": [8, 8, 8], "to": [16, 16, 16], "faces": { "north": { "texture": "#0" }, "south": { "texture": "#0" }, "east": { "texture": "#0" }, "west": { "texture": "#0" }, "up": { "texture": "#0" }, "down": { "texture": "#0" } } }
+	]
+}

@@ -1,0 +1,7 @@
+{
+	"credit": "content-forge blockstate-lane shape: standing sign (board on a post). Board faces north/south; wall signs reuse this shape and are pushed to a face by the blockstate.",
+	"elements": [
+		{ "name": "post", "from": [7, 0, 7], "to": [9, 9, 9], "faces": { "north": { "texture": "#0" }, "south": { "texture": "#0" }, "east": { "texture": "#0" }, "west": { "texture": "#0" }, "up": { "texture": "#0" }, "down": { "texture": "#0" } } },
+		{ "name": "board", "from": [1, 7, 7], "to": [15, 15, 9], "faces": { "north": { "texture": "#0" }, "south": { "texture": "#0" }, "east": { "texture": "#0" }, "west": { "texture": "#0" }, "up": { "texture": "#0" }, "down": { "texture": "#0" } } }
+	]
+}

@@ -1,0 +1,6 @@
+{
+	"credit": "content-forge blockstate-lane shape: a single candle (placeholder for all candle counts; count/lit are not distinguished at the blockstate layer here).",
+	"elements": [
+		{ "name": "candle", "from": [7, 0, 7], "to": [9, 6, 9], "faces": { "north": { "texture": "#0" }, "south": { "texture": "#0" }, "east": { "texture": "#0" }, "west": { "texture": "#0" }, "up": { "texture": "#0" }, "down": { "texture": "#0" } } }
+	]
+}

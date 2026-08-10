@@ -1,0 +1,7 @@
+{
+	"credit": "content-forge blockstate-lane shape: lever (base plate + handle). Mounted per face/facing by the blockstate.",
+	"elements": [
+		{ "name": "base", "from": [5, 0, 4], "to": [11, 3, 12], "faces": { "north": { "texture": "#0" }, "south": { "texture": "#0" }, "east": { "texture": "#0" }, "west": { "texture": "#0" }, "up": { "texture": "#0" }, "down": { "texture": "#0" } } },
+		{ "name": "handle", "from": [7, 1, 7], "to": [9, 10, 9], "faces": { "north": { "texture": "#0" }, "south": { "texture": "#0" }, "east": { "texture": "#0" }, "west": { "texture": "#0" }, "up": { "texture": "#0" }, "down": { "texture": "#0" } } }
+	]
+}
