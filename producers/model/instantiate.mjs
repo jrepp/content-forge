@@ -44,8 +44,13 @@ function instantiate(shape, name) {
 	const tex = `minecraft:block/${name}`;
 	const model = JSON.parse(JSON.stringify(base));
 	model.credit = 'content-forge (authored base shape: ' + shape + ')';
-	model.textures = { 0: tex, particle: tex };
-	// faces in the authored export reference "#0"; leave them, only the map changed.
+	// Bind EVERY texture slot the authored faces reference (each base shape uses its
+	// own slot number, e.g. fence_post -> #5, button -> #8), not just #0 — otherwise
+	// the model ships dangling #ref faces that render as missing texture.
+	const slots = new Set(['particle']);
+	for (const el of model.elements || []) for (const face of Object.values(el.faces || {})) if (face && typeof face.texture === 'string' && face.texture.startsWith('#')) slots.add(face.texture.slice(1));
+	model.textures = {};
+	for (const s of slots) model.textures[s] = tex;
 	delete model.format_version;
 	return model;
 }

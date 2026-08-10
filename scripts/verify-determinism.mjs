@@ -30,6 +30,7 @@ const producers = () => {
 	run('producers/model/synth.mjs');
 	run('producers/raster/synth-textures.mjs', ['--all']);
 	run('producers/model/resolve-candidates.mjs');
+	run('producers/model/blockstates.mjs');
 	run('producers/raster/reference-closure.mjs');
 };
 producers();

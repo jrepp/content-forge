@@ -16,6 +16,7 @@ produce:
 	node producers/model/synth.mjs
 	node producers/raster/synth-textures.mjs --all
 	node producers/model/resolve-candidates.mjs
+	node producers/model/blockstates.mjs
 	node producers/raster/reference-closure.mjs
 
 # Author the Blockbench asset set (needs a running BLOCKBENCH_AUTOMATION instance).
