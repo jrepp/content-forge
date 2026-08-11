@@ -69,10 +69,13 @@ const dangling = [];
 for (const ref of refs) {
 	const target = targetOf(ref);
 	const dest = join(outDir, target);
-	if (existsSync(dest)) { present++; continue; }
-	// generate a placeholder for a texture we own the gap of, routed through the
-	// core's classify() (wood/planks/leaves/ore/… get real structure). Pass target
-	// so the recipe resolves the real block name (oak_planks, not "planks").
+	// Skip real/borrowed assets, but REGENERATE textures we own so a recipe or routing
+	// change (generic -> copper, …) propagates without a manual clean. Owned = we wrote
+	// it (producer texture-gen); anything else present is a higher-priority real asset.
+	const owned = producers[target] && producers[target].producer === 'texture-gen';
+	if (existsSync(dest) && !owned) { present++; continue; }
+	// route through the core's classify() (wood/planks/leaves/ore/… get real structure).
+	// Pass target so the recipe resolves the real block name (oak_planks, not "planks").
 	const name = (target.split('/').pop() || '').replace('.png', '');
 	const family = classify(target);
 	const buffer = generateTexture({ family, target, seed: name, size: 16 });
@@ -86,6 +89,6 @@ writeFileSync(producersPath, JSON.stringify(producers, null, 0) + '\n');
 // verify: every model ref now resolves to a file in out/
 for (const ref of refs) if (!existsSync(join(outDir, targetOf(ref)))) dangling.push(ref);
 
-console.log(`model refs: ${refs.size}  already present: ${present}  generated placeholders: ${generated}`);
+console.log(`model refs: ${refs.size}  borrowed (kept): ${present}  generated/refreshed: ${generated}`);
 console.log(`dangling model texture refs after closure: ${dangling.length}${dangling.length ? ' -> ' + dangling.slice(0, 5).join(', ') : ' (out/ is self-complete)'}`);
 process.exit(dangling.length ? 1 : 0);

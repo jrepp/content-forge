@@ -62,6 +62,34 @@ const SAMPLES = [
 	['mushroom', 'block/red_mushroom_block'],
 	['plant', 'block/dandelion'],          // flower bloom
 	['plant', 'block/fern'],               // green blades
+	['ingot', 'item/iron_ingot'],
+	['ingot', 'item/gold_ingot'],
+	['nugget', 'item/iron_nugget'],
+	['gem', 'item/diamond'],
+	['gem', 'item/lapis_lazuli'],          // longest-match tone (lapis)
+	['mineral', 'item/coal'],
+	['mineral', 'item/raw_iron'],
+	['dust', 'item/redstone'],
+	['seeds', 'item/wheat_seeds'],
+	['rod', 'item/stick'],
+	['rod', 'item/blaze_rod'],
+	['tool', 'item/iron_pickaxe'],
+	['tool', 'item/diamond_sword'],
+	['tool', 'item/wooden_axe'],
+	['tool', 'item/golden_shovel'],
+	['tool', 'item/netherite_hoe'],
+	['copper', 'block/copper_block'],
+	['copper', 'block/oxidized_copper'],      // patina stage
+	['wool', 'block/red_wool'],
+	['concrete', 'block/blue_concrete'],
+	['concrete', 'block/red_concrete_powder'],
+	['terracotta', 'block/red_terracotta'],
+	['terracotta', 'block/blue_glazed_terracotta'], // glazed motif
+	['candle', 'block/green_candle'],
+	['sculk', 'block/sculk'],
+	['ice', 'block/packed_ice'],
+	['ice', 'block/blue_ice'],
+	['glass_pane', 'block/lime_stained_glass_pane_side'], // pane-side routing
 ];
 
 const exemplarDir = join(repoRoot, 'producers', 'raster', 'exemplars');
