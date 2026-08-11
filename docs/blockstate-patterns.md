@@ -31,8 +31,9 @@ stairs               _stairs                           facing×half×     <name>
 slab                 _slab                             type bottom/     <name>_top,
                                                         top/double        <name>_double
 connections          _fence _wall _glass_pane          post + 4 arms    <name>_side
-door                 _door                             facing×open (8)  —  (both halves
-                                                                            share the panel)
+door                 _door                             facing×open×     <name>_bottom_left,
+                                                        hinge×half (32)  <name>_bottom_right,
+                                                                         <name>_top
 trapdoor             _trapdoor                         half/open +      —
                                                         facing/open (6)
 button / lever       _button _lever                    face×facing(12)  —
@@ -51,9 +52,13 @@ unconditionally + one north-pointing `<name>_side` arm the multipart rotates to 
 connected neighbour (`north/east/south/west == 'true'`). Add a new connection block by
 routing its suffix here and giving it an arm shape.
 
-**Doors** are reduced to `facing × open` (8 parts); both halves render the same
-placeholder panel and the swing is a +90° yaw. Real hinge (left/right) + separate
-upper/lower geometry is deliberately *not* modelled — placeholder-adequate, not vanilla.
+**Doors** pin `facing × open × hinge × half` (32 parts; `powered` is visually
+redundant with `open`). Lower helpers provide recessed panels and a latch opposite
+the hinge. The upper helper is built from stiles, rails, and a center mullion with
+two genuine openings rather than transparent-looking pixels on a solid slab. Open
+left hinges swing +90° and right hinges -90°. Every helper remains bound to the
+wood family's plank material, so the distinct silhouette does not introduce an
+unrelated door color.
 
 ## Helper geometry lives in `producers/model/shapes/`
 
@@ -61,11 +66,13 @@ Base shapes in `producers/blockbench/base-shapes/` are **regenerated** from
 `sources/base-shapes.bbmodel` by `author-tree`/`fold-tree` — hand-authored JSON there
 gets clobbered. Blockstate-lane-only helper shapes therefore live in a separate,
 durable dir: `producers/model/shapes/*.json` (currently `fence_arm`, `wall_side`,
-`stairs_inner`, `stairs_outer`, `sign`, `candle`, `lever`). `blockstates.mjs` merges
+`stairs_inner`, `stairs_outer`, the door top/bottom shapes, `sign`, `candle`, and
+`lever`). `blockstates.mjs` merges
 both dirs into its shape lib (extras win on name clash). The general
 `instantiate.mjs` pass loads the same helper library and routes `_fence_side`,
-`_wall_side`, `_stairs_inner`, and `_stairs_outer` explicitly; a missing routed
-shape is fatal instead of silently degrading to `cube_all`. The blockstate lane may
+`_wall_side`, `_stairs_inner`, `_stairs_outer`, and the three door helpers
+explicitly; a missing routed shape is fatal instead of silently degrading to
+`cube_all`. The blockstate lane may
 replace a stale generated helper owned by `blockstates` or an old Blockbench
 `base-shape:cube_all`, while preserving other authored owners.
 
@@ -74,7 +81,10 @@ Shape file format is minimal: just `{ "elements": [ … ] }` with every face's
 slot (plus `particle`) to its material texture, and strips Blockbench-only
 `format_version`/`groups`. Derived wood geometry (fence post/arm, stair
 straight/inner/outer, slab, door, and related families) resolves to the shared
-`<wood>_planks` material, so helper names never create unrelated textures.
+`<wood>_planks` material, so helper names never create unrelated textures. Door
+top/bottom helpers are intentionally separate because the state sculpture evaluates
+each legal half as the catalog state while staging the matching opposite half as
+visual context, producing a complete two-block door for every art-evaluation sample.
 Orientation convention: author the one arm/step pointing **north (−z)** so the
 multipart's `y` rotations line up.
 
