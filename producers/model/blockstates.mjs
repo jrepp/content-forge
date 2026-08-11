@@ -12,7 +12,7 @@
 //   stairs                  facing × half × shape (straight + inner/outer corners)
 //   slab                    bottom / top / double
 //   connections (post+arm)  _fence, _wall, _glass_pane  (rotate a <name>_side arm)
-//   door                    facing × open   (both halves share the placeholder panel)
+//   door                    facing × open × hinge × half (panelled lower + cut-out upper)
 //   trapdoor                closed slab (half) + open-against-wall (facing)
 //   button / lever          face (floor/wall/ceiling) × facing
 //   horizontal facing       _fence_gate, _glazed_terracotta, _wall_torch/_wall_sign/_wall_fan
@@ -153,11 +153,18 @@ const faceParts = (model) => {
 	for (const [face, base] of Object.entries(FACE_ROT)) for (const [f, y] of FACING) parts.push({ when: { face, facing: f }, apply: { model, ...base, ...(y ? { y } : {}), uvlock: true } });
 	return parts;
 };
-// Door: both halves render the same placeholder panel; the swing is approximated by
-// a +90° yaw when open. Pins facing+open (core props); half is intentionally free.
-const doorParts = (model) => {
+// Door: pin every model-selecting property. The lower half is a recessed four-panel
+// leaf with a latch opposite its hinge; the upper half is a rail-and-stile frame
+// with two real openings. Open doors swing +90° from a left hinge and -90° from a
+// right hinge. `powered` remains intentionally free because it only drives `open`.
+const doorParts = (bottomLeft, bottomRight, top) => {
 	const parts = [];
-	for (const [f, y] of FACING) for (const [open, dy] of [['false', 0], ['true', 90]]) { const yy = rot(y + dy); parts.push({ when: { facing: f, open }, apply: { model, ...(yy ? { y: yy } : {}), uvlock: true } }); }
+	for (const [f, y] of FACING) for (const open of ['false', 'true']) for (const hinge of ['left', 'right']) for (const half of ['lower', 'upper']) {
+		const swing = open === 'true' ? (hinge === 'left' ? 90 : -90) : 0;
+		const yy = rot(y + swing);
+		const model = half === 'upper' ? top : (hinge === 'left' ? bottomLeft : bottomRight);
+		parts.push({ when: { facing: f, open, hinge, half }, apply: { model, ...(yy ? { y: yy } : {}), uvlock: true } });
+	}
 	return parts;
 };
 // Trapdoor: a slab that lies at the bottom/top when closed and tips up against the
@@ -205,7 +212,12 @@ function buildBlockstate(name) {
 	if (/_wall$/.test(name)) return { parts: connectionParts(model, helper('_side', 'wall_side')), helpers };
 	// glass pane: identical connection pattern, its own arm shape.
 	if (/_glass_pane$/.test(name)) return { parts: connectionParts(model, helper('_side', 'pane_side')), helpers };
-	if (/_door$/.test(name)) return { parts: doorParts(model), helpers };
+	if (/_door$/.test(name)) {
+		const bottomLeft = helper('_bottom_left', 'door_bottom_left');
+		const bottomRight = helper('_bottom_right', 'door_bottom_right');
+		const top = helper('_top', 'door_top');
+		return { parts: doorParts(bottomLeft, bottomRight, top), helpers };
+	}
 	if (/_trapdoor$/.test(name)) return { parts: trapdoorParts(model), helpers };
 	if (/(?:_button|_lever)$/.test(name)) return { parts: faceParts(model), helpers };
 	// horizontal-facing families: fence gate, glazed terracotta, and the wall-mounted
@@ -263,6 +275,7 @@ if (!dry) writeFileSync(producersPath, JSON.stringify(producers, null, 0) + '\n'
 const bsDir = join(outDir, 'assets', 'minecraft', 'blockstates');
 const dangling = [];
 const invalidFenceModels = [];
+const invalidDoorModels = [];
 if (!dry) {
 	for (const f of readdirSync(bsDir).filter((n) => n.endsWith('.json'))) {
 		const doc = JSON.parse(readFileSync(join(bsDir, f), 'utf8'));
@@ -292,16 +305,40 @@ if (!dry) {
 			}
 		}
 	}
+	for (const { name } of targets.filter(({ name }) => /_door$/.test(name))) {
+		const expectedTexture = `minecraft:block/${materialFor(name)}`;
+		const blockstate = JSON.parse(readFileSync(join(bsDir, `${name}.json`), 'utf8'));
+		const tuples = new Set((blockstate.multipart || []).map((part) => ['facing', 'open', 'hinge', 'half'].map((property) => part.when?.[property]).join('/')));
+		if ((blockstate.multipart || []).length !== 32 || tuples.size !== 32) invalidDoorModels.push(`${name} expected 32 unique facing/open/hinge/half parts`);
+		for (const [suffix, requiredElements] of [
+			['_bottom_left', ['door_inset', 'hinge_stile', 'latch_stile', 'latch_left']],
+			['_bottom_right', ['door_inset', 'hinge_stile', 'latch_stile', 'latch_right']],
+			['_top', ['hinge_stile', 'latch_stile', 'top_rail', 'bottom_rail', 'window_mullion']],
+		]) {
+			const modelName = `${name}${suffix}`;
+			try {
+				const model = JSON.parse(readFileSync(join(modelDir, `${modelName}.json`), 'utf8'));
+				const elements = new Set((model.elements || []).map((element) => element.name));
+				const textures = new Set(Object.values(model.textures || {}));
+				if (!requiredElements.every((element) => elements.has(element)) || textures.size !== 1 || !textures.has(expectedTexture)) {
+					invalidDoorModels.push(`${modelName} expected ${requiredElements.join('+')} on ${expectedTexture}`);
+				}
+			} catch (error) {
+				invalidDoorModels.push(`${modelName} unreadable: ${error.message}`);
+			}
+		}
+	}
 }
 
 console.log(`blockstate lane ${dry ? '(dry) ' : ''}-> ${outDir}`);
 console.log(`  blockstates written : ${bsWritten}`);
 console.log(`  primary models filled: ${modelsFilled} (were missing; instantiated from base shapes)`);
-console.log(`  slab-top helpers     : ${helpersWritten}`);
+console.log(`  helper models        : ${helpersWritten}`);
 console.log('  by family:');
 for (const [fam, c] of Object.entries(byFamily).sort((a, b) => b[1] - a[1])) console.log(`    ${fam.padEnd(18)} ${c}`);
 if (!dry) {
 	console.log(`  dangling blockstate model refs: ${dangling.length}${dangling.length ? ' -> ' + dangling.slice(0, 5).join(', ') : ' (blockstate lane self-complete)'}`);
 	console.log(`  invalid fence models  : ${invalidFenceModels.length}${invalidFenceModels.length ? ' -> ' + invalidFenceModels.slice(0, 5).join(', ') : ' (posts, arms, and materials valid)'}`);
-	process.exit(dangling.length || invalidFenceModels.length ? 1 : 0);
+	console.log(`  invalid door models   : ${invalidDoorModels.length}${invalidDoorModels.length ? ' -> ' + invalidDoorModels.slice(0, 5).join(', ') : ' (halves, cut-outs, hinges, and materials valid)'}`);
+	process.exit(dangling.length || invalidFenceModels.length || invalidDoorModels.length ? 1 : 0);
 }
