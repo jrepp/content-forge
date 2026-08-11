@@ -4,8 +4,10 @@
 #   make release  emit the approved-only manifest
 #   make verify   prove the producers are byte-stable (idempotent)
 #   make loop     all + gate + release  (the full loop)
+#   make exemplars       (re)capture the per-family golden tiles
+#   make exemplars-check  score current recipes against the goldens (drift guard)
 MINOSOFT ?= ../Minosoft
-.PHONY: all queue produce convert publish index gate release verify loop clean
+.PHONY: all queue produce convert publish index gate release verify loop clean exemplars exemplars-check
 
 queue:
 	node scripts/pull-queue.mjs
@@ -46,6 +48,12 @@ release:
 
 verify:
 	node scripts/verify-determinism.mjs
+
+exemplars:
+	node producers/raster/exemplar.mjs capture
+
+exemplars-check:
+	node producers/raster/exemplar.mjs check
 
 all: queue produce publish index
 

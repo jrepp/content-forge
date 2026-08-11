@@ -1,5 +1,5 @@
-// Minimal dependency-free PNG encoder (8-bit RGBA) using node:zlib.
-import { deflateSync } from 'node:zlib';
+// Minimal dependency-free PNG encoder + decoder (8-bit) using node:zlib.
+import { deflateSync, inflateSync } from 'node:zlib';
 
 const CRC_TABLE = (() => {
 	const t = new Uint32Array(256);
@@ -55,4 +55,68 @@ export function encodePNG(width, height, rgba) {
 /** Parse a PNG's IHDR width/height (for validation). @param {Buffer} buf */
 export function readPngSize(buf) {
 	return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20), colorType: buf[25] };
+}
+
+/** Paeth predictor (PNG filter type 4). */
+function paeth(a, b, c) {
+	const p = a + b - c, pa = Math.abs(p - a), pb = Math.abs(p - b), pc = Math.abs(p - c);
+	return pa <= pb && pa <= pc ? a : pb <= pc ? b : c;
+}
+
+/**
+ * Decode an 8-bit PNG to an RGBA pixel buffer. Handles color types 6 (RGBA),
+ * 2 (RGB), and 0 (grayscale), with all five scanline filters. No interlacing
+ * (Adam7) — sufficient for 16x16 texture tiles and our own encoder's output.
+ * @param {Buffer} buf @returns {{width:number,height:number,data:Uint8ClampedArray}}
+ */
+export function decodePNG(buf) {
+	if (buf.length < 8 || buf.readUInt32BE(0) !== 0x89504e47) throw new Error('not a PNG');
+	const width = buf.readUInt32BE(16), height = buf.readUInt32BE(20);
+	const bitDepth = buf[24], colorType = buf[25], interlace = buf[28];
+	if (bitDepth !== 8) throw new Error(`unsupported bit depth ${bitDepth}`);
+	if (interlace) throw new Error('interlaced PNG not supported');
+	const channels = colorType === 6 ? 4 : colorType === 2 ? 3 : colorType === 0 ? 1 : 0;
+	if (!channels) throw new Error(`unsupported color type ${colorType}`);
+
+	// concat all IDAT chunks, then inflate
+	const idat = [];
+	let off = 8;
+	while (off < buf.length) {
+		const len = buf.readUInt32BE(off), type = buf.toString('latin1', off + 4, off + 8);
+		if (type === 'IDAT') idat.push(buf.subarray(off + 8, off + 8 + len));
+		if (type === 'IEND') break;
+		off += 12 + len;
+	}
+	const raw = inflateSync(Buffer.concat(idat));
+
+	const bpp = channels;                       // bytes per pixel (8-bit)
+	const stride = width * bpp;
+	const out = new Uint8ClampedArray(width * height * 4);
+	const prev = new Uint8Array(stride);
+	const cur = new Uint8Array(stride);
+	let p = 0;
+	for (let y = 0; y < height; y++) {
+		const filter = raw[p++];
+		for (let x = 0; x < stride; x++) {
+			const rawB = raw[p++];
+			const a = x >= bpp ? cur[x - bpp] : 0;   // left
+			const b = prev[x];                        // up
+			const c = x >= bpp ? prev[x - bpp] : 0;   // up-left
+			let v = rawB;
+			if (filter === 1) v = rawB + a;
+			else if (filter === 2) v = rawB + b;
+			else if (filter === 3) v = rawB + ((a + b) >> 1);
+			else if (filter === 4) v = rawB + paeth(a, b, c);
+			cur[x] = v & 0xff;
+		}
+		// expand this scanline into RGBA
+		for (let x = 0; x < width; x++) {
+			const s = x * bpp, d = (y * width + x) * 4;
+			if (channels === 4) { out[d] = cur[s]; out[d + 1] = cur[s + 1]; out[d + 2] = cur[s + 2]; out[d + 3] = cur[s + 3]; }
+			else if (channels === 3) { out[d] = cur[s]; out[d + 1] = cur[s + 1]; out[d + 2] = cur[s + 2]; out[d + 3] = 255; }
+			else { out[d] = out[d + 1] = out[d + 2] = cur[s]; out[d + 3] = 255; }
+		}
+		prev.set(cur);
+	}
+	return { width, height, data: out };
 }
