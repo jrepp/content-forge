@@ -51,6 +51,17 @@ const SAMPLES = [
 	['glass_pane', 'block/glass_pane'],
 	['banner', 'block/red_banner'],
 	['spawn_egg', 'item/pig_spawn_egg'],
+	['log_top', 'block/oak_log_top'],
+	['grass', 'block/grass_block_top'],
+	['dirt', 'block/dirt'],
+	['dirt', 'block/grass_block_side'], // topped-soil fringe
+	['dirt', 'block/sand'],
+	['coral', 'block/tube_coral_block'],
+	['coral', 'block/fire_coral_fan'],     // transparent branches
+	['crop', 'block/wheat'],
+	['mushroom', 'block/red_mushroom_block'],
+	['plant', 'block/dandelion'],          // flower bloom
+	['plant', 'block/fern'],               // green blades
 ];
 
 const exemplarDir = join(repoRoot, 'producers', 'raster', 'exemplars');
