@@ -17,7 +17,7 @@ const outDir = config.outDir;
 const assetsDir = join(outDir, 'assets');
 const corePath = join(config.producerRoot, 'js', 'automation', 'texture_gen.js');
 if (!existsSync(corePath)) { console.error(`generator core not found at ${corePath}`); process.exit(1); }
-const { generateTexture } = await import(pathToFileURL(corePath).href);
+const { generateTexture, classify } = await import(pathToFileURL(corePath).href);
 
 function walk(dir, filter, acc = []) {
 	if (!existsSync(dir)) return acc;
@@ -70,10 +70,12 @@ for (const ref of refs) {
 	const target = targetOf(ref);
 	const dest = join(outDir, target);
 	if (existsSync(dest)) { present++; continue; }
-	// generate a placeholder for a texture we own the gap of
+	// generate a placeholder for a texture we own the gap of, routed through the
+	// core's classify() (wood/planks/leaves/ore/… get real structure). Pass target
+	// so the recipe resolves the real block name (oak_planks, not "planks").
 	const name = (target.split('/').pop() || '').replace('.png', '');
-	const family = target.includes('/item/') ? 'generic_item' : 'generic_block';
-	const buffer = generateTexture({ family, seed: name, size: 16 });
+	const family = classify(target);
+	const buffer = generateTexture({ family, target, seed: name, size: 16 });
 	mkdirSync(dirname(dest), { recursive: true });
 	writeFileSync(dest, encodePNG(buffer.width, buffer.height, buffer.data));
 	producers[target] = { producer: 'texture-gen', recipe: `${family}:ref-closure` };
