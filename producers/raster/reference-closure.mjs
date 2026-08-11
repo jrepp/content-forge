@@ -8,16 +8,12 @@
 //   node producers/raster/reference-closure.mjs
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
-import { pathToFileURL } from 'node:url';
-import { loadConfig, repoRoot } from '../../scripts/config.mjs';
 import { encodePNG } from './png.mjs';
+import { loadTextureCore, seedFromPath, targetFromRef, readProducers, writeProducers } from '../lib/texture-core.mjs';
 
-const config = loadConfig();
+const { core: { generateTexture, classify }, config } = await loadTextureCore();
 const outDir = config.outDir;
 const assetsDir = join(outDir, 'assets');
-const corePath = join(config.producerRoot, 'js', 'automation', 'texture_gen.js');
-if (!existsSync(corePath)) { console.error(`generator core not found at ${corePath}`); process.exit(1); }
-const { generateTexture, classify } = await import(pathToFileURL(corePath).href);
 
 function walk(dir, filter, acc = []) {
 	if (!existsSync(dir)) return acc;
@@ -58,16 +54,12 @@ for (const f of modelFiles) {
 	try { collectTextureRefs(JSON.parse(readFileSync(f, 'utf8')), refs); } catch { /* skip unparseable */ }
 }
 
-// resolve a ref to its texture target path under out/
-const targetOf = (ref) => { const [ns, rest] = ref.split(':'); return `assets/${ns}/textures/${rest}.png`; };
-
-const producersPath = join(outDir, '.producers.json');
-let producers = existsSync(producersPath) ? JSON.parse(readFileSync(producersPath, 'utf8')) : {};
+const producers = readProducers(outDir);
 
 let generated = 0, present = 0;
 const dangling = [];
 for (const ref of refs) {
-	const target = targetOf(ref);
+	const target = targetFromRef(ref);
 	const dest = join(outDir, target);
 	// Skip real/borrowed assets, but REGENERATE textures we own so a recipe or routing
 	// change (generic -> copper, …) propagates without a manual clean. Owned = we wrote
@@ -76,18 +68,17 @@ for (const ref of refs) {
 	if (existsSync(dest) && !owned) { present++; continue; }
 	// route through the core's classify() (wood/planks/leaves/ore/… get real structure).
 	// Pass target so the recipe resolves the real block name (oak_planks, not "planks").
-	const name = (target.split('/').pop() || '').replace('.png', '');
 	const family = classify(target);
-	const buffer = generateTexture({ family, target, seed: name, size: 16 });
+	const buffer = generateTexture({ family, target, seed: seedFromPath(target), size: 16 });
 	mkdirSync(dirname(dest), { recursive: true });
 	writeFileSync(dest, encodePNG(buffer.width, buffer.height, buffer.data));
 	producers[target] = { producer: 'texture-gen', recipe: `${family}:ref-closure` };
 	generated++;
 }
-writeFileSync(producersPath, JSON.stringify(producers, null, 0) + '\n');
+writeProducers(outDir, producers);
 
 // verify: every model ref now resolves to a file in out/
-for (const ref of refs) if (!existsSync(join(outDir, targetOf(ref)))) dangling.push(ref);
+for (const ref of refs) if (!existsSync(join(outDir, targetFromRef(ref)))) dangling.push(ref);
 
 console.log(`model refs: ${refs.size}  borrowed (kept): ${present}  generated/refreshed: ${generated}`);
 console.log(`dangling model texture refs after closure: ${dangling.length}${dangling.length ? ' -> ' + dangling.slice(0, 5).join(', ') : ' (out/ is self-complete)'}`);

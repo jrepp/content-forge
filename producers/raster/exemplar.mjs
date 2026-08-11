@@ -18,14 +18,11 @@
 //     (png.mjs handles RGBA/RGB/gray + all filters), so goldens can come from anywhere.
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
-import { loadConfig, repoRoot } from '../../scripts/config.mjs';
+import { repoRoot } from '../../scripts/config.mjs';
 import { encodePNG, decodePNG } from './png.mjs';
+import { loadTextureCore, seedFromPath, targetFromPath } from '../lib/texture-core.mjs';
 
-const config = loadConfig();
-const corePath = join(config.producerRoot, 'js', 'automation', 'texture_gen.js');
-if (!existsSync(corePath)) { console.error(`Blockbench generator core not found at ${corePath} (check producer.root in forge.config.json)`); process.exit(1); }
-const { generateTexture, classify } = await import(pathToFileURL(corePath).href);
+const { core: { generateTexture, classify } } = await loadTextureCore();
 
 // One representative block/item per family — chosen to exercise the recipe's palette
 // lookup and structure. `check` and `capture` both drive off this table.
@@ -94,15 +91,13 @@ const SAMPLES = [
 
 const exemplarDir = join(repoRoot, 'producers', 'raster', 'exemplars');
 // Goldens are keyed by block name (not family), so a family can have several samples.
-const goldenPath = (path) => join(exemplarDir, `${seedOf(path)}.png`);
-const targetOf = (path) => `assets/minecraft/textures/${path}.png`;
-const seedOf = (path) => (path.split('/').pop() || '');
+const goldenPath = (path) => join(exemplarDir, `${seedFromPath(path)}.png`);
 
 // Generate a family's canonical tile as an RGBA buffer via the core.
 function render(family, path) {
-	const target = targetOf(path);
+	const target = targetFromPath(path);
 	const resolved = family || classify(target);
-	return generateTexture({ family: resolved, target, seed: seedOf(path), size: 16 });
+	return generateTexture({ family: resolved, target, seed: seedFromPath(path), size: 16 });
 }
 
 // Mean absolute per-channel error between two RGBA buffers (0 = identical, 255 = max).

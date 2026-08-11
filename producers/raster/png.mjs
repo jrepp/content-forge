@@ -30,9 +30,11 @@ function chunk(type, data) {
  * Encode an RGBA pixel buffer as a PNG.
  * @param {number} width @param {number} height
  * @param {Uint8ClampedArray|Uint8Array|number[]} rgba length width*height*4
+ * @param {{level?:number}} [opts] zlib deflate level (default: zlib's default; pass 9 for
+ *   the smallest output / to match a byte-for-byte baseline)
  * @returns {Buffer}
  */
-export function encodePNG(width, height, rgba) {
+export function encodePNG(width, height, rgba, opts = {}) {
 	const src = rgba instanceof Uint8Array ? rgba : Uint8Array.from(rgba);
 	const stride = width * 4;
 	// raw = per-scanline filter byte (0 = none) + row bytes
@@ -49,7 +51,8 @@ export function encodePNG(width, height, rgba) {
 	ihdr[9] = 6;  // color type: RGBA
 	// [10]=compression 0, [11]=filter 0, [12]=interlace 0 (already zeroed)
 	const signature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
-	return Buffer.concat([signature, chunk('IHDR', ihdr), chunk('IDAT', deflateSync(raw)), chunk('IEND', Buffer.alloc(0))]);
+	const idat = opts.level != null ? deflateSync(raw, { level: opts.level }) : deflateSync(raw);
+	return Buffer.concat([signature, chunk('IHDR', ihdr), chunk('IDAT', idat), chunk('IEND', Buffer.alloc(0))]);
 }
 
 /** Parse a PNG's IHDR width/height (for validation). @param {Buffer} buf */
