@@ -7,7 +7,7 @@
 #   make exemplars       (re)capture the per-family golden tiles
 #   make exemplars-check  score current recipes against the goldens (drift guard)
 MINOSOFT ?= ../Minosoft
-.PHONY: all queue produce convert publish index gate release verify loop clean exemplars exemplars-check
+.PHONY: all queue produce convert publish index gate release verify loop clean exemplars exemplars-check review review-split review-check
 
 queue:
 	node scripts/pull-queue.mjs
@@ -48,6 +48,15 @@ release:
 
 verify:
 	node scripts/verify-determinism.mjs
+
+review:
+	node scripts/texture-sheet.mjs
+
+review-split:
+	node scripts/texture-sheet.mjs --split
+
+review-check:
+	node scripts/acceptance-review-split.mjs
 
 exemplars:
 	node producers/raster/exemplar.mjs capture

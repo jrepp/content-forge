@@ -22,8 +22,9 @@ out/**
 .DS_Store
 producers/blockbench/base-shapes/
 
-# Generated review contact sheets (regenerable; e.g. texture-review.html, stone-review.html).
-*-review.html
+# Generated review contact sheets (regenerable; texture-review.html, per-family
+# texture-review-<family>.html, stone-review.html, …).
+*review*.html
 
 # Blockbench-rendered preview thumbnails (regenerable via producers/blockbench/render-tree.mjs).
 renders/
