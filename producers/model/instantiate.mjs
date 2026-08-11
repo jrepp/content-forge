@@ -26,6 +26,8 @@ const SUFFIX_SHAPE = [
 	['_carpet', 'carpet'],
 	['_pane_side', 'pane_side'],
 	['_stained_glass_pane', 'pane_post'], ['_glass_pane', 'pane_post'],
+	['_door_bottom_left', 'door_bottom_left'], ['_door_bottom_right', 'door_bottom_right'],
+	['_door_top', 'door_top'],
 	['_trapdoor', 'trapdoor'], ['_door', 'door'],
 	['_wall_torch', 'torch'], ['_torch', 'torch'],
 	['_ladder', 'ladder'], ['_end_rod', 'end_rod'],

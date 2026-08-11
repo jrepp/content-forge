@@ -1,0 +1,10 @@
+{
+	"credit": "content-forge blockstate-lane shape: upper door half with rail-and-stile frame, center mullion, and two genuine window cut-outs",
+	"elements": [
+		{ "name": "hinge_stile", "from": [0, 0, 0], "to": [3, 16, 3], "faces": { "north": { "texture": "#0" }, "south": { "texture": "#0" }, "east": { "texture": "#0" }, "west": { "texture": "#0" }, "up": { "texture": "#0" }, "down": { "texture": "#0" } } },
+		{ "name": "latch_stile", "from": [0, 0, 13], "to": [3, 16, 16], "faces": { "north": { "texture": "#0" }, "south": { "texture": "#0" }, "east": { "texture": "#0" }, "west": { "texture": "#0" }, "up": { "texture": "#0" }, "down": { "texture": "#0" } } },
+		{ "name": "bottom_rail", "from": [0, 0, 3], "to": [3, 3, 13], "faces": { "north": { "texture": "#0" }, "south": { "texture": "#0" }, "east": { "texture": "#0" }, "west": { "texture": "#0" }, "up": { "texture": "#0" }, "down": { "texture": "#0" } } },
+		{ "name": "top_rail", "from": [0, 13, 3], "to": [3, 16, 13], "faces": { "north": { "texture": "#0" }, "south": { "texture": "#0" }, "east": { "texture": "#0" }, "west": { "texture": "#0" }, "up": { "texture": "#0" }, "down": { "texture": "#0" } } },
+		{ "name": "window_mullion", "from": [0, 3, 7], "to": [3, 13, 9], "faces": { "north": { "texture": "#0" }, "south": { "texture": "#0" }, "east": { "texture": "#0" }, "west": { "texture": "#0" }, "up": { "texture": "#0" }, "down": { "texture": "#0" } } }
+	]
+}
