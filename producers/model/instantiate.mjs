@@ -16,9 +16,11 @@ if (!existsSync(libDir)) { console.error('base-shape library missing — run: no
 // Longest-suffix-first shape routing. Plain (no suffix) blocks -> cube_all.
 const SUFFIX_SHAPE = [
 	['_slab_top', 'slab_top'], ['_slab', 'slab_bottom'],
+	['_stairs_inner', 'stairs_inner'], ['_stairs_outer', 'stairs_outer'],
 	['_stairs', 'stairs'],
 	['_button_inventory', 'button'], ['_button', 'button'],
 	['_pressure_plate', 'pressure_plate'],
+	['_fence_side', 'fence_arm'], ['_wall_side', 'wall_side'],
 	['_fence_gate', 'fence_post'], ['_fence', 'fence_post'],
 	['_wall', 'wall_post'],
 	['_carpet', 'carpet'],
@@ -40,17 +42,46 @@ const SUFFIX_SHAPE = [
 // potted_* is a prefix family (potted_fern, potted_cactus, …) -> pot + plant.
 const shapeFor = (name) => name.startsWith('potted_') ? 'potted_plant' : (SUFFIX_SHAPE.find(([suf]) => name.endsWith(suf)) || [null, 'cube_all'])[1];
 
+// Derived wood blocks reuse their family's plank material instead of inventing a
+// texture per geometry helper (oak_fence_side, oak_stairs_inner, ...). Longest
+// family names come first so dark_oak is not mistaken for oak.
+const WOOD_FAMILIES = ['dark_oak', 'acacia', 'bamboo', 'birch', 'cherry', 'crimson', 'jungle', 'mangrove', 'oak', 'spruce', 'warped'];
+const WOOD_DERIVED = /^(?:fence|fence_gate|stairs|slab|door|trapdoor|button|pressure_plate|sign|wall_sign|hanging_sign)$/;
+function materialFor(name) {
+	const base = name.replace(/_(?:inner|outer|side|top|double)$/, '');
+	if (/^bamboo_mosaic_(?:stairs|slab)$/.test(base)) return 'bamboo_mosaic';
+	for (const family of WOOD_FAMILIES) {
+		const prefix = `${family}_`;
+		if (base.startsWith(prefix) && WOOD_DERIVED.test(base.slice(prefix.length))) return `${family}_planks`;
+	}
+	return base;
+}
+
 const lib = {};
 for (const f of readdirSync(libDir).filter((n) => n.endsWith('.json'))) {
 	lib[n0(f)] = JSON.parse(readFileSync(join(libDir, f), 'utf8'));
+}
+// Blockstate-only helpers are durable hand-authored JSON rather than generated
+// Blockbench exports. Load them into the same routing table so explicit helper
+// routes cannot silently fall back to cube_all.
+const helperDir = join(repoRoot, 'producers', 'model', 'shapes');
+if (existsSync(helperDir)) {
+	for (const f of readdirSync(helperDir).filter((n) => n.endsWith('.json'))) {
+		lib[n0(f)] = JSON.parse(readFileSync(join(helperDir, f), 'utf8'));
+	}
 }
 function n0(f) { return f.replace('.json', ''); }
 
 // Instantiate a base shape for `name`: bind every texture ref to the target's own
 // texture, keep the authored elements + display.
 function instantiate(shape, name) {
-	const base = lib[shape] || lib.cube_all;
-	const tex = `minecraft:block/${name}`;
+	const base = lib[shape];
+	if (!base) throw new Error(`Missing routed base shape: ${shape}`);
+	const tex = `minecraft:block/${materialFor(name)}`;
+	// End-grain: cube_column's `end` slot (log/stem top+bottom faces) binds to the
+	// block's *_log_top texture; logs get real end grain instead of bark on the top.
+	// wood/hyphae (all-bark) have no _log suffix, so `end` falls back to the side tex.
+	const endTex = /_log$/.test(name) ? `minecraft:block/${name.replace(/_log$/, '_log_top')}` : tex;
 	const model = JSON.parse(JSON.stringify(base));
 	model.credit = 'content-forge (authored base shape: ' + shape + ')';
 	// Bind EVERY texture slot the authored faces reference (each base shape uses its
@@ -59,7 +90,7 @@ function instantiate(shape, name) {
 	const slots = new Set(['particle']);
 	for (const el of model.elements || []) for (const face of Object.values(el.faces || {})) if (face && typeof face.texture === 'string' && face.texture.startsWith('#')) slots.add(face.texture.slice(1));
 	model.textures = {};
-	for (const s of slots) model.textures[s] = tex;
+	for (const s of slots) model.textures[s] = (s === 'end') ? endTex : tex;
 	delete model.format_version;
 	delete model.groups; // Blockbench outliner metadata; Minecraft/Minosoft ignore it
 	return model;

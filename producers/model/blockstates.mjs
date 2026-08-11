@@ -82,11 +82,23 @@ const SUFFIX_SHAPE = [
 // potted_* is a prefix family (potted_fern, potted_cactus, …) -> pot + plant.
 const shapeFor = (name) => name.startsWith('potted_') ? 'potted_plant' : (SUFFIX_SHAPE.find(([suf]) => name.endsWith(suf)) || [null, 'cube_all'])[1];
 
+const WOOD_FAMILIES = ['dark_oak', 'acacia', 'bamboo', 'birch', 'cherry', 'crimson', 'jungle', 'mangrove', 'oak', 'spruce', 'warped'];
+const WOOD_DERIVED = /^(?:fence|fence_gate|stairs|slab|door|trapdoor|button|pressure_plate|sign|wall_sign|hanging_sign)$/;
+function materialFor(name) {
+	const base = name.replace(/_(?:inner|outer|side|top|double)$/, '');
+	if (/^bamboo_mosaic_(?:stairs|slab)$/.test(base)) return 'bamboo_mosaic';
+	for (const family of WOOD_FAMILIES) {
+		const prefix = `${family}_`;
+		if (base.startsWith(prefix) && WOOD_DERIVED.test(base.slice(prefix.length))) return `${family}_planks`;
+	}
+	return base;
+}
+
 // Instantiate a base shape for `name`, binding every face texture slot it uses
 // (and particle) to the block's own texture so nothing renders as a dangling #ref.
 function instantiateModel(shape, name) {
 	const base = lib[shape] || lib.cube_all;
-	const tex = `minecraft:block/${name}`;
+	const tex = `minecraft:block/${materialFor(name)}`;
 	if (!base) return { credit: 'content-forge (blockstate lane: flat cube fallback)', textures: { 0: tex, particle: tex }, elements: [{ from: [0, 0, 0], to: [16, 16, 16], faces: Object.fromEntries(['down', 'up', 'north', 'south', 'west', 'east'].map((d) => [d, { texture: '#0', cullface: d }])) }] };
 	const model = JSON.parse(JSON.stringify(base));
 	model.credit = `content-forge (blockstate lane: ${shape})`;
@@ -230,7 +242,11 @@ for (const { target, name } of targets) {
 	// 2) build + write the blockstate (and any helper models it references)
 	const { parts, helpers } = buildBlockstate(name);
 	for (const h of helpers) {
-		if (existsSync(join(outDir, h.target))) continue;
+		const existing = producers[h.target];
+		const replaceable = !existsSync(join(outDir, h.target))
+			|| existing?.producer === 'blockstates'
+			|| (existing?.producer === 'blockbench' && existing?.recipe === 'base-shape:cube_all');
+		if (!replaceable) continue;
 		write(h.target, h.model);
 		producers[h.target] = { producer: 'blockstates', recipe: h.recipe || 'base-shape:slab_top' };
 		helpersWritten++;
@@ -246,6 +262,7 @@ if (!dry) writeFileSync(producersPath, JSON.stringify(producers, null, 0) + '\n'
 // ---- verify: every blockstate model ref resolves to a file in out/ ----
 const bsDir = join(outDir, 'assets', 'minecraft', 'blockstates');
 const dangling = [];
+const invalidFenceModels = [];
 if (!dry) {
 	for (const f of readdirSync(bsDir).filter((n) => n.endsWith('.json'))) {
 		const doc = JSON.parse(readFileSync(join(bsDir, f), 'utf8'));
@@ -259,6 +276,22 @@ if (!dry) {
 			if (!existsSync(join(outDir, 'assets', ns, 'models', `${rest}.json`))) dangling.push(`${f} -> ${ref}`);
 		}
 	}
+	for (const { name } of targets.filter(({ name }) => /_fence$/.test(name))) {
+		const expectedTexture = `minecraft:block/${materialFor(name)}`;
+		for (const [suffix, requiredElements] of [['', ['fence_post_0']], ['_side', ['arm_top', 'arm_bottom']]]) {
+			const modelName = `${name}${suffix}`;
+			try {
+				const model = JSON.parse(readFileSync(join(modelDir, `${modelName}.json`), 'utf8'));
+				const elements = new Set((model.elements || []).map((element) => element.name));
+				const textures = new Set(Object.values(model.textures || {}));
+				if (!requiredElements.every((element) => elements.has(element)) || textures.size !== 1 || !textures.has(expectedTexture)) {
+					invalidFenceModels.push(`${modelName} expected ${requiredElements.join('+')} on ${expectedTexture}`);
+				}
+			} catch (error) {
+				invalidFenceModels.push(`${modelName} unreadable: ${error.message}`);
+			}
+		}
+	}
 }
 
 console.log(`blockstate lane ${dry ? '(dry) ' : ''}-> ${outDir}`);
@@ -269,5 +302,6 @@ console.log('  by family:');
 for (const [fam, c] of Object.entries(byFamily).sort((a, b) => b[1] - a[1])) console.log(`    ${fam.padEnd(18)} ${c}`);
 if (!dry) {
 	console.log(`  dangling blockstate model refs: ${dangling.length}${dangling.length ? ' -> ' + dangling.slice(0, 5).join(', ') : ' (blockstate lane self-complete)'}`);
-	process.exit(dangling.length ? 1 : 0);
+	console.log(`  invalid fence models  : ${invalidFenceModels.length}${invalidFenceModels.length ? ' -> ' + invalidFenceModels.slice(0, 5).join(', ') : ' (posts, arms, and materials valid)'}`);
+	process.exit(dangling.length || invalidFenceModels.length ? 1 : 0);
 }

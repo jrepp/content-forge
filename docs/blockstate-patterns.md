@@ -62,13 +62,21 @@ Base shapes in `producers/blockbench/base-shapes/` are **regenerated** from
 gets clobbered. Blockstate-lane-only helper shapes therefore live in a separate,
 durable dir: `producers/model/shapes/*.json` (currently `fence_arm`, `wall_side`,
 `stairs_inner`, `stairs_outer`, `sign`, `candle`, `lever`). `blockstates.mjs` merges
-both dirs into its shape lib (extras win on name clash).
+both dirs into its shape lib (extras win on name clash). The general
+`instantiate.mjs` pass loads the same helper library and routes `_fence_side`,
+`_wall_side`, `_stairs_inner`, and `_stairs_outer` explicitly; a missing routed
+shape is fatal instead of silently degrading to `cube_all`. The blockstate lane may
+replace a stale generated helper owned by `blockstates` or an old Blockbench
+`base-shape:cube_all`, while preserving other authored owners.
 
 Shape file format is minimal: just `{ "elements": [ … ] }` with every face's
 `texture` set to `"#0"`. `instantiateModel()` deep-clones the shape, binds every `#N`
-slot (plus `particle`) to the block's own texture (`minecraft:block/<name>`), and
-strips Blockbench-only `format_version`/`groups`. Orientation convention: author the
-one arm/step pointing **north (−z)** so the multipart's `y` rotations line up.
+slot (plus `particle`) to its material texture, and strips Blockbench-only
+`format_version`/`groups`. Derived wood geometry (fence post/arm, stair
+straight/inner/outer, slab, door, and related families) resolves to the shared
+`<wood>_planks` material, so helper names never create unrelated textures.
+Orientation convention: author the one arm/step pointing **north (−z)** so the
+multipart's `y` rotations line up.
 
 ## Extending
 
@@ -78,7 +86,9 @@ one arm/step pointing **north (−z)** so the multipart's `y` rotations line up.
    and returns its model ref).
 3. If the family needs an exclusive property → pin the full tuple in every `when`.
 4. Run `--dry` (routing histogram, no writes), then the real run (must report
-   `dangling blockstate model refs: 0`).
+   `dangling blockstate model refs: 0`). The real run also rejects any generated
+   fence whose center lacks `fence_post_0`, whose side lacks `arm_top`/`arm_bottom`,
+   or whose post/arm textures differ from the resolved wood material.
 
 Live "does it actually render" is confirmed downstream in the Minosoft consumer's
 compose → re-audit loop, not here.
