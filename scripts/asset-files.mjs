@@ -12,4 +12,3 @@ export function containedPath(root, target) {
     if (!rel || rel.startsWith('../') || isAbsolute(rel)) throw new Error(`Target escapes pack: ${target}`);
     return path;
 }
-

@@ -28,6 +28,14 @@
     "review:browser-check": "node scripts/review/browser-check.mjs",
     "items:plan": "node scripts/item-families.mjs",
     "items:author": "node producers/blockbench/item-family.mjs author",
-    "items:export": "node producers/blockbench/item-family.mjs export"
+    "items:export": "node producers/blockbench/item-family.mjs export",
+    "hosting:check": "turbo-ogre check --file hosting.json",
+    "hosting:bundle": "node scripts/hosting-bundle.mjs",
+    "hosting:register": "turbo-ogre register --file hosting.json",
+    "hosting:status": "turbo-ogre status",
+    "hosting:publish": "turbo-ogre publish --artifact review-site.tar.gz --file work/hosting/review-site.tar.gz"
+  },
+  "devDependencies": {
+    "@turbo-ogre/sdk": "https://codeload.github.com/turbo-ogre/sdk/tar.gz/d4f78b92f88f63f1edf44a6ad4955bcdbf7d799e"
   }
 }

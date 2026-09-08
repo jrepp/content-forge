@@ -1,5 +1,9 @@
 # content-forge
 
+Hosting integration uses the public [Turbo Ogre SDK](https://github.com/turbo-ogre/sdk).
+See [onboarding and review-site packaging](docs/hosting.md) for the current
+artifact workflow and the remaining Artemis/auth deployment requirements.
+
 The content-production seam between the **producer** (Blockbench + automation, an
 asset *engine*) and the **consumer** (Minosoft, a game *client*). Neither app owns
 production logic, the work list, or the produced assets — this repo does.

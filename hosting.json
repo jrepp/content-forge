@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "project": "content-forge",
+  "channels": {
+    "canary": {"artifacts": ["review-site.tar.gz"], "retain": 2},
+    "stable": {"artifacts": ["review-site.tar.gz"], "retain": 5}
+  }
+}
