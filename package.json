@@ -31,11 +31,13 @@
     "items:export": "node producers/blockbench/item-family.mjs export",
     "hosting:check": "turbo-ogre check --file hosting.json",
     "hosting:bundle": "node scripts/hosting-bundle.mjs",
-    "hosting:register": "turbo-ogre register --file hosting.json",
+    "hosting:register": "npm run hosting:onboard",
     "hosting:status": "turbo-ogre status",
-    "hosting:publish": "turbo-ogre publish --artifact review-site.tar.gz --file work/hosting/review-site.tar.gz"
+    "hosting:publish": "turbo-ogre publish --artifact review-site.tar.gz --file work/hosting/review-site.tar.gz",
+    "hosting:plan": "turbo-ogre onboard --dry-run",
+    "hosting:onboard": "turbo-ogre onboard"
   },
   "devDependencies": {
-    "@turbo-ogre/sdk": "https://codeload.github.com/turbo-ogre/sdk/tar.gz/d4f78b92f88f63f1edf44a6ad4955bcdbf7d799e"
+    "@turbo-ogre/sdk": "https://codeload.github.com/turbo-ogre/sdk/tar.gz/a25ff79cf99f9671bf1b5e15ae26dd399eb6dc6c"
   }
 }

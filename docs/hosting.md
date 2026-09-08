@@ -11,6 +11,7 @@ import hosting/auth internals or install gateway configuration.
 ```sh
 npm ci --ignore-scripts
 npm run hosting:check
+npm run hosting:plan
 npm run review:cohort -- --cohort review/cohorts/survival-stone.json
 npm run review:cohort -- --cohort review/cohorts/survival-plants.json
 npm run review:cohort -- --family ingots
@@ -42,12 +43,18 @@ Run from this repository's Actions identity with `permissions: id-token: write`:
 ```sh
 export TURBO_OGRE_URL='https://t1.jrepp.com/hosting'
 export TURBO_OGRE_AUDIENCE='https://hosting.jrepp.com'
-npm run hosting:register
+npm run hosting:onboard
 npm run hosting:publish -- --channel canary
 npm run hosting:status
 ```
 
 The URL and audience are environment configuration supplied by the platform.
+`hosting:plan` is the same local dry run used by Biohazard and requires no
+endpoint or identity. `hosting:onboard` replaces separate registration/readback:
+it checks both responses against `GITHUB_REPOSITORY`, `GITHUB_REPOSITORY_ID`,
+`GITHUB_REF`, and the requested declaration. These values are supplied by Actions;
+operators must explicitly provide expected values when using a token directly.
+The older `hosting:register` script remains an alias to this verified operation.
 The initial values above match the existing fleet; changing the branding does
 not change the issuer's audience. No host, auth-admin, or permanent CI credential
 belongs in this repository. The SDK obtains a short-lived Actions token or uses
