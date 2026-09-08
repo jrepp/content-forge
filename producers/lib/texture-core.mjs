@@ -8,6 +8,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { loadConfig } from '../../scripts/config.mjs';
+import { SHADOW_TARGET, shadowMask } from '../raster/shadow-mask.mjs';
 
 /**
  * Load config and dynamically import the Blockbench generator core (texture_gen.js).
@@ -19,7 +20,12 @@ export async function loadTextureCore() {
 	const corePath = join(config.producerRoot, 'js', 'automation', 'texture_gen.js');
 	if (!existsSync(corePath)) { console.error(`Blockbench generator core not found at ${corePath} (check producer.root in forge.config.json)`); process.exit(1); }
 	const core = await import(pathToFileURL(corePath).href);
-	return { core, config };
+	return { core: {
+		...core,
+		classify: (target) => target === SHADOW_TARGET ? 'shadow_mask' : core.classify(target),
+		listFamilies: () => [...core.listFamilies(), 'shadow_mask'],
+		generateTexture: (request) => request.target === SHADOW_TARGET ? shadowMask() : core.generateTexture(request),
+	}, config };
 }
 
 /** Seed / block name for a texture path or target: last path segment, `.png` stripped. */

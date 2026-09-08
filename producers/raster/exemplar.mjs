@@ -86,6 +86,7 @@ const SAMPLES = [
 	['sculk', 'block/sculk'],
 	['ice', 'block/packed_ice'],
 	['ice', 'block/blue_ice'],
+	['water', 'block/water_overlay'],
 	['glass_pane', 'block/lime_stained_glass_pane_side'], // pane-side routing
 ];
 

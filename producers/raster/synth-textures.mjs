@@ -24,6 +24,9 @@ import { loadTextureCore, seedFromPath, readProducers, writeProducers } from '..
 const args = process.argv.slice(2);
 const limit = Number((args[args.indexOf('--limit') + 1]) || 0) || Infinity;
 const all = args.includes('--all');
+const targetIndex = args.indexOf('--target');
+const target = targetIndex < 0 ? null : args[targetIndex + 1];
+if (targetIndex >= 0 && !target) throw new Error('--target requires an exact texture target');
 
 const { core: { generateTexture, classify, listFamilies }, config } = await loadTextureCore();
 const KNOWN_FAMILIES = new Set(listFamilies());
@@ -38,6 +41,7 @@ const plan = JSON.parse(readFileSync(sourcePath, 'utf8'));
 const familyFor = (e) => (e.detail && e.detail !== 'generic_block' && e.detail !== 'generic_item' && KNOWN_FAMILIES.has(e.detail)) ? e.detail : classify(e.target);
 const textures = plan.entries
 	.filter((e) => e.kind === 'textures' && (all || e.detail === 'generic_block' || e.detail === 'generic_item'))
+	.filter((e) => target === null || e.target === target)
 	.slice(0, limit);
 
 // Merge into the existing producer map (models may have written it already).

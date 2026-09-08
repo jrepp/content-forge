@@ -8,6 +8,7 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadConfig, repoRoot } from '../../scripts/config.mjs';
+import { prepareModel } from './semantics.mjs';
 
 const config = loadConfig();
 const libDir = join(repoRoot, 'producers', 'blockbench', 'base-shapes');
@@ -95,7 +96,7 @@ function instantiate(shape, name) {
 	for (const s of slots) model.textures[s] = (s === 'end') ? endTex : tex;
 	delete model.format_version;
 	delete model.groups; // Blockbench outliner metadata; Minecraft/Minosoft ignore it
-	return model;
+	return prepareModel(model);
 }
 
 const producersPath = join(config.outDir, '.producers.json');

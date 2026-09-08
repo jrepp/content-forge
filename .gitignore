@@ -28,3 +28,8 @@ producers/blockbench/base-shapes/
 
 # Blockbench-rendered preview thumbnails (regenerable via producers/blockbench/render-tree.mjs).
 renders/
+
+# Atomic authored survival overlay outputs
+out-survival/
+out-survival.candidate-*/
+out-survival.previous-*/
