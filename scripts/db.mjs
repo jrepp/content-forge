@@ -7,7 +7,7 @@
 //   node scripts/db.mjs index                              rebuild from pipeline outputs
 //   node scripts/db.mjs report                             status/kind/producer rollups
 //   node scripts/db.mjs list [--status S] [--kind K] [--limit N]
-//   node scripts/db.mjs approve <target> [--by NAME] [--note ...]
+//   node scripts/db.mjs approve <target> --evidence PATH [--by NAME] [--note ...]
 //   node scripts/db.mjs review  <target> [--by NAME] [--note ...]
 //   node scripts/db.mjs reject  <target> [--by NAME] [--note ...]
 //   node scripts/db.mjs set-status <target> <status> [--by NAME] [--note ...]
@@ -18,11 +18,14 @@
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { join } from 'node:path';
-import { repoRoot } from './config.mjs';
+import { join, resolve } from 'node:path';
+import { loadConfig, repoRoot } from './config.mjs';
+import { evaluateQuality } from './quality-gate.mjs';
+import { containedPath, sha256 } from './asset-files.mjs';
 
 const DB_PATH = join(repoRoot, 'db', 'asset-index.db');
 const REVIEWS = join(repoRoot, 'db', 'reviews.json');
+const VISUAL_FEEDBACK = join(repoRoot, 'db', 'visual-feedback.json');
 const POLICIES = join(repoRoot, 'db', 'policies.json');
 const CONVERSIONS = join(repoRoot, 'db', 'conversions.json');
 const now = () => new Date().toISOString();
@@ -47,8 +50,14 @@ CREATE TABLE IF NOT EXISTS conversions (
 CREATE TABLE IF NOT EXISTS status_history (
   id INTEGER PRIMARY KEY AUTOINCREMENT, target TEXT, status TEXT, actor TEXT, note TEXT, at TEXT
 );
+CREATE TABLE IF NOT EXISTS visual_feedback (
+  id TEXT NOT NULL, target TEXT NOT NULL, state TEXT NOT NULL, severity TEXT NOT NULL,
+  recipe TEXT, issues TEXT, note TEXT, image_sha256 TEXT, content_fingerprint TEXT,
+  updated_at TEXT, PRIMARY KEY (id, target)
+);
 CREATE INDEX IF NOT EXISTS idx_assets_status ON assets(status);
 CREATE INDEX IF NOT EXISTS idx_assets_kind ON assets(kind);
+CREATE INDEX IF NOT EXISTS idx_visual_feedback_state ON visual_feedback(state);
 `;
 
 function open() { const db = new DatabaseSync(DB_PATH); db.exec('PRAGMA journal_mode=WAL;'); db.exec(SCHEMA); return db; }
@@ -68,7 +77,7 @@ function parseTarget(target) {
 function cmdIndex() {
 	const db = open();
 	db.exec('BEGIN'); // batch the full rebuild into one transaction (perf + atomicity)
-	db.exec('DELETE FROM assets; DELETE FROM conversions;');
+	db.exec('DELETE FROM assets; DELETE FROM conversions; DELETE FROM visual_feedback;');
 	const fp = readJson(join(repoRoot, 'work', 'queue.json'), {}).fingerprint || null;
 	const upsert = db.prepare(`INSERT INTO assets (target,namespace,kind,category,name,family,strategy,disposition,status,producer,recipe,format,source,source_sha256,target_sha256,queue_fingerprint,updated_at)
 		VALUES (@target,@namespace,@kind,@category,@name,@family,@strategy,@disposition,@status,@producer,@recipe,@format,@source,@source_sha256,@target_sha256,@queue_fingerprint,@updated_at)
@@ -85,7 +94,7 @@ function cmdIndex() {
 	const plan = readJson(join(repoRoot, 'work', 'selection-plan.json'), { entries: [] });
 	for (const e of plan.entries || []) upsert.run(row({ target: e.target, ...parseTarget(e.target), family: e.detail || null, strategy: e.strategy }));
 	// 3. what we produced (published pack)
-	const prov = readJson(join(repoRoot, 'out', 'provenance.json'), { targets: [] });
+	const prov = readJson(join(loadConfig().outDir, 'provenance.json'), { targets: [] });
 	for (const t of prov.targets || []) upsert.run(row({ target: t.target, ...parseTarget(t.target), producer: t.producer, recipe: t.recipe, target_sha256: t.sha256, status: 'published' }));
 	// 4. conversion lineage (Blockbench source -> target)
 	const convRows = readJson(CONVERSIONS, []);
@@ -103,12 +112,23 @@ function cmdIndex() {
 		const res = db.prepare('UPDATE assets SET status=?, reviewer=?, reviewed_at=?, note=?, updated_at=? WHERE target=?').run(r.status, r.by || null, r.at || null, r.note || null, now(), target);
 		if (res.changes) histIns.run(target, r.status, r.by || null, r.note || null, r.at || now());
 	}
-	// 6. governance policy (committed): auto-approve trusted deterministic producers/
-	//    recipes, but never override an explicit human review/rejection.
-	// Governance: generated assets (no authored .bbmodel source) are deterministic
-	// and auto-approved; authored assets (source set from conversions.json) require
-	// an explicit human review. This keys on the STABLE, committed `source`, not the
-	// fragile per-run producer stamp, so the gate is idempotent across re-index.
+	// 6. in-world Minosoft visual feedback remains independent of approval state.
+	// Open and candidate records hold the release gate until a consumer recapture
+	// verifies the adjusted bytes (or the feedback is explicitly dismissed).
+	const visualFeedback = readJson(VISUAL_FEEDBACK, { entries: [] });
+	const insFeedback = db.prepare(`INSERT INTO visual_feedback
+		(id,target,state,severity,recipe,issues,note,image_sha256,content_fingerprint,updated_at)
+		VALUES (?,?,?,?,?,?,?,?,?,?)`);
+	for (const feedback of visualFeedback.entries || []) for (const target of feedback.targets || []) {
+		insFeedback.run(
+			feedback.id, target.target, feedback.state, feedback.severity, target.recipe || null,
+			JSON.stringify(feedback.feedback?.issues || []), feedback.feedback?.note || null,
+			feedback.source?.imageSha256 || null, feedback.source?.contentFingerprint || null,
+			feedback.history?.at(-1)?.at || feedback.feedback?.at || now()
+		);
+	}
+	// Legacy policy support affects index display only. The current policy disables
+	// automatic approvals; the release gate never accepts a policy review.
 	const policies = readJson(POLICIES, {});
 	const auto = policies.autoApprove || {};
 	if (auto.generated) {
@@ -125,29 +145,18 @@ function cmdIndex() {
 	}
 	db.exec('COMMIT');
 	const total = db.prepare('SELECT COUNT(*) c FROM assets').get().c;
-	console.log(`indexed ${total} assets (fingerprint ${String(fp).slice(0, 12)}…), ${convRows.length} conversion(s), ${Object.keys(reviews).length} review(s)`);
+	console.log(`indexed ${total} assets (fingerprint ${String(fp).slice(0, 12)}…), ${convRows.length} conversion(s), ${Object.keys(reviews).length} review(s), ${(visualFeedback.entries || []).length} visual feedback record(s)`);
 	db.close();
 }
 
-/** Release gate: is every produced asset reviewed (human or policy) and none rejected? */
+/** Release uses current asset/review bytes; the SQLite index is only a report. */
 function cmdGate() {
-	const db = open();
-	const shippable = db.prepare("SELECT COUNT(*) c FROM assets WHERE status IN ('published','approved','reviewed','rejected')").get().c;
-	const approved = db.prepare("SELECT COUNT(*) c FROM assets WHERE status='approved'").get().c;
-	const reviewedAny = db.prepare("SELECT COUNT(*) c FROM assets WHERE status IN ('reviewed','approved','rejected')").get().c;
-	const rejected = db.prepare("SELECT COUNT(*) c FROM assets WHERE status='rejected'").get().c;
-	const pending = db.prepare("SELECT COUNT(*) c FROM assets WHERE status='published'").get().c;
-	const pct = (n) => (shippable ? (100 * n / shippable).toFixed(1) + '%' : '—');
-	console.log('Release gate:');
-	console.log(`  shippable (produced) : ${shippable}`);
-	console.log(`  approved             : ${approved} (${pct(approved)})`);
-	console.log(`  reviewed (any)       : ${reviewedAny} (${pct(reviewedAny)})`);
-	console.log(`  rejected             : ${rejected}`);
-	console.log(`  pending review       : ${pending}`);
-	const gateOpen = pending === 0 && rejected === 0;
-	console.log(`  GATE: ${gateOpen ? 'OPEN — 100% reviewed, none rejected' : `HELD — ${pending} pending, ${rejected} rejected`}`);
-	db.close();
-	process.exit(gateOpen ? 0 : 1);
+	const result = evaluateQuality({outDir:loadConfig().outDir, repoRoot});
+	const counts = {};
+	for (const issue of result.issues) counts[issue.code] = (counts[issue.code] || 0) + 1;
+	console.log(`Quality gate: ${result.open ? 'OPEN' : 'HELD'} (${result.assets.length} assets)`);
+	for (const [code, count] of Object.entries(counts)) console.log(`  ${code}: ${count}`);
+	process.exitCode = result.open ? 0 : 1;
 }
 
 function cmdReport() {
@@ -157,6 +166,7 @@ function cmdReport() {
 	table('by status', 'SELECT status k, COUNT(*) c FROM assets GROUP BY status ORDER BY c DESC');
 	table('by kind', 'SELECT kind k, COUNT(*) c FROM assets GROUP BY kind ORDER BY c DESC');
 	table('by producer', 'SELECT producer k, COUNT(*) c FROM assets WHERE producer IS NOT NULL GROUP BY producer ORDER BY c DESC');
+	table('visual feedback by state', 'SELECT state k, COUNT(DISTINCT id) c FROM visual_feedback GROUP BY state ORDER BY c DESC');
 	console.log(`\nconversions (blockbench source -> target): ${db.prepare('SELECT COUNT(*) c FROM conversions').get().c}`);
 	db.close();
 }
@@ -180,7 +190,14 @@ function setStatus(target, status, args) {
 	const at = now();
 	// durable: reviews.json
 	const reviews = readJson(REVIEWS, {});
-	reviews[target] = { status, by, at, note };
+	const record = { status, by, at, note };
+	if (status === 'approved') {
+		const evidencePath = opt('--evidence');
+		if (!evidencePath) throw new Error('Approval requires --evidence PATH to the reviewed preview or capture manifest.');
+		record.sha256 = sha256(readFileSync(containedPath(loadConfig().outDir, target)));
+		record.evidence = [{path:evidencePath, sha256:sha256(readFileSync(resolve(repoRoot, evidencePath)))}];
+	}
+	reviews[target] = record;
 	writeFileSync(REVIEWS, JSON.stringify(reviews, null, 2) + '\n');
 	// live: DB
 	const db = open();
@@ -195,7 +212,7 @@ function cmdRecordConversion(args) {
 	const opt = (n) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : null; };
 	if (!target || !source) { console.error('usage: record-conversion <target> <source.bbmodel> [--codec java_block]'); process.exit(2); }
 	const codec = opt('--codec') || 'java_block';
-	const outTarget = join(repoRoot, 'out', target);
+	const outTarget = join(loadConfig().outDir, target);
 	const rec = { target, source, codec, source_format: opt('--source-format') || codec, source_sha256: sha256File(join(repoRoot, source)), target_sha256: sha256File(outTarget), converted_at: now() };
 	const convs = readJson(CONVERSIONS, []).filter((c) => c.target !== target);
 	convs.push(rec);

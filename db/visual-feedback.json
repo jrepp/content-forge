@@ -1,0 +1,139 @@
+{
+  "schema": 1,
+  "entries": [
+    {
+      "id": "6689eae6b7061215",
+      "state": "candidate",
+      "severity": "high",
+      "source": {
+        "producer": "minosoft",
+        "capture": "../Minosoft/.run/diagnostics/small-survival-lit-tiles-after-arm-taa/manifest.json",
+        "image": "../Minosoft/.run/diagnostics/small-survival-lit-tiles-after-arm-taa/final-enhanced-minecraft.png",
+        "imageSha256": "1e042a0e49784c416373f716d80394cc7fbe4c53836152dc34b5f6cfdcc14e88",
+        "width": 1800,
+        "height": 1000,
+        "kind": "trajectory-diagnostic",
+        "trajectory": "small-survival",
+        "contentFingerprint": null,
+        "capturedAt": "2026-08-11T18:02:41.312214Z"
+      },
+      "feedback": {
+        "issues": [
+          "incorrect-transparency",
+          "low-shadow-readability",
+          "material-confusion",
+          "repetition"
+        ],
+        "note": "In the cold taiga shoreline scene, snow variants merge, cobble repeats as a square grid, blackstone and obsidian collapse together, podzol/dirt read as noisy swatches, spruce bark and needles lose material structure, and the generated water overlay is opaque gray.",
+        "by": "codex",
+        "at": "2026-08-14T19:11:06.588Z"
+      },
+      "targets": [
+        {
+          "target": "assets/minecraft/textures/block/blackstone.png",
+          "producer": "texture-gen",
+          "recipe": "stone:ref-closure",
+          "beforeSha256": "446d0cd1577661393c22d3505fad7d5cf69209fe2d51de560cd0b5a5e6e2630e",
+          "candidateSha256": "1fbec59dbaa1c6e25bfe8f072580edd578b770318e03c7c67be2710a8e2b1484"
+        },
+        {
+          "target": "assets/minecraft/textures/block/cobblestone.png",
+          "producer": "texture-gen",
+          "recipe": "stone:ref-closure",
+          "beforeSha256": "5c81b38168ac139312b90ea16285d7a2e811a9338a7271d2dc46819c9bd6bd35",
+          "candidateSha256": "8252d48ca1e9714b9b1c0f0bc754964366170e6442db3b23b529c72ee1d2654f"
+        },
+        {
+          "target": "assets/minecraft/textures/block/dirt.png",
+          "producer": "texture-gen",
+          "recipe": "dirt:ref-closure",
+          "beforeSha256": "b37ebc3d6527f1f041889dfdfccfed1ec319875f04ce139eba8589e3e284af78",
+          "candidateSha256": "6ef7228e2dfb0dbfc2c68094e34b47b9691393cc5c1307258cd6ac421d7f15fa"
+        },
+        {
+          "target": "assets/minecraft/textures/block/obsidian.png",
+          "producer": "texture-gen",
+          "recipe": "stone:ref-closure",
+          "beforeSha256": "6bd3efdc8f816e5f067ac9fd3f14cb5190fcd1b48a25f293b07cc4e1c8aac674",
+          "candidateSha256": "e86229a73d1dab5ef81ce258d07c7050bc3a8a734ef0d6e818793b724f28ae41"
+        },
+        {
+          "target": "assets/minecraft/textures/block/podzol.png",
+          "producer": "texture-gen",
+          "recipe": "dirt",
+          "beforeSha256": "92c800f0a9623aa1b0320317b9513883ddaa99ad10800b919b836a33f4257866",
+          "candidateSha256": "c0377a1a8b014c295a270a5d981475e3d6d04f54e81d173ef075ae5fcd2286b1"
+        },
+        {
+          "target": "assets/minecraft/textures/block/powder_snow.png",
+          "producer": "texture-gen",
+          "recipe": "ice:ref-closure",
+          "beforeSha256": "f28ce53b79e606d5c9f5aa46d7c7fe928ce48594d5772c7debca767d74c6052f",
+          "candidateSha256": "821967c8c2c62fb9a9ff27691db9f021846618cd83cf6394180fc58328232ae5"
+        },
+        {
+          "target": "assets/minecraft/textures/block/snow.png",
+          "producer": "texture-gen",
+          "recipe": "ice:ref-closure",
+          "beforeSha256": "2485f5a25a87cb0828c69e9323bc43e226c1764fbf632fd344c0411a91443b57",
+          "candidateSha256": "40b010d3243c25944ce2cf9dbe740a13b5551f91080aec596216381f0e2d3882"
+        },
+        {
+          "target": "assets/minecraft/textures/block/snow_block.png",
+          "producer": "texture-gen",
+          "recipe": "ice",
+          "beforeSha256": "df9ed06cb1aae9456a7bd82c01123c2cdb5d1a5da1c8fdf190043847373aa2f9",
+          "candidateSha256": "738e3c2978af957eb2a58ddfad4aa2af2b1abbcf97c4f62000a58acee6a1e3fd"
+        },
+        {
+          "target": "assets/minecraft/textures/block/spruce_leaves.png",
+          "producer": "texture-gen",
+          "recipe": "leaves:ref-closure",
+          "beforeSha256": "4982dade4da9352eb7a5a0670e0b67ca1168e0510b9eb344d16899690f6bc106",
+          "candidateSha256": "d642979706deee14f13ffdd46fd6eb901c12a3a58b60413482289a85c327df87"
+        },
+        {
+          "target": "assets/minecraft/textures/block/spruce_log.png",
+          "producer": "texture-gen",
+          "recipe": "wood:ref-closure",
+          "beforeSha256": "1149bf8373865fd99d63e3182ddf23613640415395282c040f401b2c97114d5c",
+          "candidateSha256": "2a2351874d955e1df9a6c41234d0920ae9528c92f2bae99f1eda7d1a8a2f5ad0"
+        },
+        {
+          "target": "assets/minecraft/textures/block/spruce_log_top.png",
+          "producer": "texture-gen",
+          "recipe": "log_top:ref-closure",
+          "beforeSha256": "9fa5fe061de93b5d87fb8636011e5d4f8cb0ae7b1a4c5ab534f2cc409608535f",
+          "candidateSha256": "9fa5fe061de93b5d87fb8636011e5d4f8cb0ae7b1a4c5ab534f2cc409608535f"
+        },
+        {
+          "target": "assets/minecraft/textures/block/water_overlay.png",
+          "producer": "texture-gen",
+          "recipe": "generic_block",
+          "beforeSha256": "ae419c011dfcfb717df593ffb2efd5e95c0910fb253d3c9a5d885f57f12aaed0",
+          "candidateSha256": "a8c361ba98b08c442fecfc04c8d81a44ae4b65034eef583b8db198e1ae5c372b"
+        }
+      ],
+      "history": [
+        {
+          "state": "open",
+          "by": "codex",
+          "at": "2026-08-14T19:11:06.588Z",
+          "note": "Imported Minosoft visual evidence."
+        },
+        {
+          "state": "candidate",
+          "by": "codex",
+          "at": "2026-08-14T19:24:25.638Z",
+          "note": "Reworked spruce bark and needles, staggered cobble, blackstone/obsidian identity, soil clusters, snow variants, and translucent water; awaiting same-frame Minosoft scene recapture."
+        }
+      ],
+      "candidate": {
+        "by": "codex",
+        "at": "2026-08-14T19:24:25.638Z",
+        "note": "Reworked spruce bark and needles, staggered cobble, blackstone/obsidian identity, soil clusters, snow variants, and translucent water; awaiting same-frame Minosoft scene recapture.",
+        "changedTargets": 11
+      }
+    }
+  ]
+}
