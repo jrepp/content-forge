@@ -33,3 +33,8 @@ renders/
 out-survival/
 out-survival.candidate-*/
 out-survival.previous-*/
+
+# Content review sheets and immutable item-family candidate exports
+work/reviews/
+work/item-families/
+work/item-family-retention/

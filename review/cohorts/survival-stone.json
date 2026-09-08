@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "id": "survival-stone",
+  "title": "Survival · Stone and soil",
+  "description": "Review material identity, pixel structure, and repeated surfaces alongside neighboring terrain.",
+  "entries": [
+    {"id":"minecraft:stone","kind":"block","focus":"Natural fracture structure; no baked tile border."},
+    {"id":"minecraft:cobblestone","kind":"block","focus":"Readable stones and mortar without a repeated square outline."},
+    {"id":"minecraft:blackstone","kind":"block","focus":"Retain dark stone detail in shade; distinguish from obsidian."},
+    {"id":"minecraft:obsidian","kind":"block","focus":"Recognizable glassy volcanic material at ordinary game scale."},
+    {"id":"minecraft:dirt","kind":"block","focus":"Deliberate soil clusters rather than uniform noise."},
+    {"id":"minecraft:podzol","kind":"block","focus":"Top/side continuity and snowy state behavior."}
+  ]
+}

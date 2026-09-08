@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "id": "ingots",
+  "title": "Items · Iron and gold ingots",
+  "source": "producers/blockbench/items/ingots/source.bbmodel",
+  "codec": "java_block",
+  "approach": "Editable extrusion of existing pixel silhouettes; candidate artwork awaiting visual review.",
+  "display": {
+    "gui": {"rotation":[0,0,0],"translation":[0,0,0],"scale":[1,1,1]},
+    "ground": {"rotation":[0,0,0],"translation":[0,2,0],"scale":[0.5,0.5,0.5]},
+    "fixed": {"rotation":[0,180,0],"translation":[0,0,0],"scale":[1,1,1]},
+    "firstperson_righthand": {"rotation":[0,-90,25],"translation":[1.13,3.2,1.13],"scale":[0.68,0.68,0.68]},
+    "firstperson_lefthand": {"rotation":[0,90,-25],"translation":[1.13,3.2,1.13],"scale":[0.68,0.68,0.68]},
+    "thirdperson_righthand": {"rotation":[0,0,0],"translation":[0,3,1],"scale":[0.55,0.55,0.55]},
+    "thirdperson_lefthand": {"rotation":[0,0,0],"translation":[0,3,1],"scale":[0.55,0.55,0.55]}
+  },
+  "members": [
+    {"id":"minecraft:iron_ingot","group":"iron_ingot","target":"assets/minecraft/models/item/iron_ingot.json","texture":"assets/minecraft/textures/item/iron_ingot.png","seed":"producers/raster/exemplars/iron_ingot.png"},
+    {"id":"minecraft:gold_ingot","group":"gold_ingot","target":"assets/minecraft/models/item/gold_ingot.json","texture":"assets/minecraft/textures/item/gold_ingot.png","seed":"producers/raster/exemplars/gold_ingot.png"}
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "author": "Jacob Repp",
+  "license": "GPL-3.0-or-later",
+  "blockbenchVersion": "5.1.6",
+  "source": "producers/blockbench/items/ingots/source.bbmodel",
+  "initialSourceSha256": "8f6774db27a4609494a56a3fd1d3d819b51e7c08714f22f4b6bd87e920b355ff",
+  "seeds": [
+    {
+      "path": "producers/raster/exemplars/iron_ingot.png",
+      "sha256": "d525983e3514553f80b13d19ed6c829ad4d0e2308b9a414f226e0dba930b3ac8"
+    },
+    {
+      "path": "producers/raster/exemplars/gold_ingot.png",
+      "sha256": "6c048a652e39d203dc2b46b042129a9fbb7756f206a5a243f612eb92a64f288e"
+    }
+  ]
+}
