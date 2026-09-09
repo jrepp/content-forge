@@ -1,5 +1,13 @@
 # content-forge
 
+The product direction is a team content workspace: asset families, generation,
+retained sources, provenance, bounded reviews, and reproducible modpack builds.
+Content-forge launches Blockbench as an editing and automation workspace for the
+selected task. See the [workspace architecture](docs/workspace-architecture.md)
+for ownership, the hosted editing loop, and the first integration milestone.
+The current implementation remains the local production and review pipeline
+described below; hosted sessions and team persistence are proposed work.
+
 Hosting integration uses the public [Turbo Ogre SDK](https://github.com/turbo-ogre/sdk).
 See [onboarding and review-site packaging](docs/hosting.md) for the current
 artifact workflow and the remaining Artemis/auth deployment requirements.

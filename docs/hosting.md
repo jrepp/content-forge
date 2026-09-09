@@ -1,6 +1,10 @@
 <!-- Copyright (C) 2026 Jacob Repp; SPDX-License-Identifier: GPL-3.0-or-later -->
 # Turbo Ogre onboarding
 
+The [workspace architecture](workspace-architecture.md) defines the broader team
+product, including launching hosted Blockbench, saving source revisions and
+building packs. This document covers the current static review artifact slice.
+
 Content-forge consumes the public [Turbo Ogre SDK](https://github.com/turbo-ogre/sdk).
 Its development dependency is pinned to a reviewed Git commit. The consumer owns
 `hosting.json`, its review-site selection, and the built artifact. It does not
