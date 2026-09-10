@@ -6,6 +6,10 @@ Blockbench checkout under `test/acceptance/` (`eval.mjs`, `shot.mjs`, the export
 helpers) should migrate so production tooling lives with production, not in the
 engine repo.
 
+The [gray wizard source](entities/wizard/README.md) is retained with exact embedded
+texture hashes and animation/material metadata. Its animated `free` format needs
+an adapter beyond the implemented `java_block` item-family workspace.
+
 Planned entry point:
 
 ```js
