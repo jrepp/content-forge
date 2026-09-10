@@ -26,6 +26,36 @@ function chunk(type, data) {
 	return Buffer.concat([len, typeBuf, data, crcBuf]);
 }
 
+// Full-canvas APNG frames, including a static first-frame fallback.
+// https://www.w3.org/TR/png-3/#apng-chunks
+export function encodeAPNG(width, height, frames, fps = 12) {
+	if (![width, height].every(n => Number.isInteger(n) && n > 0 && n <= 1024) ||
+		!Number.isInteger(fps) || fps < 1 || fps > 60 || !Array.isArray(frames) ||
+		frames.length < 1 || frames.length > 600 || width * height * 4 * frames.length > 128 * 1024 * 1024 ||
+		frames.some(frame => !(frame instanceof Uint8Array || frame instanceof Uint8ClampedArray) || frame.length !== width * height * 4)) {
+		throw new Error('Invalid APNG dimensions, timing or RGBA frames (128 MiB maximum)');
+	}
+	const first = encodePNG(width, height, frames[0], {level: 9});
+	const control = Buffer.alloc(8); control.writeUInt32BE(frames.length); // zero plays = loop forever
+	const parts = [first.subarray(0, 33), chunk('acTL', control)];
+	let sequence = 0;
+	for (let i = 0; i < frames.length; i++) {
+		const fc = Buffer.alloc(26);
+		fc.writeUInt32BE(sequence++, 0); fc.writeUInt32BE(width, 4); fc.writeUInt32BE(height, 8);
+		fc.writeUInt16BE(1, 20); fc.writeUInt16BE(fps, 22); // dispose NONE, blend SOURCE
+		parts.push(chunk('fcTL', fc));
+		const png = i === 0 ? first : encodePNG(width, height, frames[i], {level: 9});
+		const data = png.subarray(41, 41 + png.readUInt32BE(33));
+		if (i === 0) parts.push(chunk('IDAT', data));
+		else {
+			const seq = Buffer.alloc(4); seq.writeUInt32BE(sequence++);
+			parts.push(chunk('fdAT', Buffer.concat([seq, data])));
+		}
+	}
+	parts.push(chunk('IEND', Buffer.alloc(0)));
+	return Buffer.concat(parts);
+}
+
 /**
  * Encode an RGBA pixel buffer as a PNG.
  * @param {number} width @param {number} height

@@ -36,6 +36,69 @@ function fixture(t) {
         }};
 }
 
+function wizardFixture(t) {
+    const f = fixture(t), path = 'producers/blockbench/entities/wizard';
+    cpSync(join(repoRoot, path), join(f.root, path), {recursive: true});
+    f.store.initialize({author: 'Wizard importer'});
+    return {...f, wizard: f.store.head('wizard')};
+}
+
+test('animated sources retain full editable data and cannot enter the item export pipeline', async t => {
+    const f = wizardFixture(t), saved = f.store.revision('wizard', f.wizard), source = JSON.parse(saved.source);
+    assert.deepEqual(saved.source, readFileSync(join(f.root, saved.family.source)));
+    assert.equal(saved.record.source.sha256, 'bcaba4dfe163913a50a1661180b551143bf8f2c8cc7ab426465ff434cde997da');
+    assert.equal(source.animations.length, 5); assert.equal(source.textures.length, 13);
+    assert.deepEqual(f.store.catalog().find(f => f.id === 'wizard').capabilities, {edit: true, candidateExport: false, animationReview: true});
+    assert.equal(f.store.catalog().find(f => f.id === 'wizard').candidate.status, 'unsupported');
+    source.elements[0].to[2] += 1;
+    const bytes = Buffer.from(JSON.stringify(source));
+    const result = f.store.save({familyId: 'wizard', expectedRevision: f.wizard, source: bytes, requestId: randomUUID(), author: 'Wizard artist'});
+    assert.deepEqual(f.store.revision('wizard', result.revision).source, bytes);
+    assert.deepEqual(readFileSync(join(f.root, saved.family.source)), saved.source);
+    const editor = {id: 'test-editor', manifest: {version: 'test'}}, workflow = new WorkspaceWorkflow(f.store, editor);
+    await assert.rejects(workflow.exportCandidate({role: 'author'}, {family: 'wizard', build: editor.id}, {revision: result.revision, result: {version: 'test'}}), /Consumer export is not available/);
+    assert.equal(f.store.db.prepare('SELECT count(*) AS n FROM workspace_jobs').get().n, 0);
+    const sessions = new WorkspaceSessions(f.store, editor), login = sessions.login(sessions.invite({name: 'Author', role: 'author'}).token);
+    const session = sessions.launch(login.person, 'wizard', result.revision);
+    const attached = sessions.attach(login.person, session.id, {instance: randomUUID(), build: editor.id});
+    assert.equal(attached.capabilities.candidateExport, false);
+    assert.ok(!attached.methods.includes('export'));
+});
+
+test('animation reviews retain exact inputs, survive source edits, and verify every served artifact', async t => {
+    const f = wizardFixture(t), saved = f.store.revision('wizard', f.wizard);
+    const files = new Map([['source.bbmodel', saved.source], ['family.json', saved.familyBytes], ['provenance.json', saved.provenance], ['idle.png', encodePNG(1, 1, [255, 0, 0, 255])]]);
+    const manifest = {schema: 1, kind: 'blockbench-animation-review', familyId: 'wizard', revision: f.wizard,
+        sourceSha256: saved.record.source.sha256, familySha256: saved.record.familySha256, provenanceSha256: saved.record.provenanceSha256,
+        files: [...files].map(([path, bytes]) => ({path, bytes: bytes.length, sha256: sha256(bytes)}))};
+    const record = {id: sha256(Buffer.from(JSON.stringify(manifest))), ...manifest};
+    assert.throws(() => f.store.recordAnimationReview(record, new Map([...files, ['source.bbmodel', Buffer.from('{}')]])), /exact source inputs/);
+    f.store.recordAnimationReview(record, files);
+    f.store.recordAnimationReview(record, files);
+    assert.equal(f.store.db.prepare('SELECT count(*) AS n FROM animation_reviews').get().n, 1);
+    assert.deepEqual(f.store.animationReviewFile(record.id, 'idle.png'), files.get('idle.png'));
+    assert.throws(() => f.store.animationReviewFile(record.id, '../workspace.sqlite'), /Unknown animation review file/);
+    const card = () => f.store.catalog().find(f => f.id === 'wizard');
+    assert.equal(card().animationReview.status, 'current');
+    const changed = JSON.parse(saved.source); changed.elements[0].to[2] += 1;
+    f.store.save({familyId: 'wizard', expectedRevision: f.wizard, source: Buffer.from(JSON.stringify(changed)), author: 'Artist', requestId: randomUUID()});
+    assert.equal(card().animationReview.status, 'stale');
+    assert.deepEqual(f.store.animationReviewFile(record.id, 'source.bbmodel'), saved.source);
+    const server = createWorkspaceServer(f.store, {authenticated: true});
+    await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+    t.after(() => new Promise(resolve => server.close(resolve)));
+    const base = `http://127.0.0.1:${server.address().port}`, path = `/api/animation-reviews/${record.id}/idle.png`;
+    assert.equal((await fetch(base + path)).status, 401);
+    const sessions = new WorkspaceSessions(f.store, null), login = sessions.login(sessions.invite({name: 'Reviewer', role: 'reviewer'}).token);
+    const response = await fetch(base + path, {headers: {cookie: `forge_login=${login.secret}`}});
+    assert.equal(response.status, 200); assert.match(response.headers.get('content-type'), /image\/png/);
+    assert.deepEqual(Buffer.from(await response.arrayBuffer()), files.get('idle.png'));
+    assert.throws(() => f.store.db.prepare('UPDATE animation_review_files SET bytes = ? WHERE review = ?').run(Buffer.from('bad'), record.id), /immutable/);
+    f.store.db.exec('DROP TRIGGER animation_review_files_no_update');
+    f.store.db.prepare('UPDATE animation_review_files SET bytes = ? WHERE review = ? AND path = ?').run(Buffer.from('bad'), record.id, 'idle.png');
+    assert.throws(() => f.store.animationReviewFile(record.id, 'idle.png'), /hash mismatch/);
+});
+
 test('import retains exact source, family, embedded hashes, lineage and repository base; repeated init preserves drafts', t => {
     const f = fixture(t), initial = f.store.revision('ingots', f.base);
     assert.deepEqual(initial.source, readFileSync(join(f.root, initial.family.source)));

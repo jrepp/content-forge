@@ -6,7 +6,7 @@ import {join, dirname, relative} from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {randomUUID} from 'node:crypto';
 import {sha256, containedPath} from '../asset-files.mjs';
-import {validateFamily} from '../../producers/blockbench/item-family.mjs';
+import {validateWorkspaceFamily, capabilities} from './families.mjs';
 
 export const MAX_SOURCE_BYTES = 8 * 1024 * 1024;
 const jsonBytes = value => Buffer.from(JSON.stringify(value));
@@ -55,11 +55,22 @@ export class WorkspaceStore {
                 family_id TEXT NOT NULL REFERENCES families(id), request_id TEXT NOT NULL,
                 input_hash TEXT NOT NULL, result TEXT NOT NULL, PRIMARY KEY (family_id, request_id)
             );
+            CREATE TABLE IF NOT EXISTS animation_reviews (
+                id TEXT PRIMARY KEY, family_id TEXT NOT NULL REFERENCES families(id),
+                revision TEXT NOT NULL REFERENCES revisions(id), record TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS animation_review_files (
+                review TEXT NOT NULL REFERENCES animation_reviews(id), path TEXT NOT NULL,
+                bytes BLOB NOT NULL, PRIMARY KEY (review, path)
+            );
             CREATE TRIGGER IF NOT EXISTS revisions_no_update BEFORE UPDATE ON revisions
                 BEGIN SELECT RAISE(ABORT, 'Source revisions are immutable'); END;
             CREATE TRIGGER IF NOT EXISTS revisions_no_delete BEFORE DELETE ON revisions
                 BEGIN SELECT RAISE(ABORT, 'Source revisions are immutable'); END;
         `);
+        for (const table of ['animation_reviews', 'animation_review_files']) {
+            for (const operation of ['UPDATE', 'DELETE']) this.db.exec(`CREATE TRIGGER IF NOT EXISTS ${table}_no_${operation.toLowerCase()} BEFORE ${operation} ON ${table} BEGIN SELECT RAISE(ABORT, 'Animation reviews are immutable'); END;`);
+        }
     }
     close() { this.db.close(); }
     transaction(run) {
@@ -96,13 +107,15 @@ export class WorkspaceStore {
     }
     initialize({author}) {
         requireValue(typeof author === 'string' && author.trim() && author.length <= 200, 'A local author name is required');
-        const root = join(this.repoRoot, 'producers/blockbench/items');
-        const paths = readdirSync(root, {withFileTypes: true}).filter(d => d.isDirectory())
-            .map(d => join('producers/blockbench/items', d.name, 'family.json')).filter(p => existsSync(join(this.repoRoot, p))).sort();
+        const paths = ['items', 'entities'].flatMap(kind => {
+            const root = join(this.repoRoot, 'producers/blockbench', kind);
+            return existsSync(root) ? readdirSync(root, {withFileTypes: true}).filter(d => d.isDirectory())
+                .map(d => join('producers/blockbench', kind, d.name, 'family.json')).filter(p => existsSync(join(this.repoRoot, p))) : [];
+        }).sort();
         const baseCommit = execFileSync('git', ['rev-parse', 'HEAD'], {cwd: this.repoRoot, encoding: 'utf8'}).trim();
         return this.transaction(() => paths.map(path => {
             const familyBytes = readFileSync(localFile(this.repoRoot, path)), family = JSON.parse(familyBytes);
-            validateFamily(family);
+            validateWorkspaceFamily(family);
             if (this.db.prepare('SELECT id FROM families WHERE id = ?').get(family.id)) return {family: family.id, status: 'existing', head: this.head(family.id)};
             const source = readFileSync(localFile(this.repoRoot, family.source));
             const provenance = readFileSync(localFile(this.repoRoot, join(dirname(family.source), 'source-provenance.json')));
@@ -137,6 +150,7 @@ export class WorkspaceStore {
         });
     }
     candidate(family, record) {
+        if (!capabilities(family).candidateExport) return {status: 'unsupported'};
         const root = join(this.repoRoot, 'work/item-families', family.id);
         if (!existsSync(join(root, 'latest.json'))) return {status: 'none'};
         try {
@@ -157,6 +171,45 @@ export class WorkspaceStore {
                 path: relative(this.repoRoot, pack), models: family.members.length};
         } catch (error) { return {status: 'unavailable', issue: error.message}; }
     }
+    recordAnimationReview(record, files) {
+        const {id, ...manifest} = record, saved = this.revision(record.familyId, record.revision);
+        requireValue(capabilities(saved.family).animationReview && record.kind === 'blockbench-animation-review' &&
+            sha256(jsonBytes(manifest)) === id, 'Invalid animation review identity');
+        requireValue(record.sourceSha256 === saved.record.source.sha256 && record.familySha256 === saved.record.familySha256 &&
+            record.provenanceSha256 === saved.record.provenanceSha256, 'Animation review source mismatch');
+        for (const [path, bytes] of [['source.bbmodel', saved.source], ['family.json', saved.familyBytes], ['provenance.json', saved.provenance]]) {
+            requireValue(files.get(path)?.equals(bytes), 'Animation review must retain exact source inputs');
+        }
+        requireValue(Array.isArray(record.files) && new Set(record.files.map(f => f.path)).size === files.size && record.files.length === files.size, 'Invalid animation review files');
+        for (const file of record.files) requireValue(/^[a-zA-Z0-9_.-]+$/.test(file.path) && Buffer.isBuffer(files.get(file.path)) &&
+            files.get(file.path).length === file.bytes && sha256(files.get(file.path)) === file.sha256, 'Animation review file hash mismatch');
+        return this.transaction(() => {
+            if (this.db.prepare('SELECT id FROM animation_reviews WHERE id = ?').get(id)) {
+                this.animationReview(id);
+                for (const file of record.files) this.animationReviewFile(id, file.path);
+                return id;
+            }
+            this.db.prepare('INSERT INTO animation_reviews VALUES (?, ?, ?, ?)').run(id, record.familyId, record.revision, JSON.stringify(record));
+            const insert = this.db.prepare('INSERT INTO animation_review_files VALUES (?, ?, ?)');
+            for (const [path, bytes] of files) insert.run(id, path, bytes);
+            return id;
+        });
+    }
+    animationReview(id) {
+        const row = this.db.prepare('SELECT record FROM animation_reviews WHERE id = ?').get(id);
+        requireValue(row, 'Unknown animation review');
+        const record = JSON.parse(row.record), {id: recordId, ...manifest} = record;
+        requireValue(recordId === id && sha256(jsonBytes(manifest)) === id, 'Animation review identity mismatch');
+        this.revision(record.familyId, record.revision);
+        return record;
+    }
+    animationReviewFile(id, path) {
+        const record = this.animationReview(id), file = record.files.find(f => f.path === path);
+        requireValue(file, 'Unknown animation review file');
+        const bytes = this.db.prepare('SELECT bytes FROM animation_review_files WHERE review = ? AND path = ?').get(id, path)?.bytes;
+        requireValue(bytes && bytes.length === file.bytes && sha256(bytes) === file.sha256, 'Animation review file hash mismatch');
+        return Buffer.from(bytes);
+    }
     catalog() {
         return this.db.prepare('SELECT * FROM families ORDER BY id').all().map(row => {
             const {record, family} = this.revision(row.id, row.head);
@@ -165,7 +218,10 @@ export class WorkspaceStore {
             const history = this.db.prepare('SELECT record FROM revisions WHERE family_id = ? ORDER BY rowid DESC').all(row.id).map(r => JSON.parse(r.record));
             const conflicts = this.db.prepare('SELECT result FROM saves WHERE family_id = ?').all(row.id)
                 .map(r => JSON.parse(r.result)).filter(r => r.status === 'conflict').map(r => r.revision);
-            return {id: row.id, title: family.title, description: family.approach, members: family.members.map(m => m.id),
+            const latest = this.db.prepare('SELECT id FROM animation_reviews WHERE family_id = ? ORDER BY rowid DESC LIMIT 1').get(row.id);
+            const preview = latest && this.animationReview(latest.id);
+            return {id: row.id, kind: family.kind || 'items', capabilities: capabilities(family), title: family.title, description: family.approach, members: family.members.map(m => m.id),
+                animationReview: preview ? {id: preview.id, revision: preview.revision, status: preview.revision === row.head ? 'current' : 'stale'} : null,
                 sourcePath: family.source, head: record, history, conflicts, checkoutMatchesHead, candidate: this.candidate(family, record)};
         });
     }

@@ -47,3 +47,36 @@ jobs:
           name: workspace-browser-evidence
           path: work/reviews/workspace.png
           if-no-files-found: ignore
+
+  animations:
+    name: Wizard source and APNG review
+    runs-on: macos-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 26
+          cache: npm
+      - run: npm ci
+      - uses: actions/checkout@v5
+        with:
+          repository: jrepp/blockbench
+          ref: 92fe9bb5f94102efe8f1e477f1ed2ae44caf9094
+          path: .ci/blockbench
+          persist-credentials: false
+      - run: npm ci --ignore-scripts
+        working-directory: .ci/blockbench
+      - run: npm run workspace:editor-build
+        env:
+          BLOCKBENCH_ROOT: ${{ github.workspace }}/.ci/blockbench
+      - run: npm run workspace:wizard-check
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: wizard-animation-review
+          path: |
+            work/reviews/animations/
+            work/reviews/wizard-check.json
+            work/reviews/wizard-animation-review.png
+          if-no-files-found: ignore

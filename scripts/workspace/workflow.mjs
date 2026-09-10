@@ -4,6 +4,7 @@ import {join, dirname} from 'node:path';
 import {tmpdir} from 'node:os';
 import {randomUUID} from 'node:crypto';
 import {sha256, containedPath} from '../asset-files.mjs';
+import {capabilities} from './families.mjs';
 import {exportFiles} from '../../producers/blockbench/item-family.mjs';
 import {auditPack} from '../audit.mjs';
 import {buildSheet} from '../review-sheet.mjs';
@@ -15,7 +16,7 @@ export class WorkspaceWorkflow {
     constructor(store, editor, {sheetBuilder = buildSheet} = {}) {
         this.store = store; this.db = store.db; this.editor = editor;
         this.sheetBuilder = sheetBuilder;
-        this.exporterSha256 = sha256(bytes(['./workflow.mjs', '../../producers/blockbench/item-family.mjs', '../../producers/model/semantics.mjs',
+        this.exporterSha256 = sha256(bytes(['./workflow.mjs', './families.mjs', '../../producers/blockbench/item-family.mjs', '../../producers/model/semantics.mjs',
             '../review-sheet.mjs', '../review/viewer.mjs', '../review/resolve.mjs', '../review/sheet.css', '../asset-files.mjs']
             .map(path => ({path, sha256: sha256(readFileSync(new URL(path, import.meta.url)))}))));
         this.db.exec(`
@@ -35,6 +36,7 @@ export class WorkspaceWorkflow {
         requireValue(person.role === 'author', 'Author access is required');
         requireValue(this.editor && session.build === this.editor.id && input.result.version === this.editor.manifest.version, 'Export toolchain mismatch');
         const saved = this.store.revision(session.family, input.revision);
+        requireValue(capabilities(saved.family).candidateExport, 'Consumer export is not available for this asset type');
         requireValue(typeof input.compiledSource === 'string' &&
             JSON.stringify(JSON.parse(input.compiledSource)) === JSON.stringify(JSON.parse(saved.source)), 'Export source differs from the saved revision; save the editor source first');
         const job = {id: randomUUID(), kind: 'export', family: session.family, revision: input.revision, sourceSha256: saved.record.source.sha256,

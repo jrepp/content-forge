@@ -159,6 +159,11 @@ one reviewer; organization SSO and remote fleet deployment need platform work.
 The static hosted review site is a useful delivery milestone within this larger
 workspace product; it is not the full product scope.
 
+Animated entities now have a separate source/edit capability and immutable APNG
+review builds. The wizard retains its `free` project and full animation data;
+it cannot enter the item exporter. See [animation review](animation-review.md)
+for the automated build contract and remaining consumer adapter work.
+
 Pin editor and extension builds for both interactive and automated sessions.
 Review packaging should have its own dependencies. Extracting the portable
 texture generator into a shared package is useful maintenance work, but is not

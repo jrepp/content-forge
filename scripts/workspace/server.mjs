@@ -72,6 +72,13 @@ export function createWorkspaceServer(store, {editor = null, authenticated = fal
                 return send(result.status === 'conflict' ? 409 : 200, result);
             }
             if (req.method === 'GET' && path === '/api/catalog') return send(200, {schema: 1, families: store.catalog()});
+            const animationReview = path.match(/^\/api\/animation-reviews\/([a-f0-9]{64})\/([a-zA-Z0-9_.-]+)$/);
+            if (req.method === 'GET' && animationReview) {
+                const [, id, file] = animationReview;
+                if (file === 'manifest.json') return send(200, store.animationReview(id));
+                const type = file.endsWith('.png') ? 'image/png' : file === 'index.html' ? 'text/html' : file.endsWith('.css') ? 'text/css' : 'application/octet-stream';
+                return send(200, store.animationReviewFile(id, file), type);
+            }
             if (req.method === 'GET' && path === '/api/candidates') return send(200, {candidates: workflow ? workflow.list() : []});
             if (req.method === 'GET' && path === '/api/jobs') return send(200, {jobs: workflow ? store.db.prepare('SELECT record FROM workspace_jobs ORDER BY rowid DESC LIMIT 30').all().map(r => JSON.parse(r.record)) : []});
             const capture = path.match(/^\/api\/candidates\/([a-f0-9]{64})\/captures$/);
