@@ -92,6 +92,7 @@ const unresolved = plan.length - resolvable;
 const unresolvedVia = count(plan.filter((p) => !RESOLVABLE.has(p.strategy)), (p) => p.via);
 const pct = (n) => ((100 * n) / plan.length).toFixed(1) + '%';
 
+console.log('Routing projection only: candidates and templates require semantic and visual review.');
 console.log(`Selection queue (fingerprint ${String(queue.fingerprint).slice(0, 12)}…)`);
 console.log(`  select entries: ${plan.length}  (models ${plan.filter((p) => p.kind === 'models').length} / textures ${plan.filter((p) => p.kind === 'textures').length})`);
 console.log(`  projected resolvable: ${resolvable} (${pct(resolvable)})   unresolved: ${unresolved} (${pct(unresolved)})`);

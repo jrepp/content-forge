@@ -1,0 +1,227 @@
+{
+  "schema": 1,
+  "source": "producers/blockbench/entities/wizard/source.bbmodel",
+  "initialSourceSha256": "bcaba4dfe163913a50a1661180b551143bf8f2c8cc7ab426465ff434cde997da",
+  "sourceBytes": 51509,
+  "origin": {
+    "kind": "local-blockbench-export",
+    "filename": "wizard_gray.bbmodel"
+  },
+  "modelFormat": "free",
+  "projectFormatVersion": "5.0",
+  "author": null,
+  "license": null,
+  "textures": [
+    {
+      "uuid": "0606283c-e04d-c041-c3a4-1019fb3cef72",
+      "name": "robe",
+      "sha256": "241772a0a040c2d52b7c3f753f178442d4a282f0db5b15a342c2d140211e0f74",
+      "bytes": 119,
+      "width": 16,
+      "height": 16,
+      "storage": "embedded",
+      "renderMode": "default",
+      "uvWidth": 16,
+      "uvHeight": 16,
+      "fps": 7,
+      "frameInterpolate": false
+    },
+    {
+      "uuid": "377f96ae-99f4-fdb1-25c4-3ec3c4616b14",
+      "name": "hat",
+      "sha256": "61c21c55a6a75f28e3d05d23d8cbf307f7fb6603e1efadf104e985835d43b221",
+      "bytes": 119,
+      "width": 16,
+      "height": 16,
+      "storage": "embedded",
+      "renderMode": "default",
+      "uvWidth": 16,
+      "uvHeight": 16,
+      "fps": 7,
+      "frameInterpolate": false
+    },
+    {
+      "uuid": "15956bb0-1085-41d9-a5b0-e883a186c2dd",
+      "name": "skin",
+      "sha256": "db0c2e828f8e8631e5644f9c7701097551160a1a251643b4f0b37ed0e58c4a90",
+      "bytes": 121,
+      "width": 16,
+      "height": 16,
+      "storage": "embedded",
+      "renderMode": "default",
+      "uvWidth": 16,
+      "uvHeight": 16,
+      "fps": 7,
+      "frameInterpolate": false
+    },
+    {
+      "uuid": "2ad8ffe6-7ca8-00f0-c81d-dbce32811359",
+      "name": "wood",
+      "sha256": "168d48f1b3bb1813cb1a3abe0e769ebebc4897a6528c16d42c995b546eb8eb74",
+      "bytes": 122,
+      "width": 16,
+      "height": 16,
+      "storage": "embedded",
+      "renderMode": "default",
+      "uvWidth": 16,
+      "uvHeight": 16,
+      "fps": 7,
+      "frameInterpolate": false
+    },
+    {
+      "uuid": "1709dfc3-fcf5-bda2-82a6-5152a1261fe5",
+      "name": "orb",
+      "sha256": "8fdd9bbf958f46f362ed4da2292a4a4386cb2954917cd454d16917d83603994d",
+      "bytes": 120,
+      "width": 16,
+      "height": 16,
+      "storage": "embedded",
+      "renderMode": "emissive",
+      "uvWidth": 16,
+      "uvHeight": 16,
+      "fps": 7,
+      "frameInterpolate": false
+    },
+    {
+      "uuid": "2fa85694-0c38-4c28-5fe6-5e841d1ee218",
+      "name": "smoke",
+      "sha256": "ecfc4b6bf7f3834b3f56831ad0b58aa3de1c9027ff74bddede42d099f930cf17",
+      "bytes": 3213,
+      "width": 16,
+      "height": 256,
+      "storage": "embedded",
+      "renderMode": "additive",
+      "uvWidth": 16,
+      "uvHeight": 16,
+      "fps": 8,
+      "frameInterpolate": true
+    },
+    {
+      "uuid": "9252eada-c1f2-2604-44a0-d4eaebd217d4",
+      "name": "sparkle",
+      "sha256": "e85981a91ab516126c7b113d77b6ff267d1e8b403fa047ba253a8e379f06af43",
+      "bytes": 1344,
+      "width": 16,
+      "height": 192,
+      "storage": "embedded",
+      "renderMode": "additive",
+      "uvWidth": 16,
+      "uvHeight": 16,
+      "fps": 10,
+      "frameInterpolate": true
+    },
+    {
+      "uuid": "5575fb4c-0d82-d2a7-8391-4d39997dc8c3",
+      "name": "beard",
+      "sha256": "5f71631d05ac32e7805f180f322e2c7257900bb25cb633e9f457522d5cd326a1",
+      "bytes": 119,
+      "width": 16,
+      "height": 16,
+      "storage": "embedded",
+      "renderMode": "default",
+      "uvWidth": 16,
+      "uvHeight": 16,
+      "fps": 7,
+      "frameInterpolate": false
+    },
+    {
+      "uuid": "0e101470-75dc-b6fd-5a48-23c6951ca8d9",
+      "name": "eye",
+      "sha256": "de8e7d286e2f214d976cca488e85af9f972acc908dd02ffc7ab2f12bf3638a15",
+      "bytes": 119,
+      "width": 16,
+      "height": 16,
+      "storage": "embedded",
+      "renderMode": "default",
+      "uvWidth": 16,
+      "uvHeight": 16,
+      "fps": 7,
+      "frameInterpolate": false
+    },
+    {
+      "uuid": "bdd88a84-82f1-c69b-8826-3c3bf8593fe9",
+      "name": "cheek",
+      "sha256": "4c031524de3765b1c856586d7a2ff3315777ab51ed4d0fcc55b75a28441f526e",
+      "bytes": 121,
+      "width": 16,
+      "height": 16,
+      "storage": "embedded",
+      "renderMode": "default",
+      "uvWidth": 16,
+      "uvHeight": 16,
+      "fps": 7,
+      "frameInterpolate": false
+    },
+    {
+      "uuid": "bd4c7e3c-7b3f-aa91-2f49-12f6f2a90ddf",
+      "name": "star",
+      "sha256": "37156514b5396057d83b9f077431a8c48aa1653cde5f227622468d5f18a4e20c",
+      "bytes": 327,
+      "width": 16,
+      "height": 16,
+      "storage": "embedded",
+      "renderMode": "emissive",
+      "uvWidth": 16,
+      "uvHeight": 16,
+      "fps": 7,
+      "frameInterpolate": false
+    },
+    {
+      "uuid": "e724a666-a728-2b8c-57d9-bb763bd36609",
+      "name": "gem",
+      "sha256": "4cbd3df99a09a35c6d8b8130a52e604bb1381af49afef58298a3bf421f93b550",
+      "bytes": 119,
+      "width": 16,
+      "height": 16,
+      "storage": "embedded",
+      "renderMode": "emissive",
+      "uvWidth": 16,
+      "uvHeight": 16,
+      "fps": 7,
+      "frameInterpolate": false
+    },
+    {
+      "uuid": "d07dcacc-e732-7237-cfdc-8af6e424370d",
+      "name": "pufftex",
+      "sha256": "90a6148bdae018238426274ce7a436e41d664ecd3d1f2b062152113026a89f4e",
+      "bytes": 680,
+      "width": 16,
+      "height": 16,
+      "storage": "embedded",
+      "renderMode": "default",
+      "uvWidth": 16,
+      "uvHeight": 16,
+      "fps": 7,
+      "frameInterpolate": false
+    }
+  ],
+  "animations": [
+    {
+      "name": "idle",
+      "length": 3,
+      "loop": "loop"
+    },
+    {
+      "name": "walk",
+      "length": 1,
+      "loop": "loop"
+    },
+    {
+      "name": "look_at",
+      "length": 4,
+      "loop": "loop"
+    },
+    {
+      "name": "fidget",
+      "length": 2,
+      "loop": "loop"
+    },
+    {
+      "name": "work_table",
+      "length": 1,
+      "loop": "loop"
+    }
+  ],
+  "elements": 40,
+  "groups": 9
+}

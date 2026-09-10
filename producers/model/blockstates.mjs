@@ -36,6 +36,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { loadConfig, repoRoot } from '../../scripts/config.mjs';
+import { prepareModel } from './semantics.mjs';
 
 const config = loadConfig();
 const dry = process.argv.slice(2).includes('--dry');
@@ -108,7 +109,7 @@ function instantiateModel(shape, name) {
 	for (const s of slots) model.textures[s] = tex;
 	delete model.format_version;
 	delete model.groups; // Blockbench outliner metadata; Minecraft/Minosoft ignore it
-	return model;
+	return prepareModel(model);
 }
 
 // ---- blockstate shape per family ----

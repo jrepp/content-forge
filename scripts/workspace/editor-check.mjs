@@ -1,0 +1,163 @@
+// Copyright (C) 2026 Jacob Repp; SPDX-License-Identifier: GPL-3.0-or-later
+import assert from 'node:assert/strict';
+import {mkdtempSync, rmSync, mkdirSync, writeFileSync} from 'node:fs';
+import {join} from 'node:path';
+import {tmpdir} from 'node:os';
+import {repoRoot} from '../config.mjs';
+import {WorkspaceStore} from './store.mjs';
+import {WorkspaceSessions} from './sessions.mjs';
+import {readEditorBuild} from './editor-build.mjs';
+import {createWorkspaceServer} from './server.mjs';
+import {WorkspaceWorkflow} from './workflow.mjs';
+import {launchChrome, until, delay} from './chrome.mjs';
+
+const temporary = mkdtempSync(join(tmpdir(), 'forge-editor-check-'));
+const store = new WorkspaceStore({repoRoot, path: join(temporary, 'workspace.sqlite')});
+const editor = readEditorBuild(), sessions = new WorkspaceSessions(store, editor);
+const workflow = new WorkspaceWorkflow(store, editor);
+const server = createWorkspaceServer(store, {editor, authenticated: true, workflow});
+let chrome, reviewerChrome, editorPage, reviewPage;
+try {
+    store.initialize({author: 'Editor acceptance'});
+    const invite = sessions.invite({name: 'Acceptance author', role: 'author'});
+    await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+    const base = `http://127.0.0.1:${server.address().port}`;
+    chrome = await launchChrome(join(temporary, 'chrome'), base);
+    const workspace = await chrome.page(p => p.url === base + '/');
+    await until(() => workspace.evaluate('!!document.querySelector("input[type=password]")'), 'sign-in form');
+    await workspace.evaluate(`document.querySelector('input[type=password]').value=${JSON.stringify(invite.token)}; document.querySelector('#identity form').requestSubmit();`);
+    await until(() => workspace.evaluate('!!document.querySelector("article")'), 'authenticated catalog');
+    console.log('Authenticated catalog ready');
+    await workspace.evaluate(`[...document.querySelectorAll('button')].find(b=>b.textContent==='Edit in Blockbench').click()`);
+    editorPage = await chrome.page(p => p.url.includes('/editor/'));
+    console.log('Hosted editor tab opened');
+    await until(() => editorPage.evaluate('!!window.ForgeWorkspace'), 'hosted editor attach');
+    console.log('Hosted editor attached');
+    const initial = store.head('ingots');
+    assert.equal(await editorPage.evaluate('ForgeWorkspace.state.revision'), initial);
+    assert.equal(await editorPage.evaluate('Blockbench.isWeb'), true);
+    const staleSession = await workspace.evaluate(`fetch('/api/families/ingots/editor-sessions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision:${JSON.stringify(initial)}})}).then(r=>r.json())`);
+    await workspace.evaluate(`void window.open(${JSON.stringify(staleSession.url)},'_blank')`);
+    const stalePage = await chrome.page(p => p.url.includes(staleSession.id));
+    await until(() => stalePage.evaluate('!!window.ForgeWorkspace'), 'second editor on the same base');
+    // Exercise the same Undo-aware semantic command the editor's tools use.
+    const edit = `AutomationRuntime.send({protocol_version:1,id:crypto.randomUUID(),method:'set_node_transform',params:{uuid:Cube.all[0].uuid,to:[...Cube.all[0].to.slice(0,2),11],snap:false}})`;
+    const result = await editorPage.evaluate(edit); assert.equal(result.ok, true, JSON.stringify(result));
+    assert.equal(await editorPage.evaluate('Cube.all[0].to[2]'), 11);
+    await delay(2500);
+    const firstOrigin = await editorPage.evaluate('performance.timeOrigin');
+    await editorPage.send('Page.reload');
+    console.log('Reloading interrupted edit');
+    await until(() => editorPage.evaluate(`performance.timeOrigin !== ${firstOrigin} && !!window.ForgeWorkspace`), 'editor reload recovery');
+    assert.equal(await editorPage.evaluate('Cube.all[0].to[2]'), 11);
+    assert.match(await editorPage.evaluate('ForgeWorkspace.state.status'), /Recovered/);
+    await editorPage.evaluate(`(() => { const originalFetch=window.fetch; let lost=false; window.fetch=async (...args)=>{
+        const response=await originalFetch(...args);
+        if(String(args[0]).endsWith('/save')&&!lost){lost=true;throw new Error('Simulated lost editor acknowledgment');}
+        return response;
+    }; })()`);
+    await editorPage.evaluate(`[...document.querySelectorAll('#forge-workspace-toolbar button')].find(b=>b.textContent==='Save to content-forge').click()`);
+    await until(() => editorPage.evaluate('ForgeWorkspace.state.status.includes("Simulated lost editor acknowledgment")'), 'lost editor acknowledgment');
+    const acknowledgedHead = store.head('ingots'), retryOrigin = await editorPage.evaluate('performance.timeOrigin');
+    await editorPage.send('Page.reload');
+    await until(() => editorPage.evaluate(`performance.timeOrigin !== ${retryOrigin} && !!window.ForgeWorkspace`), 'pending save recovery');
+    await editorPage.evaluate(`[...document.querySelectorAll('#forge-workspace-toolbar button')].find(b=>b.textContent==='Save to content-forge').click()`);
+    await until(() => editorPage.evaluate('ForgeWorkspace.state.status.startsWith("Saved ")'), 'acknowledged editor save');
+    const saved = store.head('ingots'); assert.notEqual(saved, initial);
+    assert.equal(saved, acknowledgedHead, 'retry did not duplicate the acknowledged source revision');
+    assert.equal(JSON.parse(store.revision('ingots', saved).source).elements[0].to[2], 11);
+    const staleEdit = await stalePage.evaluate(edit.replace(',11]', ',12]'));
+    assert.equal(staleEdit.ok, true);
+    await stalePage.evaluate(`[...document.querySelectorAll('#forge-workspace-toolbar button')].find(b=>b.textContent==='Save to content-forge').click()`);
+    await until(() => stalePage.evaluate('ForgeWorkspace.state.status.startsWith("Conflict:")'), 'real hosted stale-save refusal');
+    assert.equal(store.head('ingots'), saved);
+    assert.equal(await stalePage.evaluate('Cube.all[0].to[2]'), 12, 'conflicted edit stays open');
+    const conflict = store.db.prepare("SELECT revisions.source FROM saves JOIN revisions ON revisions.id = json_extract(saves.result, '$.revision') WHERE json_extract(saves.result, '$.status') = 'conflict' ORDER BY saves.rowid DESC LIMIT 1").get();
+    assert.ok(conflict, 'conflict source is durably retained');
+    assert.equal(JSON.parse(Buffer.from(conflict.source)).elements[0].to[2], 12);
+    const secondOrigin = await editorPage.evaluate('performance.timeOrigin');
+    await editorPage.send('Page.reload');
+    await until(() => editorPage.evaluate(`performance.timeOrigin !== ${secondOrigin} && !!window.ForgeWorkspace`), 'saved revision reopen');
+    assert.equal(await editorPage.evaluate('ForgeWorkspace.state.revision'), saved);
+    assert.equal(await editorPage.evaluate('Cube.all[0].to[2]'), 11);
+    const state = await editorPage.evaluate('ForgeWorkspace.state');
+    await editorPage.evaluate(`[...document.querySelectorAll('#forge-workspace-toolbar button')].find(b=>b.textContent==='Build review candidate').click()`);
+    await until(() => editorPage.evaluate('ForgeWorkspace.state.status.startsWith("Candidate ")'), 'candidate export');
+    const candidate = workflow.list()[0];
+    assert.equal(candidate.revision, saved);
+    assert.equal(JSON.parse(workflow.artifact(candidate.id, 'assets/minecraft/models/item/iron_ingot.json')).elements[0].to[2], 11);
+    assert.deepEqual(workflow.artifact(candidate.id, 'source.bbmodel'), store.revision('ingots', saved).source);
+    const beforeCount = workflow.list().length;
+    await editorPage.evaluate(`[...document.querySelectorAll('#forge-workspace-toolbar button')].find(b=>b.textContent==='Build review candidate').click()`);
+    await until(() => editorPage.evaluate('!ForgeWorkspace.state.busy && ForgeWorkspace.state.status.startsWith("Candidate ")'), 'repeat candidate export');
+    assert.equal(workflow.list().length, beforeCount);
+    const reviewerInvite = sessions.invite({name: 'Acceptance reviewer', role: 'reviewer'});
+    const reviewer = sessions.person(reviewerInvite.id);
+    reviewerChrome = await launchChrome(join(temporary, 'reviewer-chrome'), base);
+    reviewPage = await reviewerChrome.page(p => p.url === base + '/');
+    await until(() => reviewPage.evaluate('!!document.querySelector("input[type=password]")'), 'reviewer sign-in');
+    await reviewPage.evaluate(`document.querySelector('input[type=password]').value=${JSON.stringify(reviewerInvite.token)};document.querySelector('#identity form').requestSubmit()`);
+    await until(() => reviewPage.evaluate('!!document.querySelector("textarea")'), 'shared reviewer candidate');
+    await reviewPage.evaluate(`[...document.querySelectorAll('a')].find(a=>a.textContent==='Open model and texture review sheet').click()`);
+    const sheetPage = await reviewerChrome.page(p => p.url.endsWith('/artifacts/review.html'));
+    await until(() => sheetPage.evaluate('document.body.dataset.ready === "true"'), 'real candidate sheet rendering');
+    assert.equal(await sheetPage.evaluate('document.querySelectorAll(".card[data-rendered=true]").length'), 2);
+    mkdirSync(join(repoRoot, 'work/reviews'), {recursive: true});
+    const sheetShot = await sheetPage.send('Page.captureScreenshot', {format: 'png', captureBeyondViewport: true});
+    writeFileSync(join(repoRoot, 'work/reviews/workspace-candidate.png'), Buffer.from(sheetShot.data, 'base64'));
+    const reviewForm = `document.querySelector('textarea').closest('form')`;
+    await reviewPage.evaluate(`document.querySelector('textarea').value='Acceptance run inspected the exact candidate snapshot.';${reviewForm}.requestSubmit()`);
+    await until(() => workflow.list()[0].reviews.length === 1, 'persisted reviewer findings');
+    assert.equal(workflow.list()[0].reviews[0].reviewer.id, reviewer.id);
+    if (process.env.FORGE_CONSUMER_CHECK === '1') {
+        await reviewPage.evaluate(`[...document.querySelectorAll('button')].find(b=>b.textContent==='Validate in Minosoft').click()`);
+        let lastProgress;
+        await until(() => {
+            const jobRow = store.db.prepare("SELECT record FROM workspace_jobs WHERE json_extract(record, '$.kind') = 'minosoft-capture' ORDER BY rowid DESC LIMIT 1").get();
+            if (!jobRow) return false; const job = JSON.parse(jobRow.record);
+            if (job.progress !== lastProgress) { console.log(`Minosoft: ${job.progress}`); lastProgress = job.progress; }
+            if (job.status === 'failed') throw new Error(job.error);
+            return job.status === 'complete';
+        }, 'browser-triggered Minosoft evidence', 6000);
+        const evidence = workflow.list()[0].evidence[0];
+        await until(() => reviewPage.evaluate('document.querySelector("#loading").textContent.startsWith("Minosoft evidence attached")'), 'capture evidence displayed');
+        await reviewPage.evaluate(`document.querySelector('textarea').value='Isolated automated workflow acceptance: test approval exercises evidence binding and pack selection; this is not production artwork signoff.';${reviewForm}.querySelector('select').value='approved';${reviewForm}.requestSubmit()`);
+        await until(() => workflow.list()[0].reviews.at(-1).decision === 'approved', 'browser approval');
+        const approval = workflow.list()[0].reviews.at(-1);
+        await until(() => reviewPage.evaluate('!!document.querySelector("input[type=checkbox]")'), 'approved selection control');
+        await reviewPage.evaluate(`document.querySelector('input[type=checkbox]').click();[...document.querySelectorAll('button')].find(b=>b.textContent==='Build selected approved pack').click()`);
+        await until(() => !!store.db.prepare('SELECT id FROM workspace_pack_builds').get(), 'browser pack build');
+        const pack = workflow.pack(store.db.prepare('SELECT id FROM workspace_pack_builds').get().id).record;
+        assert.equal(workflow.buildPack(reviewer, [candidate.id]).archiveSha256, pack.archiveSha256);
+        await until(() => reviewPage.evaluate('[...document.querySelectorAll("a")].some(a=>a.textContent==="Download ZIP")'), 'pack download link');
+        const downloadedHash = await reviewPage.evaluate(`(async()=>{const link=[...document.querySelectorAll('a')].find(a=>a.textContent==='Download ZIP');const response=await fetch(link.href);if(!response.ok)throw new Error('Pack download failed');return [...new Uint8Array(await crypto.subtle.digest('SHA-256',await response.arrayBuffer()))].map(n=>n.toString(16).padStart(2,'0')).join('')})()`);
+        assert.equal(downloadedHash, pack.archiveSha256);
+        mkdirSync(join(repoRoot, 'work/reviews'), {recursive: true});
+        writeFileSync(join(repoRoot, 'work/reviews/workspace-acceptance-pack.zip'), workflow.pack(pack.id).archive);
+        writeFileSync(join(repoRoot, 'work/reviews/workspace-consumer-check.json'), JSON.stringify({candidate:candidate.id,evidence:evidence.id,approval:approval.id,pack,evidencePath:join(repoRoot,'.forge-workspace/validation',candidate.id,'evidence.json'),scope:'Isolated test approval, not production artwork signoff'}, null, 2));
+        console.log('Minosoft capture, evidence-bound test approval and byte-identical pack rebuild passed.');
+    }
+    const person = sessions.person(invite.id);
+    const active = sessions.session(person, state.session);
+    assert.throws(() => sessions.ready(person, state.session, {instance: 'wrong', generation: active.generation}), /Wrong editor instance/);
+    const rejected = await editorPage.evaluate(`fetch('/api/editor-sessions/${state.session}/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({instance:'wrong',generation:${JSON.stringify(active.generation)},project:${JSON.stringify(active.project)}})}).then(async r=>({status:r.status,...await r.json()}))`);
+    assert.equal(rejected.status, 400); assert.match(rejected.error, /Wrong editor instance/);
+    sessions.revokePerson(person.id);
+    await editorPage.evaluate(`[...document.querySelectorAll('#forge-workspace-toolbar button')].find(b=>b.textContent==='Save to content-forge').click()`);
+    await until(() => editorPage.evaluate('ForgeWorkspace.state.status.includes("revoked")'), 'revoked access refusal');
+    assert.equal(store.head('ingots'), saved);
+    mkdirSync(join(repoRoot, 'work/reviews'), {recursive: true});
+    writeFileSync(join(repoRoot, 'work/reviews/hosted-editor-check.json'), JSON.stringify({editor: editor.id, initial, saved, candidate: candidate.id, checks: ['real-web-editor', 'exact-source-open', 'undo-aware-edit', 'interrupted-edit-recovery', 'lost-save-acknowledgment-recovery', 'save-reopen', 'real-hosted-stale-save-preserved', 'revision-bound-export', 'repeat-export-identical', 'rendered-candidate-sheet', 'shared-review-browser', 'wrong-instance-http-refusal', 'revoked-access-refusal']}, null, 2));
+    console.log('Hosted editor acceptance passed: real web editor, edit, reload recovery, save/reopen, wrong instance and revoked access.');
+} catch (error) {
+    if (reviewPage) console.error(await reviewPage.evaluate('document.body.innerText.slice(-4000)').catch(() => 'Reviewer page unavailable'));
+    if (editorPage) {
+        console.error(await editorPage.evaluate('({status:document.querySelector("#forge-workspace-toolbar")?.textContent,errors:window.ErrorLog,body:document.body.innerText.slice(0,1800)})').catch(() => 'Editor unavailable'));
+        mkdirSync(join(repoRoot, 'work/reviews'), {recursive: true});
+        const shot = await editorPage.send('Page.captureScreenshot', {format: 'png'}).catch(() => null);
+        if (shot) writeFileSync(join(repoRoot, 'work/reviews/hosted-editor.png'), Buffer.from(shot.data, 'base64'));
+    }
+    throw error;
+} finally {
+    await reviewerChrome?.close(); await chrome?.close(); await server.shutdown(); server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); store.close(); rmSync(temporary, {recursive: true, force: true});
+}

@@ -7,7 +7,7 @@ make; Minosoft does, and exports it as a ranked, pattern-tagged queue. This is t
 ## Producing the queue (in the Minosoft checkout)
 
 ```sh
-./play.sh content queue --stack standalone --json
+./play.sh content queue --manifest standalone --json
 # writes .run/content-queues/standalone.json  (full model, fingerprinted)
 #    and .run/content-queues/standalone.csv   (ranked, one row per target)
 ```
@@ -85,3 +85,18 @@ consumer change is required to "have pointers for the patterned content needed
 next." If a coarser, pattern-first summary is ever wanted (families + counts +
 next-N representative targets), that is a small addition to `ContentSubmissionQueue`
 on the consumer side, not a producer concern.
+
+## Quality qualification
+
+Queue dispositions report consumer demand, not visual approval. A near candidate
+may itself be a placeholder or have incompatible block/item semantics. The triage
+projection is only a routing estimate: do not mass-materialize its `cube_all` or
+`item_generated` suggestions without checking the intended geometry, material,
+and item behavior. Base templates need parameterized texture slots, not a solid
+block generated from the template's name.
+
+Track local reference/provenance results separately with `npm run audit` and use
+[the quality backlog](../docs/quality-backlog.md) to choose a coherent cohort.
+The queue covers recorded consumer audits, not every possible registry asset.
+Refresh both JSON and CSV with `content queue --manifest standalone --csv --json`
+before pulling; `pull-queue` copies existing exports and does not refresh demand.

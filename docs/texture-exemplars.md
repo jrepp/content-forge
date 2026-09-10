@@ -1,9 +1,13 @@
 # Texture exemplar loop
 
+The [asset quality standard](asset-style-standards.md) governs acceptance.
+Recipe-output goldens are regression fixtures, not independent evidence that
+the artwork reaches Minecraft quality. MAE is not an artistic quality metric.
+
 The texture producer draws every generated tile from a small set of **family
 recipes** in the Blockbench core (`js/automation/texture_gen.js`): `generic_block`,
 `generic_item`, `wood`, `planks`, `leaves`, `ore`, `bricks`, `glass`, `glass_pane`,
-`banner`, `spawn_egg`. Each family owns a palette + structure so, say, `oak_planks`
+`water`, `banner`, `spawn_egg`. Each family owns a palette + structure so, say, `oak_planks`
 reads as boards and `diamond_ore` reads as ore rather than as a flat tinted swatch.
 
 `producers/raster/exemplar.mjs` closes the quality loop around those recipes. One

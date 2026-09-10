@@ -1,7 +1,6 @@
 // texture-gen: procedural texture source for the folded tree. Reuses the producer's
-// portable, zero-DOM generator core (blockbench js/automation/texture_gen.js — the same
-// core behind the `generate_texture` automation command and the in-app paint panel) so
-// the textures baked into tree.bbmodel are byte-identical to what the app would produce.
+// retained portable, zero-DOM Blockbench generator snapshot. Pixel parity with
+// an editor build requires that build to use the same recorded generator bytes.
 //
 // Node has no built-in PNG encoder, so we encode the generator's RGBA PixelBuffer to a
 // PNG data URL via the shared dependency-free writer (png.mjs). level 9 keeps the output

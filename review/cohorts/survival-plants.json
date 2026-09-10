@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "id": "survival-plants",
+  "title": "Survival · Trees and plants",
+  "description": "Review cutouts, silhouettes, directional textures, and authored block states.",
+  "entries": [
+    {"id":"minecraft:spruce_log","kind":"block","focus":"End grain and bark across all three axes."},
+    {"id":"minecraft:spruce_leaves","kind":"block","focus":"Needle masses, gaps, and readability against the background."},
+    {"id":"minecraft:fern","kind":"block","focus":"Natural silhouette; inspect both crossed planes."},
+    {"id":"minecraft:large_fern","kind":"block","focus":"Inspect upper and lower halves separately; confirm their join in game."},
+    {"id":"minecraft:brown_mushroom","kind":"block","focus":"Cap/stalk silhouette, UV scale, and material identity."},
+    {"id":"minecraft:red_mushroom","kind":"block","focus":"Cap/stalk silhouette, UV scale, and material identity."}
+  ]
+}

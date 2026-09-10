@@ -12,6 +12,7 @@
     "synth-models": "node producers/model/synth.mjs",
     "synth-textures": "node producers/raster/synth-textures.mjs",
     "db": "node scripts/db.mjs",
+    "feedback": "node scripts/visual-feedback.mjs",
     "generate": "node scripts/generate.mjs",
     "publish": "node scripts/publish.mjs",
     "reference-closure": "node producers/raster/reference-closure.mjs",
@@ -20,6 +21,29 @@
     "gate": "node scripts/db.mjs gate",
     "release": "node scripts/release.mjs",
     "author-tree": "node producers/blockbench/author-tree.mjs",
-    "instantiate": "node producers/model/instantiate.mjs"
+    "instantiate": "node producers/model/instantiate.mjs",
+    "audit": "node scripts/audit.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "review:cohort": "node scripts/review-sheet.mjs",
+    "review:browser-check": "node scripts/review/browser-check.mjs",
+    "items:plan": "node scripts/item-families.mjs",
+    "items:author": "node producers/blockbench/item-family.mjs author",
+    "items:export": "node producers/blockbench/item-family.mjs export",
+    "hosting:check": "turbo-ogre check --file hosting.json",
+    "hosting:bundle": "node scripts/hosting-bundle.mjs",
+    "hosting:register": "npm run hosting:onboard",
+    "hosting:status": "turbo-ogre status",
+    "hosting:publish": "turbo-ogre publish --artifact review-site.tar.gz --file work/hosting/review-site.tar.gz",
+    "hosting:plan": "turbo-ogre onboard --dry-run",
+    "hosting:onboard": "turbo-ogre onboard",
+    "workspace:init": "node scripts/workspace.mjs init",
+    "workspace:catalog": "node scripts/workspace.mjs catalog",
+    "workspace": "node scripts/workspace.mjs serve",
+    "workspace:browser-check": "node scripts/workspace/browser-check.mjs",
+    "workspace:editor-build": "node scripts/workspace/editor-build.mjs",
+    "workspace:editor-check": "node scripts/workspace/editor-check.mjs"
+  },
+  "devDependencies": {
+    "@turbo-ogre/sdk": "https://codeload.github.com/turbo-ogre/sdk/tar.gz/a25ff79cf99f9671bf1b5e15ae26dd399eb6dc6c"
   }
 }

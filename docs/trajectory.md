@@ -1,5 +1,10 @@
 # Content pipeline — trajectory to completion
 
+> **2026-09-08: completion claims below are historical and superseded.**
+> The refreshed queue has 1,330 actionable targets; deterministic generation
+> no longer grants quality approval. Use the [current quality backlog](quality-backlog.md)
+> and [asset standard](asset-style-standards.md) for new work.
+
 The three-repo pipeline (`Blockbench` producer → `content-forge` orchestrator →
 `Minosoft` consumer). This is the long-horizon plan: the completion goal, the
 phases to reach it, and the **measurable closure** of each.
@@ -82,7 +87,7 @@ release" is a provenance-complete, approved, immutable set.
 **Closure:** a clean checkout reproduces the composed pack **byte-identically**;
 CI is green; re-running the loop is a no-op (0 new/changed targets, 0 regressions).
 
-## The single completion checklist — ✅ COMPLETE
+## Historical completion checklist (superseded)
 
 - [x] **Phase 1** — `content queue`: `selectUnavailable = 0` (only `block/air`, an
       irreducible empty model, remains `select`); `out/` self-complete —
@@ -102,7 +107,7 @@ CI is green; re-running the loop is a no-op (0 new/changed targets, 0 regression
 `make gate` (OPEN) · `make release` (approved-only OK) · style checklist PASS ·
 consumer `selectUnavailable = 0`.
 
-The pipeline is **complete**: demand is satisfied (0 unavailable, self-complete
+The earlier pipeline was recorded as **complete** under the former policy: demand is satisfied (0 unavailable, self-complete
 pack), quality is gated (100 % reviewed, style bar met), and the whole loop is
 deterministic, idempotent, and driven by one command per repo.
 
