@@ -65,7 +65,7 @@ export async function renderAnimationReview(store, {familyId = 'wizard', revisio
             clips.push({...animation, frames: count, duration: count / reviewSettings.fps, path: `${name}.png`, poster: `${name}-poster.png`, frameSha256: hashes});
         }
         const manifest = {schema: 1, kind: 'blockbench-animation-review', familyId, revision, sourceSha256: saved.record.source.sha256,
-            familySha256: saved.record.familySha256, provenanceSha256: saved.record.provenanceSha256, sourceRevision: saved.record, editorBuild: editor.id, generatorInputs: inputs,
+            familySha256: saved.record.familySha256, provenanceSha256: saved.record.provenanceSha256, sourceRevision: saved.record, editorBuild: editor.id, editorManifest: editor.manifest, generatorInputs: inputs,
             settings: reviewSettings, environment: {...environment, node: process.version, zlib: process.versions.zlib, platform: process.platform, arch: process.arch}, clips,
             limitations: ['Blockbench preview; consumer rendering and artistic approval are pending.', 'Texture flipbooks use editor frame stepping; interpolation is not simulated.']};
         files.set('source.bbmodel', saved.source);
