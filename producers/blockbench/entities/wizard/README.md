@@ -25,8 +25,9 @@ is the editing authority; regenerating the demo must not overwrite it.
 The imported project does not declare an author or license, so those provenance
 fields remain unset.
 
-This source is ready for the animated-asset adapter slice. The current workspace
-catalog/export lane discovers `items/*/family.json` and validates `java_block`
-families. A `free` model needs its own catalog definition and export contract;
-this directory intentionally has no item-family declaration or Minecraft item
-target. Consumer export and artistic review are still pending.
+The workspace discovers this directory's animated-entity [family.json](family.json).
+It supports hosted editing, immutable saves, and automated [APNG review builds](../../../../docs/animation-review.md)
+for all five animations. The review includes the exact saved source and a pinned
+build manifest. Texture flipbooks currently use Blockbench frame stepping;
+smooth interpolation remains a consumer fidelity check. This family has no
+Minecraft item target. Consumer export and artistic review are still pending.

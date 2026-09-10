@@ -15,6 +15,10 @@ npm run workspace:editor-build
 npm run workspace                         # open http://127.0.0.1:8767
 ```
 
+The retained wizard also supports [animated PNG review builds](docs/animation-review.md):
+`npm run workspace:animation-review -- --family wizard`. Editable `.bbmodel`
+sources remain authoritative; generated reviews retain their exact source and build inputs.
+
 Hosting integration uses the public [Turbo Ogre SDK](https://github.com/turbo-ogre/sdk).
 See [onboarding and review-site packaging](docs/hosting.md) for the current
 artifact workflow and the remaining Artemis/auth deployment requirements.

@@ -51,7 +51,7 @@
         if (busy) return; busy = true; saveButton.disabled = buildButton.disabled = true;
         try { verifyProject(); await action(); }
         catch (error) { status.textContent = error.message; try { await retainDraft(); } catch {} }
-        finally { busy = false; saveButton.disabled = buildButton.disabled = false; }
+        finally { busy = false; saveButton.disabled = false; buildButton.disabled = !attached.capabilities.candidateExport; }
     }
     async function save() {
         verifyProject();
@@ -78,6 +78,7 @@
     }
     async function exportCandidate() {
         verifyProject();
+        if (!attached.capabilities.candidateExport) throw new Error('Consumer export is not available for this asset type.');
         if (pending || Codecs.project.compile() !== baseline) throw new Error('Save the current edits before building a candidate.');
         status.textContent = 'Exporting the saved revision through Blockbench…';
         const observation = await send('observe_project');
@@ -101,7 +102,9 @@
             request.onblocked = () => reject(new Error('Close the other workspace editor tab to upgrade draft storage.'));
         });
         if (ModelProject.all.length) throw new Error('The workspace requires a dedicated editor tab with no open project.');
-        attached = await api('attach', {instance, build}); revision = attached.revision.id;
+        attached = await api('attach', {instance, build});
+        if (!attached.capabilities.candidateExport) { buildButton.hidden = true; }
+        revision = attached.revision.id;
         const original = decode(attached.sourceBase64);
         if (await hash(bytes(original)) !== attached.revision.source.sha256) throw new Error('Source download hash mismatch');
         await send('load_project', {codec: 'project', name: attached.family.id, content: original}); owned = Project;
@@ -120,7 +123,7 @@
         window.addEventListener('beforeunload', checkpoint);
         // A heartbeat also retains non-Undo changes, including display settings.
         setInterval(checkpoint, 2000);
-        saveButton.disabled = buildButton.disabled = false;
+        saveButton.disabled = false; buildButton.disabled = !attached.capabilities.candidateExport;
         status.textContent = recovery ? 'Recovered local edits. Save to acknowledge them in the workspace.' : `Opened ${attached.family.title} · ${revision.slice(0, 12)}`;
         saveButton.onclick = () => exclusive(save); buildButton.onclick = () => exclusive(exportCandidate);
         // Only informational replies go to the verified opener. Incoming

@@ -1,5 +1,6 @@
 // Copyright (C) 2026 Jacob Repp; SPDX-License-Identifier: GPL-3.0-or-later
 import {randomBytes, randomUUID} from 'node:crypto';
+import {capabilities} from './families.mjs';
 import {sha256} from '../asset-files.mjs';
 const requireValue = (ok, message) => { if (!ok) throw new Error(message); };
 const token = () => randomBytes(32).toString('base64url');
@@ -75,7 +76,8 @@ export class WorkspaceSessions {
             const saved = this.store.revision(session.family, session.revision);
             return {protocol: 1, session: id, generation, family: saved.family, revision: saved.record,
                 sourceBase64: saved.source.toString('base64'), build: this.editor.id, toolchain: this.editor.manifest,
-                methods: ['ready', 'save', 'export', 'revoke']};
+                capabilities: capabilities(saved.family),
+                methods: ['ready', 'save', ...(capabilities(saved.family).candidateExport ? ['export'] : []), 'revoke']};
         });
     }
     bound(person, id, input, ready = true) {

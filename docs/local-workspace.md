@@ -5,6 +5,8 @@ The workspace connects retained item families to the real Blockbench web editor,
 immutable source revisions, candidate exports, shared review records, Minosoft
 capture, and approved resource-pack builds. The first compatibility profile is
 Minosoft with Minecraft 1.20.4 and the configured standalone content stack.
+Animated entities also support source editing and [APNG review builds](animation-review.md).
+The wizard's consumer exporter remains pending.
 
 ## Start and sign in
 
@@ -127,7 +129,7 @@ acceptance uses isolated test identities and explicitly labeled test approvals.
 ## Durable storage and editor pinning
 
 `.forge-workspace/workspace.sqlite` holds source bytes, family/lineage snapshots,
-accounts, editor sessions, jobs, candidates, reviews, evidence, and pack builds.
+accounts, editor sessions, jobs, candidates, reviews, animation review files, evidence, and pack builds.
 It is durable local state excluded from Git. Stop the server before copying the
 entire `.forge-workspace/` directory for backup, or download retained artifacts.
 Do not treat it as a regenerable report directory.
@@ -150,6 +152,7 @@ bound to an unavailable old build are refused; their local drafts remain intact.
 npm test
 npm run workspace:browser-check
 npm run workspace:editor-check
+npm run workspace:wizard-check
 FORGE_CONSUMER_CHECK=1 npm run workspace:editor-check
 ```
 

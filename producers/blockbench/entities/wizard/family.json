@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "id": "wizard",
+  "kind": "animated_entity",
+  "title": "Entities · Gray wizard",
+  "source": "producers/blockbench/entities/wizard/source.bbmodel",
+  "codec": "free",
+  "approach": "Retained animated wizard with editable rig, embedded textures and five looping animations. Consumer export and artistic approval are pending.",
+  "members": [{"id": "wizard"}]
+}

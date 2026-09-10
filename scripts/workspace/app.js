@@ -52,11 +52,16 @@ function renderFamily(family) {
     source.append(el('h3', 'Current source'), el('code', short(family.head.id)), el('p', `Saved by ${family.head.author} · ${new Date(family.head.createdAt).toLocaleString()}`),
         download(family.id, family.head.id, 'source', 'Download Blockbench source'));
     if (!family.checkoutMatchesHead) source.append(el('p', 'Workspace edits are saved separately from the repository source.', 'state'));
-    const labels = {none: 'No candidate yet', current: 'Candidate matches this source', stale: 'Candidate uses an earlier source or family definition', unavailable: 'Candidate could not be verified'};
+    const labels = {unsupported: 'Source editing available · consumer export pending', none: 'No candidate yet', current: 'Candidate matches this source', stale: 'Candidate uses an earlier source or family definition', unavailable: 'Candidate could not be verified'};
     candidate.append(el('h3', 'Latest candidate'), el('p', labels[family.candidate.status], 'state'));
     if (family.candidate.path) candidate.append(el('code', family.candidate.path));
     if (family.candidate.issue) candidate.append(el('p', family.candidate.issue, 'error'));
     summary.append(source, candidate); card.append(summary);
+    if (family.animationReview) {
+        const review = el('a', family.animationReview.status === 'current' ? 'Review animations' : 'Review animations from an earlier source');
+        review.href = `/api/animation-reviews/${family.animationReview.id}/index.html`;
+        card.append(review);
+    }
     if (currentPerson?.role === 'author' && editorBuild) {
         const launch = el('button', 'Edit in Blockbench'), editorStatus = el('p');
         launch.onclick = async () => {

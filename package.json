@@ -41,7 +41,9 @@
     "workspace": "node scripts/workspace.mjs serve",
     "workspace:browser-check": "node scripts/workspace/browser-check.mjs",
     "workspace:editor-build": "node scripts/workspace/editor-build.mjs",
-    "workspace:editor-check": "node scripts/workspace/editor-check.mjs"
+    "workspace:editor-check": "node scripts/workspace/editor-check.mjs",
+    "workspace:animation-review": "node scripts/workspace/animation-review.mjs",
+    "workspace:wizard-check": "node scripts/workspace/wizard-check.mjs"
   },
   "devDependencies": {
     "@turbo-ogre/sdk": "https://codeload.github.com/turbo-ogre/sdk/tar.gz/a25ff79cf99f9671bf1b5e15ae26dd399eb6dc6c"
