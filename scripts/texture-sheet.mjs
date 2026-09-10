@@ -11,8 +11,8 @@
 //   node scripts/texture-sheet.mjs --out review.html
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative, dirname, basename } from 'node:path';
-import { pathToFileURL } from 'node:url';
 import { loadConfig, repoRoot } from './config.mjs';
+import { loadTextureCore } from '../producers/lib/texture-core.mjs';
 
 const config = loadConfig();
 const args = process.argv.slice(2);
@@ -25,9 +25,7 @@ if (!existsSync(texRoot)) { console.error(`no textures in out/ (${texRoot}) — 
 
 // Import the Blockbench generator core to classify borrowed textures into the same
 // families the recipes use (generated textures carry their family in the recipe).
-const corePath = join(config.producerRoot, 'js', 'automation', 'texture_gen.js');
-if (!existsSync(corePath)) { console.error(`generator core not found at ${corePath} (check producer.root)`); process.exit(1); }
-const { classify, listFamilies } = await import(pathToFileURL(corePath).href);
+const {core: {classify, listFamilies}} = await loadTextureCore();
 const FAMILY_ORDER = listFamilies();
 // Core order, but push the catch-all generic families to the end so the specific,
 // review-worthy families come first.

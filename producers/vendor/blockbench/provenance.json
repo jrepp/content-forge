@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "repository": "https://github.com/jrepp/blockbench",
+  "sourcePath": "js/automation/texture_gen.js",
+  "baseCommit": "92fe9bb5f94102efe8f1e477f1ed2ae44caf9094",
+  "sourceState": "Local source snapshot including the validated survival material changes; not identical to the base commit.",
+  "sha256": "989fce1b2b8f0834f4bd04f7a59f323ea197dbcdbf2a984c4fba7699be780a9c",
+  "license": "GPL-3.0-or-later",
+  "copyright": "Copyright (C) 2026 Jacob Repp"
+}

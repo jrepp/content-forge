@@ -11,13 +11,12 @@
 import { readFileSync, existsSync, readdirSync, statSync, rmSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join, relative } from 'node:path';
-import { pathToFileURL } from 'node:url';
 import { loadConfig, repoRoot } from './config.mjs';
 import { decodePNG } from '../producers/raster/png.mjs';
+import { loadTextureCore } from '../producers/lib/texture-core.mjs';
 
 const config = loadConfig();
-const corePath = join(config.producerRoot, 'js', 'automation', 'texture_gen.js');
-const { classify } = await import(pathToFileURL(corePath).href);
+const {core: {classify}} = await loadTextureCore();
 
 let passed = 0, failed = 0;
 const ok = (cond, msg) => { if (cond) { passed++; console.log(`  ok   ${msg}`); } else { failed++; console.log(`  FAIL ${msg}`); } };

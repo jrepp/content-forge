@@ -72,6 +72,10 @@ Relative paths resolve against the repo root. Every value has an env override:
 `MINOSOFT_ROOT`, `FORGE_STACK`, `BLOCKBENCH_ROOT`, `BLOCKBENCH_CDP_PORT`,
 `FORGE_CONFIG`. Precedence: **env > forge.config.json > sibling default**.
 
+Raster generation uses the [retained texture core](producers/vendor/blockbench/README.md),
+so `npm test` needs no sibling editor checkout. `FORGE_TEXTURE_CORE` explicitly
+selects a development generator; `BLOCKBENCH_ROOT` selects the interactive editor.
+
 ## Layout
 
 | Path | Role |
