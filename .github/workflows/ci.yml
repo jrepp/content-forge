@@ -71,10 +71,18 @@ jobs:
         env:
           BLOCKBENCH_ROOT: ${{ github.workspace }}/.ci/blockbench
       - run: npm run workspace:wizard-check
+      - run: npm run workspace:init -- --author "CI source import"
+      - run: npm run workspace:animation-review -- --family wizard --output work/reviews/wizard-source
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: wizard-animation-review
+          path: work/reviews/wizard-source/
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: wizard-acceptance-evidence
           path: |
             work/reviews/animations/
             work/reviews/wizard-check.json

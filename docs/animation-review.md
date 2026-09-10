@@ -66,8 +66,10 @@ original source. Only the intended edit and editor selection state may differ.
 It then renders twice, checks identical review IDs, independently decodes every
 APNG frame with Chrome, checks frame timing and motion, and loads the review sheet.
 Tests use an isolated database. Receipts and screenshots go under `work/reviews/`.
-CI builds a web editor from the pinned public Blockbench commit and uploads these
-review bundles as the `wizard-animation-review` artifact on PRs and main pushes.
+CI builds a web editor from the pinned public Blockbench commit and generates a
+review from the committed source as the `wizard-animation-review` artifact on
+PRs and main pushes. The edited test project and its receipts are uploaded as
+`wizard-acceptance-evidence`.
 
 These images show Blockbench rendering. Texture flipbooks are sampled with its
 frame-stepping API; smooth interpolation is not simulated. The source's interpolation,
