@@ -35,7 +35,13 @@
     "hosting:status": "turbo-ogre status",
     "hosting:publish": "turbo-ogre publish --artifact review-site.tar.gz --file work/hosting/review-site.tar.gz",
     "hosting:plan": "turbo-ogre onboard --dry-run",
-    "hosting:onboard": "turbo-ogre onboard"
+    "hosting:onboard": "turbo-ogre onboard",
+    "workspace:init": "node scripts/workspace.mjs init",
+    "workspace:catalog": "node scripts/workspace.mjs catalog",
+    "workspace": "node scripts/workspace.mjs serve",
+    "workspace:browser-check": "node scripts/workspace/browser-check.mjs",
+    "workspace:editor-build": "node scripts/workspace/editor-build.mjs",
+    "workspace:editor-check": "node scripts/workspace/editor-check.mjs"
   },
   "devDependencies": {
     "@turbo-ogre/sdk": "https://codeload.github.com/turbo-ogre/sdk/tar.gz/a25ff79cf99f9671bf1b5e15ae26dd399eb6dc6c"

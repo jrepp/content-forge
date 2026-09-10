@@ -2,8 +2,10 @@
 # Content-forge workspace and Blockbench integration
 
 Status: working design, reflecting the product direction discussed 2026-09-08.
-The responsibilities below guide implementation. Proposed session, persistence,
-and job interfaces are not shipped capabilities.
+The [workspace implementation](local-workspace.md) now connects the catalog,
+source revisions, pinned web editor sessions, shared reviews, consumer evidence,
+and approved pack selections on the local workspace server. Public hosting and
+organization identity integration remain separate platform work.
 
 Content-forge is the team's content harness: it manages demand, assets, family
 relationships, generation, retained sources, review, provenance, and modpack
@@ -66,7 +68,9 @@ team catalog and pack-building logic stay in content-forge.
 
 ## Session and source contract
 
-These are proposed operations, not current HTTP routes:
+The session contract below is implemented by the local workspace's launch,
+attach, ready, save, export, and revoke routes. Remote platform deployment will
+need the same scope checks behind its identity and routing adapters:
 
 | Operation | Required behavior |
 | --- | --- |
@@ -147,9 +151,11 @@ refusal; it does not need simultaneous cursor collaboration.
 
 ## Relationship to the current pipeline
 
-Today the repository has retained family sources, local CDP export, deterministic
-packaging, review sheets and quality gates. Team persistence, source-save APIs,
-hosted launch/bridge, revision-bound reviews and a pack catalog need new work.
+Today the repository has retained family sources, a catalog with immutable
+draft revisions, conflict-safe editor saves, pinned hosted editor launch,
+revision-bound exports and shared reviews, consumer-evidence attachment, and
+approved resource-pack builds. Local account invitations support one author and
+one reviewer; organization SSO and remote fleet deployment need platform work.
 The static hosted review site is a useful delivery milestone within this larger
 workspace product; it is not the full product scope.
 

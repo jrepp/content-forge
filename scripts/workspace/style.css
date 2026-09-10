@@ -1,0 +1,17 @@
+/* Copyright (C) 2026 Jacob Repp; SPDX-License-Identifier: GPL-3.0-or-later */
+:root { color-scheme: dark; font: 16px/1.55 system-ui, sans-serif; color: #e6eaf1; background: #11151c; }
+body { max-width: 1060px; margin: auto; padding: 36px 24px; }
+header { margin-bottom: 32px; } h1 { font-size: 2.4rem; margin: 8px 0; } h2 { margin-top: 0; }
+.eyebrow { color: #a8c9fb; font-size: .75rem; letter-spacing: .16em; } p { color: #bac4d2; }
+article { background: #1b222d; border: 1px solid #344153; border-radius: 12px; padding: 28px; margin-bottom: 28px; }
+.members, .actions { display: flex; gap: 12px; flex-wrap: wrap; } .members span { background: #283445; border-radius: 6px; padding: 5px 12px; }
+.summary { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 26px 0; }
+.summary section { border-left: 2px solid #506984; padding-left: 16px; } h3 { font-size: 1rem; margin: 0 0 8px; }
+code { overflow-wrap: anywhere; font-size: .85em; } a { color: #accdff; } .state { color: #f4d395; }
+details { border-top: 1px solid #344153; padding-top: 18px; margin-top: 24px; } summary { cursor: pointer; }
+form { display: grid; gap: 16px; margin-top: 20px; max-width: 580px; } label { display: grid; gap: 6px; }
+input, button, select, textarea { font: inherit; border-radius: 6px; border: 1px solid #64768e; padding: 9px 12px; background: #111923; color: inherit; }
+button { width: fit-content; cursor: pointer; background: #b9d4fd; color: #111923; font-weight: 650; } button:disabled { opacity: .6; cursor: wait; }
+input[type=file] { max-width: 100%; box-sizing: border-box; } .message { white-space: pre-wrap; color: #f4d395; } .error { color: #ffb9b9; }
+ol { padding-left: 22px; } li { margin: 14px 0; } li p { margin: 4px 0; } footer { color: #9ba9bd; font-size: .9rem; margin-top: 32px; }
+@media (max-width: 680px) { .summary { grid-template-columns: 1fr; } body { padding: 20px 14px; } article { padding: 20px; } h1 { font-size: 2rem; } }

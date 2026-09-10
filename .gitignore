@@ -39,3 +39,6 @@ work/reviews/
 work/item-families/
 work/item-family-retention/
 work/hosting/
+
+# Durable local source drafts. Back up this directory; it is not regenerable.
+.forge-workspace/

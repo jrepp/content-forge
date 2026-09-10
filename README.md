@@ -5,8 +5,15 @@ retained sources, provenance, bounded reviews, and reproducible modpack builds.
 Content-forge launches Blockbench as an editing and automation workspace for the
 selected task. See the [workspace architecture](docs/workspace-architecture.md)
 for ownership, the hosted editing loop, and the first integration milestone.
-The current implementation remains the local production and review pipeline
-described below; hosted sessions and team persistence are proposed work.
+The [asset workspace](docs/local-workspace.md) provides a family catalog,
+immutable source revisions, a pinned hosted Blockbench editor, shared reviews,
+Minosoft capture, and reproducible approved resource-pack selections.
+
+```sh
+npm run workspace:init
+npm run workspace:editor-build
+npm run workspace                         # open http://127.0.0.1:8767
+```
 
 Hosting integration uses the public [Turbo Ogre SDK](https://github.com/turbo-ogre/sdk).
 See [onboarding and review-site packaging](docs/hosting.md) for the current

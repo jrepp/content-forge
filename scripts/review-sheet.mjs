@@ -7,13 +7,13 @@ import {loadConfig,repoRoot} from './config.mjs';
 import {resolveCohort} from './review/resolve.mjs';
 import {sha256,containedPath} from './asset-files.mjs';
 
-export async function buildSheet({cohortPath,roots,output,config=loadConfig()}) {
+export async function buildSheet({cohortPath,roots,output,config=loadConfig(),retainedSources=new Map()}) {
     const manifest=JSON.parse(readFileSync(cohortPath,'utf8'));
     const reviews=JSON.parse(readFileSync(join(repoRoot,'db/reviews.json'),'utf8'));
     const feedback=JSON.parse(readFileSync(join(repoRoot,'db/visual-feedback.json'),'utf8')).entries;
     const cohort=resolveCohort(manifest,roots,{reviews,feedback});
     for(const entry of cohort.entries)for(const source of entry.sources){
-        try {const bytes=readFileSync(containedPath(repoRoot,source.source));if(sha256(bytes)!==source.sha256)throw new Error('Source hash changed');source.data='data:application/json;base64,'+bytes.toString('base64');}
+        try {const bytes=retainedSources.get(`${source.source}:${source.sha256}`) || readFileSync(containedPath(repoRoot,source.source));if(sha256(bytes)!==source.sha256)throw new Error('Source hash changed');source.data='data:application/json;base64,'+bytes.toString('base64');}
         catch(error){entry.issues.push(`Source unavailable: ${source.source}: ${error.message}`);}
     }
     const esbuild=await import(pathToFileURL(join(config.producerRoot,'node_modules/esbuild/lib/main.js')).href);
